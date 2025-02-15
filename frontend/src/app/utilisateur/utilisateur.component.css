@@ -1,0 +1,60 @@
+h2 {
+
+    text-align: center;
+    background-color: #FD7401;
+    background-size:50px ;
+    border-radius: 15px;
+    color: aliceblue;
+}
+
+/* Couleur orange pour la pagination */
+.text-orange {
+    color: #FD7401;
+  }
+  
+  /* Styles pour les boutons d'actions */
+  .btn-outline-primary {
+    color: #007bff;
+    border-color: #007bff;
+  }
+  
+  .btn-outline-warning {
+    color: #FD7401;
+    border-color: #FD7401;
+  }
+  
+  .btn-outline-danger {
+    color: #dc3545;
+    border-color: #dc3545;
+  }
+  
+  .btn-outline-secondary {
+    color: #6c757d;
+    border-color: #6c757d;
+  }
+  
+  .btn-outline-info {
+    color: #17a2b8;
+    border-color: #17a2b8;
+  }
+  
+  /* Styles pour le statut */
+  .text-success {
+    color: green;
+  }
+  
+  .text-danger {
+    color: red;
+  }
+
+  .small-search {
+    max-width: 250px; /* Réduit la largeur de la barre de recherche */
+    font-size: 14px; /* Réduit la taille du texte */
+    padding: 5px 10px; /* Ajuste le padding */
+  }
+  
+  .small-button {
+    font-size: 14px; /* Réduit la taille du texte du bouton */
+    padding: 5px 10px; /* Ajuste le padding */
+  }
+  

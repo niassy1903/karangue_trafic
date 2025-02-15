@@ -1,0 +1,87 @@
+<div class="container mt-4">
+    <h2 class="mb-4">Gestion des Utilisateurs</h2>
+  
+    <!-- Boutons d'actions -->
+    <div class="d-flex gap-2 mb-3">
+      <button class="btn btn-danger" (click)="deleteMultipleUtilisateurs()">Supprimer</button>
+      <button class="btn btn-success">Ajouter</button>
+      <button class="btn btn-secondary">Ajouter par CSV</button>
+    </div>
+  
+    <!-- Barre de recherche et filtre -->
+    <div class="d-flex gap-2 mb-3">
+      <input type="text" class="form-control small-search" placeholder="Rechercher par Prenom, Email, Matricule..." />
+      <button class="btn btn-primary small-button">✔ Filtre</button>
+    </div>
+  
+    <!-- Tableau des utilisateurs -->
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover">
+        <thead class="table-light">
+          <tr>
+            <th>Matricule</th>
+            <th>Prenom et Nom</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let utilisateur of utilisateurs">
+            <td>
+              <input type="checkbox" (change)="toggleSelection(utilisateur.id)">
+              {{ utilisateur.matricule }}
+            </td>
+            <td>{{ utilisateur.prenom }} {{ utilisateur.nom }}</td>
+            <td>{{ utilisateur.email }}</td>
+            <td>{{ utilisateur.role }}</td>
+            <td>
+              <span [ngClass]="{'text-success': utilisateur.status === 'Actif', 'text-danger': utilisateur.status === 'Inactif'}">
+                {{ utilisateur.status }}
+              </span>
+            </td>
+            <td>
+              <button class="btn btn-sm text-orange" title="Modifier">
+                <i class="fas fa-pencil-alt"></i>
+              </button>
+              <button class="btn btn-sm text-orange" title="Voir">
+                <i class="fas fa-eye"></i>
+              </button>
+              <button class="btn btn-sm text-orange" title="Supprimer" (click)="deleteUtilisateur(utilisateur.id)">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+              <button class="btn btn-sm text-orange" title="Bloquer" (click)="blockUtilisateur(utilisateur.id)">
+                <i class="fas fa-ban"></i>
+              </button>
+              <button class="btn btn-sm text-orange" title="Assigner">
+                <i class="fas fa-clipboard"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <!-- Pagination -->
+    <nav aria-label="Page navigation">
+      <ul class="pagination justify-content-center">
+        <li class="page-item">
+          <a class="page-link text-orange" href="#">Précédente</a>
+        </li>
+        <li class="page-item">
+          <a class="page-link text-orange" href="#">1</a>
+        </li>
+        <li class="page-item">
+          <a class="page-link text-orange" href="#">2</a>
+        </li>
+        <li class="page-item">
+          <a class="page-link text-orange" href="#">3</a>
+        </li>
+        <li class="page-item">
+          <a class="page-link text-orange" href="#">Suivante</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+  
