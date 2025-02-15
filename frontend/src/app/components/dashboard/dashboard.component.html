@@ -1,0 +1,62 @@
+<div class="dashboard-layout">
+    <app-sidebar></app-sidebar>
+   
+   
+ <div class="main-content">
+
+<!-- Navbar -->
+<nav class="navbar">
+    <input type="text" placeholder="Rechercher..." class="search-bar">
+    <div class="icons">
+      <i class="fas fa-bell"></i>
+      <div class="profile">
+        <img src="assets/avatarUser.png" alt="Admin" class="profile-pic">
+        <span>Admin</span>
+      </div>
+    </div>
+  </nav>
+  
+  <!-- Dashboard Content -->
+  <div class="dashboard-container">
+    <!-- Carte Map -->
+    <div class="map-section">
+      <img src="assets/map.png" alt="Carte" class="map-image">
+    </div>
+    
+
+<!-- Nouvelle section combinée -->
+<div class="content-row">
+    <!-- Statistiques -->
+    <div class="stats-section">
+      <div class="stat-card">
+        <h3>Total Infractions</h3>
+        <i class="fas fa-car-crash"></i>
+
+        <span>{{ totalInfractions }}</span>
+      </div>
+      <div class="stat-card">
+        <h3>Administrateurs</h3>
+        <i class="fas fa-user-shield"></i>
+        <span>{{ totalAdmins }}</span>
+      </div>
+      <div class="stat-card">
+        <h3>Utilisateurs</h3>
+        <i class="fas fa-users"></i>
+        <span>{{ totalUsers }}</span>
+      </div>
+    </div>
+
+    <!-- Liste des alertes -->
+    <div class="alerts-section">
+      <h3>Liste des alertes</h3>
+      <div class="alert-card" *ngFor="let alert of alerts">
+        <div class="alert-info">
+          <strong>{{ alert.nom }}</strong>, {{ alert.matricule }}<br>
+          <span>Zone {{ alert.zone }}</span>
+          <p>Excès de vitesse {{ alert.vitesse }} km/h</p>
+        </div>
+        <i class="fas fa-chevron-right"></i>
+      </div>
+      <button class="see-more" (click)="voirPlus()">Voir tout</button>
+    </div>
+  </div>
