@@ -25,10 +25,11 @@ export class UtilisateurService {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
 
+  // Supprimer plusieurs utilisateurs
   deleteMultipleUtilisateurs(ids: number[]): Observable<any> {
-    return this.http.request('DELETE', `${this.apiUrl}/destroyMultiple`, { body: { ids } });
+    return this.http.post(`${this.apiUrl}/deleteMultiple`, { ids });
   }
-  
+
   // Bloquer un utilisateur
   blockUtilisateur(id: number): Observable<any> {
     return this.http.put(`${this.apiUrl}/block/${id}`, {});

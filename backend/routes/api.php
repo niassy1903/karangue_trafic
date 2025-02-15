@@ -23,7 +23,10 @@ use App\Http\Controllers\UtilisateurController;
 Route::get('/utilisateurs', [UtilisateurController::class, 'index']);
 Route::post('/utilisateurs', [UtilisateurController::class, 'store']);
 Route::delete('/utilisateurs/{id}', [UtilisateurController::class, 'destroy']);
-Route::delete('/utilisateurs/destroyMultiple', [UtilisateurController::class, 'destroyMultiple']);
+
+Route::post('/utilisateurs/deleteMultiple', [UtilisateurController::class, 'destroyMultiple']);
+
+
 
 Route::put('/utilisateurs/block/{id}', [UtilisateurController::class, 'block']);
 Route::put('/utilisateurs/block', [UtilisateurController::class, 'blockMultiple']);

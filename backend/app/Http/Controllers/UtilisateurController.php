@@ -43,18 +43,24 @@ class UtilisateurController extends Controller
         return response()->json($utilisateur, 201);
     }
 
+
     public function destroy($id)
     {
         Utilisateur::destroy($id);
         return response()->json(['message' => 'Utilisateur supprimé']);
     }
 
+    
     public function destroyMultiple(Request $request)
     {
-        $ids = $request->input('ids');
+        $ids = $request->input('ids'); // Liste des IDs envoyée
+    
+        // Supprimer les utilisateurs
         Utilisateur::whereIn('id', $ids)->delete();
+        
         return response()->json(['message' => 'Utilisateurs supprimés']);
     }
+    
     
 
     public function block($id)
