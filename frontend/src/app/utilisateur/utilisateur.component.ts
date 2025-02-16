@@ -1,23 +1,25 @@
 import { Component, OnInit } from '@angular/core';
 import { UtilisateurService } from '../utilisateur.service';
+import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-
+import { SidebarComponent } from '../sidebar/sidebar.component';
+import { NavbarComponent } from '../navbar/navbar.component';
 
 @Component({
   selector: 'app-utilisateur',
   templateUrl: './utilisateur.component.html',
   styleUrls: ['./utilisateur.component.css'],
   standalone: true,
-  imports: [CommonModule, HttpClientModule],
-  providers : [UtilisateurService],
+  imports: [CommonModule, HttpClientModule,SidebarComponent,NavbarComponent],
+  providers: [UtilisateurService],
 })
 export class UtilisateurComponent implements OnInit {
   utilisateurs: any[] = [];
   selectedUsers: Set<number> = new Set();
 
-  constructor(private utilisateurService: UtilisateurService) {}
+  constructor(private utilisateurService: UtilisateurService, private router: Router) {}
 
   ngOnInit(): void {
     this.getUtilisateurs();
@@ -118,5 +120,15 @@ export class UtilisateurComponent implements OnInit {
     } else {
       this.selectedUsers.add(id);
     }
+  }
+
+  // Méthode pour rediriger vers le composant d'inscription
+  redirectToInscription(): void {
+    this.router.navigate(['/inscription']);
+  }
+
+  // Méthode pour rediriger vers le composant de modification
+  redirectToModifier(id: number): void {
+    this.router.navigate(['/modifier', id]);
   }
 }

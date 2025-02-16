@@ -1,0 +1,74 @@
+<div class="dashboard-layout">
+  <!-- Sidebar -->
+  <app-sidebar></app-sidebar>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Navbar -->
+    <app-navbar></app-navbar>
+
+    <!-- Formulaire d'Inscription -->
+    <div class="container mt-4">
+      <div class="card shadow-lg">
+        <div class="card-header text-white text-center fw-bold fs-4" style="background-color: #ff6600;">
+          Formulaire d'Inscription
+        </div>
+        <div class="card-body">
+          <form [formGroup]="inscriptionForm" (ngSubmit)="onSubmit()">
+
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Prénom</label>
+                <input formControlName="prenom" type="text" class="form-control" placeholder="Saisissez votre prénom">
+                <div *ngIf="submitted && f['prenom'].errors" class="text-danger">Prénom requis (min 2 lettres)</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Nom</label>
+                <input formControlName="nom" type="text" class="form-control" placeholder="Saisissez votre nom">
+                <div *ngIf="submitted && f['nom'].errors" class="text-danger">Nom requis (min 2 lettres)</div>
+              </div>
+            </div>
+
+            <div class="row g-3 mt-2">
+              <div class="col-md-6">
+                <label class="form-label">Adresse</label>
+                <input formControlName="adresse" type="text" class="form-control" placeholder="Saisissez votre adresse">
+                <div *ngIf="submitted && f['adresse'].errors" class="text-danger">Adresse requise</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Téléphone</label>
+                <input formControlName="telephone" type="text" class="form-control" placeholder="Saisissez votre téléphone">
+                <div *ngIf="submitted && f['telephone'].errors" class="text-danger">Téléphone invalide</div>
+                <div *ngIf="errorMessages.telephone" class="text-danger">{{ errorMessages.telephone }}</div>
+              </div>
+            </div>
+
+            <div class="mt-2">
+              <label class="form-label">Email</label>
+              <input formControlName="email" type="email" class="form-control" placeholder="Saisissez votre email">
+              <div *ngIf="submitted && f['email'].errors" class="text-danger">Email invalide</div>
+              <div *ngIf="errorMessages.email" class="text-danger">{{ errorMessages.email }}</div>
+            </div>
+
+            <div class="mt-2">
+              <label class="form-label">Rôle</label>
+              <select formControlName="role" class="form-select">
+                <option value="">Sélectionnez un rôle</option>
+                <option value="agent de sécurité">Agent de sécurité</option>
+                <option value="administrateur">Administrateur</option>
+              </select>
+              <div *ngIf="submitted && f['role'].errors" class="text-danger">Rôle requis</div>
+            </div>
+
+            <div class="text-center mt-4">
+              <button type="submit" class="btn text-white w-100" style="background-color: #ff6600;">
+                Enregistrer
+              </button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

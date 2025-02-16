@@ -1,0 +1,27 @@
+<div class="sidebar">
+    <!-- Logo -->
+    <div class="logo-container">
+      <img src="logo.png" alt="Logo" class="logo">
+    </div>
+  
+<!-- Menu -->
+<nav class="menu">
+    <a class="menu-item" [class.active]="currentRoute === '/accueil'" (click)="navigateTo('/accueil')">
+      <i class="fas fa-home"></i> Accueil
+    </a>
+    <a class="menu-item" [class.active]="currentRoute === '/utilisateur'" (click)="navigateTo('/utilisateur')">
+      <i class="fas fa-users"></i> Gestion des utilisateurs
+    </a>
+    <a class="menu-item" [class.active]="currentRoute === '/fines'" (click)="navigateTo('/fines')">
+      <i class="fas fa-file-invoice-dollar"></i> Gestion des amendes
+    </a>
+  </nav>
+  
+  <!-- Déconnexion -->
+  <div class="logout-container">
+    <button class="logout-button" (click)="logout()">
+      <i class="fas fa-sign-out-alt"></i> Déconnexion
+    </button>
+  </div>
+  
+  

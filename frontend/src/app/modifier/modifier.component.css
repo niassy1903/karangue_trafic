@@ -1,0 +1,17 @@
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-left: 400px; /* Ajustez selon la largeur de la sidebar */
+    padding: 20px;
+    transition: margin-left 0.3s;
+    box-sizing: border-box;
+  }
+  .dashboard-container {
+    flex: 1;
+    display: flex;
+    justify-content: center; /* Centre le contenu horizontalement */
+    align-items: flex-start; /* Aligne le contenu au début verticalement */
+    padding: 20px;
+    width: 100%; /* Assure que le conteneur prend toute la largeur disponible */
+  }

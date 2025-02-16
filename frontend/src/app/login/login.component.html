@@ -1,0 +1,31 @@
+<div class="login-container">
+    <!-- Partie gauche avec le logo et le formulaire -->
+    <div class="left-side">
+      <img src="logo.png" alt="Logo" class="logo">
+      <h1>Connexion</h1>
+      <div class="lock-icon">
+        <i class="fas fa-lock"></i>
+      </div>
+        <p>Veuillez entrer votre code secret</p>
+  
+      <div class="code-inputs">
+        <input type="password" maxlength="1" (input)="goToNext($event, 1)" #input1>
+        <input type="password" maxlength="1" (input)="goToNext($event, 2)" #input2>
+        <input type="password" maxlength="1" (input)="goToNext($event, 3)" #input3>
+        <input type="password" maxlength="1" (input)="validateCode()" #input4>
+      </div>
+  
+      <a href="#" class="forgot-link">Code secret oublié</a>
+    </div>
+  
+    <!-- Partie droite avec l'avatar agrandi -->
+    <div class="right-side">
+      <img src="avatar.png" alt="Avatar" class="avatar">
+    </div>
+  </div>
+  
+  <!-- Footer -->
+  <footer class="footer">
+    Copyright © 2025 KAARANGE TRAFIC. Tous Droits Réservés
+  </footer>
+  

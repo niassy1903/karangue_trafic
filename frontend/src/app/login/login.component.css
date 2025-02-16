@@ -1,0 +1,136 @@
+/* Pour s'assurer que le conteneur prend toute la hauteur et s'adapte bien */
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Ajustement principal pour rendre le layout flexible */
+.login-container {
+    display: flex;
+    flex-direction: row;
+    height: calc(100vh - 40px); /* Ajustement pour laisser place au footer */
+}
+
+/* Ajustement du formulaire */
+.left-side {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px;
+    border-right: 5px solid #FD7401;
+    box-shadow: 5px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Assurer que le logo s'adapte */
+.logo {
+    width: 70%;
+    max-width: 300px;
+    margin-bottom: 20px;
+}
+/* Conteneur des champs de code */
+.code-inputs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* Ajustement des inputs */
+.code-inputs input {
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    text-align: center;
+    border: 2px solid #FD7401;
+    border-radius: 10px;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Effet au focus */
+.code-inputs input:focus {
+    border-color: #413a31;
+    outline: none;
+    box-shadow: 0 0 5px rgba(255, 145, 0, 0.5);
+}
+/* Partie droite (Avatar agrandi) */
+.right-side {
+    flex: 1.5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f4f4f4;
+}
+
+/* Rendre l'avatar plus flexible */
+.avatar {
+    width: 80%;
+    max-width: 600px;
+    border-radius: 50%;
+}
+
+/* Footer ajusté */
+.footer {
+    background-color: #FD7401;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    font-size: 16px;
+    width: 100%;
+}
+
+/* ✅ Media Queries pour le Responsive */
+@media (max-width: 1024px) {
+    .login-container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .left-side {
+        flex: none;
+        width: 100%;
+        border-right: none;
+        border-bottom: 5px solid #FD7401;
+        padding: 20px;
+    }
+
+    .right-side {
+        flex: none;
+        width: 100%;
+        padding: 20px;
+    }
+
+    .avatar {
+        width: 60%;
+        max-width: 300px;
+    }
+
+    .footer {
+        position: relative;
+    }
+    
+}
+
+
+/* 📱 Responsiveness pour les petits écrans */
+@media (max-width: 600px) {
+    .code-inputs {
+        gap: 5px;
+    }
+
+    .code-inputs input {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+
+
+    .avatar {
+        width: 70%;
+        max-width: 250px;
+    }
+}

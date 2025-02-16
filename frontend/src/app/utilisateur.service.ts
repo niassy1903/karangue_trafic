@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UtilisateurService {
-  private apiUrl = 'http://localhost:8000/api/utilisateurs'; // Remplacez par l'URL de votre API
+  private apiUrl = 'http://localhost:8000/api/utilisateurs';
 
   constructor(private http: HttpClient) {}
 
@@ -15,9 +16,36 @@ export class UtilisateurService {
     return this.http.get(`${this.apiUrl}`);
   }
 
+
+  // Récupérer un utilisateur par ID
+  getUtilisateur(id: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/${id}`).pipe(
+      catchError((error) => {
+        return throwError(error);
+      })
+    );
+  }
+
+
   // Créer un nouvel utilisateur
   createUtilisateur(utilisateur: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}`, utilisateur);
+    return this.http.post(`${this.apiUrl}`, utilisateur).pipe(
+      catchError((error) => {
+        return throwError(error);
+      })
+    );
+  }
+
+
+
+ 
+  // Mettre à jour un utilisateur
+  updateUtilisateur(id: string, utilisateur: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}`, utilisateur).pipe(
+      catchError((error) => {
+        return throwError(error);
+      })
+    );
   }
 
   // Supprimer un utilisateur

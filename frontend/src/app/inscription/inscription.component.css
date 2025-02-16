@@ -1,0 +1,46 @@
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-left: 400px; /* Ajustez selon la largeur de la sidebar */
+  padding: 20px;
+  transition: margin-left 0.3s;
+  box-sizing: border-box;
+}
+.dashboard-container {
+  flex: 1;
+  display: flex;
+  justify-content: center; /* Centre le contenu horizontalement */
+  align-items: flex-start; /* Aligne le contenu au début verticalement */
+  padding: 20px;
+  width: 100%; /* Assure que le conteneur prend toute la largeur disponible */
+}
+
+.card {
+  width: 100%;
+  max-width: 1400px; /* Limite la largeur maximale du formulaire */
+  margin: 0 auto; /* Centre le formulaire horizontalement */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ajoute une ombre pour un effet visuel */
+}
+
+.card-header {
+  background-color: #FF3131; /* Couleur d'arrière-plan du header */
+  color: white;
+  text-align: center;
+  font-weight: bold;
+  padding: 15px;
+}
+
+.btn-primary {
+  background-color: #FF3131;
+  border-color: #ff3131;
+  color: white;
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+}
+
+.btn-primary:hover {
+  background-color: #e65c00; /* Couleur de survol */
+}

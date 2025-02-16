@@ -6,8 +6,6 @@ use App\Models\Utilisateur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
-
-
 class UtilisateurController extends Controller
 {
     public function index()
@@ -43,6 +41,29 @@ class UtilisateurController extends Controller
         return response()->json($utilisateur, 201);
     }
 
+    public function show($id)
+    {
+        $utilisateur = Utilisateur::findOrFail($id);
+        return response()->json($utilisateur);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $utilisateur = Utilisateur::findOrFail($id);
+
+        $request->validate([
+            'nom' => 'required|string',
+            'prenom' => 'required|string',
+            'email' => 'required|email|unique:utilisateurs,email,' . $utilisateur->id,
+            'adresse' => 'required|string',
+            'telephone' => 'required|string|unique:utilisateurs,telephone,' . $utilisateur->id,
+            'role' => 'required|in:agent de sécurité,administrateur'
+        ]);
+
+        $utilisateur->update($request->all());
+
+        return response()->json($utilisateur);
+    }
 
     public function destroy($id)
     {
@@ -50,18 +71,12 @@ class UtilisateurController extends Controller
         return response()->json(['message' => 'Utilisateur supprimé']);
     }
 
-    
     public function destroyMultiple(Request $request)
     {
-        $ids = $request->input('ids'); // Liste des IDs envoyée
-    
-        // Supprimer les utilisateurs
+        $ids = $request->input('ids');
         Utilisateur::whereIn('id', $ids)->delete();
-        
         return response()->json(['message' => 'Utilisateurs supprimés']);
     }
-    
-    
 
     public function block($id)
     {
@@ -75,6 +90,4 @@ class UtilisateurController extends Controller
         Utilisateur::whereIn('id', $request->ids)->update(['status' => 'bloqué']);
         return response()->json(['message' => 'Utilisateurs bloqués']);
     }
-
-    
 }
