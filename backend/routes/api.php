@@ -28,3 +28,14 @@ Route::delete('/utilisateurs/{id}', [UtilisateurController::class, 'destroy']);
 Route::post('/utilisateurs/deleteMultiple', [UtilisateurController::class, 'destroyMultiple']);
 Route::put('/utilisateurs/block/{id}', [UtilisateurController::class, 'block']);
 Route::put('/utilisateurs/block-multiple', [UtilisateurController::class, 'blockMultiple']);
+
+Route::post('/utilisateurs/authenticate', [UtilisateurController::class, 'authenticate']);
+// Route fallback pour les endpoints inexistants
+Route::fallback(function(){
+    return response()->json([
+        'success' => false,
+        'message' => 'Endpoint non trouvé',
+        'errors' => ['url' => 'URL invalide ou non prise en charge']
+    ], 404);
+});
+Route::post('/utilisateurs', [UtilisateurController::class, 'store']);

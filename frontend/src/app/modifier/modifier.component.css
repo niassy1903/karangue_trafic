@@ -6,6 +6,7 @@
     padding: 20px;
     transition: margin-left 0.3s;
     box-sizing: border-box;
+    margin-top: 70px; /* Correspond à la hauteur du navbar */
   }
   .dashboard-container {
     flex: 1;
@@ -15,3 +16,4 @@
     padding: 20px;
     width: 100%; /* Assure que le conteneur prend toute la largeur disponible */
   }
+  

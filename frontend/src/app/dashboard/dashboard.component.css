@@ -1,16 +1,34 @@
+/* Supprimez margin-left de .main-content */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  transition: margin-left 0.3s;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+/* Ajoutez ces règles pour la sidebar et le contenu principal */
 .dashboard-layout {
   display: flex;
   min-height: 100vh;
 }
 
-.main-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  margin-left: 400px; /* Ajoute une marge pour éviter le chevauchement avec la sidebar */
-  padding: 20px;
-  transition: margin-left 0.3s; /* Ajoute une transition pour la marge */
+app-sidebar {
+  position: fixed;
+  left: 0;
+  height: 100vh;
+  width: 400px; /* Ajustez selon la largeur de votre sidebar */
+  z-index: 1000;
 }
+
+/* Ajustez le contenu principal pour la sidebar fixe */
+.main-content {
+  margin-left: 400px; /* Même valeur que la largeur de la sidebar */
+  width: calc(100% - 400px);
+}
+
 
 .dashboard-container {
   flex: 1;
@@ -18,6 +36,9 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+  
+  /* Ajoutez cette marge */
+  margin-top: 70px; /* Correspond à la hauteur du navbar */
 }
 
 .profile-pic {
@@ -83,8 +104,20 @@
   font-weight: bold;
 }
 
+.see-more {
+  background-color: #FF3131;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin-top: 20px;
+  border-radius: 10px;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
+  .dashboard-container {
+    margin-top: 100px; /* Plus d'espace sur mobile */
+  }
   .main-content {
     margin-left: 80px; /* Réduit la marge pour correspondre à la largeur de la sidebar */
   }
@@ -100,100 +133,4 @@
   .stats-section {
       flex-direction: column;
   }
-}
-
-/*Style du Navbar*/
-
-.navbar {
-  background-color: #FF3131;
-  padding: 15px 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.search-bar {
-  padding: 10px;
-  border: 2px solid #fff;
-  border-radius: 20px;
-  width: 200px;
-  font-size: 16px;
-  outline: none;
-}
-
-.search-bar::placeholder {
-  color: #FF3131;
-  opacity: 0.8;
-}
-
-.icons {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.profile {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.profile-pic {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.profile span {
-  color: white;
-  font-size: 16px;
-}
-
-.fas.fa-bell {
-  font-size: 24px;
-  color: white;
-  cursor: pointer;
-}
-
-
-
-.map-image {
-  width: 100%;
-  height: 300px;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-.alert-card:hover {
-  transform: translateX(5px);
-}
-
-.alert-info {
-  flex: 1;
-}
-
-.alert-card i {
-  font-size: 24px;
-  color: #FF3131;
-  position: absolute;
-  right: 20px;
-}
-
-.see-more {
-  background-color: #FF3131;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  margin-top: 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  position: absolute;
-  right: 20px;
-  top: auto;
-}
-
-.see-more:hover {
-  background-color: #e66b00;
 }

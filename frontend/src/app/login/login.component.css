@@ -7,6 +7,27 @@ body, html {
     flex-direction: column;
 }
 
+
+/* Désactive les flèches pour les inputs number */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Améliore l'apparence sur mobile */
+input[inputmode="numeric"] {
+  caret-color: transparent; /* Masque le curseur */
+}
+
+.code-inputs input:focus {
+  caret-color: #FD7401; /* Réaffiche le curseur au focus */
+} 
+
 /* Ajustement principal pour rendre le layout flexible */
 .login-container {
     display: flex;
@@ -49,13 +70,21 @@ body, html {
     border: 2px solid #FD7401;
     border-radius: 10px;
     transition: all 0.3s ease-in-out;
+    user-select: text;
+    -webkit-user-select: text;
+    caret-color: #FD7401;
 }
 
+code-inputs input {
+    transition: transform 0.2s ease;
+}
 /* Effet au focus */
 .code-inputs input:focus {
     border-color: #413a31;
     outline: none;
     box-shadow: 0 0 5px rgba(255, 145, 0, 0.5);
+    transform: scale(1.05);
+
 }
 /* Partie droite (Avatar agrandi) */
 .right-side {
@@ -68,8 +97,8 @@ body, html {
 
 /* Rendre l'avatar plus flexible */
 .avatar {
-    width: 80%;
-    max-width: 600px;
+    width: 100%;
+    max-width: 1000px;
     border-radius: 50%;
 }
 
@@ -82,6 +111,7 @@ body, html {
     font-size: 16px;
     width: 100%;
 }
+
 
 /* ✅ Media Queries pour le Responsive */
 @media (max-width: 1024px) {
@@ -134,3 +164,4 @@ body, html {
         max-width: 250px;
     }
 }
+

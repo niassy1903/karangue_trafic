@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Utilisateur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Symfony\Component\Console\Input\Input;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Illuminate\Validation\ValidationException;
 
 class UtilisateurController extends Controller
 {
@@ -90,4 +94,72 @@ class UtilisateurController extends Controller
         Utilisateur::whereIn('id', $request->ids)->update(['status' => 'bloqué']);
         return response()->json(['message' => 'Utilisateurs bloqués']);
     }
+
+
+    //Fonction pour authentifier un utilisateur
+    public function authenticate(Request $request)
+    {
+        try {
+            $request->validate([
+                'code_secret' => 'required|integer|digits:4',
+            ], [
+                'code_secret.required' => 'Le code secret est obligatoire',
+                'code_secret.integer' => 'Le code secret doit être numérique',
+                'code_secret.digits' => 'Le code secret doit contenir exactement 4 chiffres',
+            ]);
+    
+            $codeSecret = $request->input('code_secret');
+            $utilisateur = Utilisateur::where('code_secret', $codeSecret)->first();
+    
+            if (!$utilisateur) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Identifiants invalides',
+                    'errors' => ['code_secret' => 'Code secret incorrect']
+                ], 401);
+            }
+    
+            try {
+                $token = JWTAuth::fromUser($utilisateur);
+                
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Connexion réussie',
+                    'token' => $token,
+                    'user' => [
+                        'id' => $utilisateur->id,
+                        'nom' => $utilisateur->nom
+                    ]
+                ], 200);
+    
+            } catch (JWTException $e) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Erreur technique',
+                    'errors' => ['server' => 'Impossible de générer le token']
+                ], 500);
+            }
+
+            
+    
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur de validation',
+                'errors' => $e->errors()
+            ], 422);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur serveur inattendue',
+                'errors' => ['server' => $e->getMessage()]
+            ], 500);
+        }
+    }
+    
+    
+
+    
+
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../navbar/navbar.component';
@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [SidebarComponent, CommonModule,NavbarComponent,FormsModule],
+  imports: [SidebarComponent, CommonModule, NavbarComponent, FormsModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
@@ -22,6 +22,16 @@ export class DashboardComponent {
     { nom: 'Mouhamad Diop', matricule: 'DK2547A', zone: 1, vitesse: 100 },
     { nom: 'Mouhamad Diop', matricule: 'DK2547A', zone: 1, vitesse: 100 }
   ];
+
+  @HostListener('window:scroll', ['$event'])
+  onWindowScroll(event: Event) {
+    const navbar = document.querySelector('.navbar');
+    if (window.scrollY > 20) {
+      navbar?.classList.add('scrolled');
+    } else {
+      navbar?.classList.remove('scrolled');
+    }
+  }
 
   voirPlus() {
     alert("Afficher plus d'alertes");
