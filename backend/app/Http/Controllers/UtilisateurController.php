@@ -90,4 +90,8 @@ class UtilisateurController extends Controller
         Utilisateur::whereIn('id', $request->ids)->update(['status' => 'bloqué']);
         return response()->json(['message' => 'Utilisateurs bloqués']);
     }
+
+    //pour se connecter avec code secret 
+
+    
 }

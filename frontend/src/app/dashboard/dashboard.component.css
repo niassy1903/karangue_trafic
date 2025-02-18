@@ -39,7 +39,7 @@
   width: 100%;
   padding: 20px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  border-left: 5px solid #FF3131;
+  border-left: 5px solid #fd7401;
   transition: transform 0.2s;
   position: relative;
 }
@@ -75,7 +75,7 @@
 .stat-card i {
   font-size: 48px;
   margin-bottom: 10px;
-  color: #FF3131;
+  color: #fd7401;
 }
 
 .stat-card span {
@@ -105,7 +105,7 @@
 /*Style du Navbar*/
 
 .navbar {
-  background-color: #FF3131;
+  background-color: #fd7401;
   padding: 15px 20px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   display: flex;
@@ -123,7 +123,7 @@
 }
 
 .search-bar::placeholder {
-  color: #FF3131;
+  color: #fd7401;
   opacity: 0.8;
 }
 
@@ -176,13 +176,13 @@
 
 .alert-card i {
   font-size: 24px;
-  color: #FF3131;
+  color: #fd7401;
   position: absolute;
   right: 20px;
 }
 
 .see-more {
-  background-color: #FF3131;
+  background-color: #fd7401;
   color: white;
   border: none;
   padding: 10px 20px;

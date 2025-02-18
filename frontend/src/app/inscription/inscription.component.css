@@ -24,7 +24,7 @@
 }
 
 .card-header {
-  background-color: #FF3131; /* Couleur d'arrière-plan du header */
+  background-color: #fd7401; /* Couleur d'arrière-plan du header */
   color: white;
   text-align: center;
   font-weight: bold;
@@ -32,8 +32,8 @@
 }
 
 .btn-primary {
-  background-color: #FF3131;
-  border-color: #ff3131;
+  background-color: #fd7401;
+  border-color: #fd7401;
   color: white;
   width: 100%;
   padding: 10px;
@@ -42,5 +42,5 @@
 }
 
 .btn-primary:hover {
-  background-color: #e65c00; /* Couleur de survol */
+  background-color: #fd7401; /* Couleur de survol */
 }
