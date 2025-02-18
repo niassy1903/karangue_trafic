@@ -9,6 +9,9 @@ use Symfony\Component\Console\Input\Input;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Validation\ValidationException;
+use App\Mail\ResetCodeMail;
+use Illuminate\Support\Facades\Mail;
+
 
 class UtilisateurController extends Controller
 {
@@ -84,16 +87,33 @@ class UtilisateurController extends Controller
 
     public function block($id)
     {
+        // Vérifier si l'utilisateur existe
         $utilisateur = Utilisateur::findOrFail($id);
-        $utilisateur->update(['status' => 'bloqué']);
-        return response()->json(['message' => 'Utilisateur bloqué']);
+    
+        // Basculer le statut de l'utilisateur
+        $nouveauStatut = ($utilisateur->status === 'actif') ? 'bloqué' : 'actif';
+        $utilisateur->update(['status' => $nouveauStatut]);
+    
+        // Retourner un message approprié
+        if ($nouveauStatut === 'bloqué') {
+            return response()->json(['message' => 'Utilisateur bloqué']);
+        } else {
+            return response()->json(['message' => 'Utilisateur débloqué']);
+        }
+    }
+    public function blockMultiple(Request $request)
+{
+    $ids = $request->input('ids');
+    $utilisateurs = Utilisateur::whereIn('id', $ids)->get();
+
+    foreach ($utilisateurs as $utilisateur) {
+        // Basculer le statut de chaque utilisateur
+        $nouveauStatut = ($utilisateur->status === 'actif') ? 'bloqué' : 'actif';
+        $utilisateur->update(['status' => $nouveauStatut]);
     }
 
-    public function blockMultiple(Request $request)
-    {
-        Utilisateur::whereIn('id', $request->ids)->update(['status' => 'bloqué']);
-        return response()->json(['message' => 'Utilisateurs bloqués']);
-    }
+    return response()->json(['message' => 'Statut des utilisateurs mis à jour']);
+}
 
 
     //Fonction pour authentifier un utilisateur
@@ -158,8 +178,60 @@ class UtilisateurController extends Controller
         }
     }
     
+    public function resetCodeSecret(Request $request)
+    {
+        // Valider l'email
+        $request->validate([
+            'email' => 'required|email',
+        ]);
     
+        // Vérifier si l'utilisateur existe
+        $utilisateur = Utilisateur::where('email', $request->email)->first();
+    
+        if (!$utilisateur) {
+            return response()->json(['message' => 'Email invalide ou inexistant.'], 404);
+        }
+    
+        // Vérifier si l'utilisateur est bloqué
+        if ($utilisateur->status === 'bloqué') {
+            return response()->json(['message' => 'Votre compte est bloqué. Vous ne pouvez pas réinitialiser votre code secret.'], 403);
+        }
+    
+        // Générer un nouveau code secret
+        $newCode = rand(1000, 9999);
+        $utilisateur->code_secret = $newCode;
+        $utilisateur->save();
+    
+        // Envoyer le nouveau code par email en texte brut
+        Mail::raw("Votre nouveau code secret est : $newCode", function ($message) use ($utilisateur) {
+            $message->to($utilisateur->email)
+                     ->subject('Votre nouveau code secret');
+        });
+    
+        return response()->json(['message' => 'Veuillez vérifier votre email pour obtenir votre nouveau code secret.']);
+    }
+    
+    public function assignerCarte(Request $request, $id)
+{
+    // Valider la requête pour s'assurer que l'ID de la carte est fourni
+    $request->validate([
+        'carte_id' => 'required|string',
+    ]);
 
-    
+    // Vérifier si l'utilisateur existe
+    $utilisateur = Utilisateur::findOrFail($id);
+
+    // Vérifier si l'utilisateur est bloqué
+    if ($utilisateur->status === 'bloqué') {
+        return response()->json(['message' => 'Vous ne pouvez pas assigner une carte à un utilisateur bloqué.'], 403);
+    }
+
+    // Mettre à jour la carte_id de l'utilisateur
+    $utilisateur->carte_id = $request->carte_id;
+    $utilisateur->save();
+
+    return response()->json(['message' => 'Carte assignée avec succès.']);
+}
+
 
 }

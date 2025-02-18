@@ -12,7 +12,7 @@ import { NavbarComponent } from '../navbar/navbar.component';
   templateUrl: './utilisateur.component.html',
   styleUrls: ['./utilisateur.component.css'],
   standalone: true,
-  imports: [CommonModule, HttpClientModule,SidebarComponent,NavbarComponent],
+  imports: [CommonModule, HttpClientModule, SidebarComponent, NavbarComponent],
   providers: [UtilisateurService],
 })
 export class UtilisateurComponent implements OnInit {
@@ -61,23 +61,34 @@ export class UtilisateurComponent implements OnInit {
   }
 
   blockUtilisateur(id: number): void {
+    const utilisateur = this.utilisateurs.find(u => u.id === id);
+
+    if (!utilisateur) {
+      console.error('Utilisateur non trouvé');
+      return;
+    }
+
+    const action = utilisateur.status === 'actif' ? 'bloquer' : 'débloquer';
+    const confirmText = action === 'bloquer' ? 'Oui, bloquez-le!' : 'Oui, débloquez-le!';
+    const successMessage = action === 'bloquer' ? 'L\'utilisateur a été bloqué.' : 'L\'utilisateur a été débloqué.';
+
     Swal.fire({
-      title: 'Êtes-vous sûr?',
-      text: 'Vous allez bloquer cet utilisateur!',
+      title: `Êtes-vous sûr?`,
+      text: `Vous allez ${action} cet utilisateur!`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Oui, bloquez-le!'
+      confirmButtonText: confirmText
     }).then((result) => {
       if (result.isConfirmed) {
         this.utilisateurService.blockUtilisateur(id).subscribe(
           response => {
-            Swal.fire('Bloqué!', 'L\'utilisateur a été bloqué.', 'success');
+            Swal.fire('Succès!', successMessage, 'success');
             this.getUtilisateurs();
           },
           error => {
-            console.error('Erreur lors du blocage de l\'utilisateur', error);
+            console.error('Erreur lors du changement de statut de l\'utilisateur', error);
           }
         );
       }
@@ -114,6 +125,36 @@ export class UtilisateurComponent implements OnInit {
     });
   }
 
+  blockMultipleUtilisateurs(): void {
+    if (this.selectedUsers.size === 0) {
+      Swal.fire('Aucun utilisateur sélectionné', '', 'warning');
+      return;
+    }
+
+    Swal.fire({
+      title: 'Êtes-vous sûr?',
+      text: 'Vous allez bloquer/débloquer les utilisateurs sélectionnés!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Oui, bloquez/débloquez-les!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.utilisateurService.blockMultipleUtilisateurs(Array.from(this.selectedUsers)).subscribe(
+          response => {
+            Swal.fire('Succès!', 'Les utilisateurs ont été bloqués/débloqués.', 'success');
+            this.getUtilisateurs();
+            this.selectedUsers.clear();
+          },
+          error => {
+            console.error('Erreur lors du changement de statut des utilisateurs', error);
+          }
+        );
+      }
+    });
+  }
+
   toggleSelection(id: number): void {
     if (this.selectedUsers.has(id)) {
       this.selectedUsers.delete(id);
@@ -122,12 +163,22 @@ export class UtilisateurComponent implements OnInit {
     }
   }
 
-  // Méthode pour rediriger vers le composant d'inscription
+  toggleSelectAll(): void {
+    if (this.selectedUsers.size === this.utilisateurs.length) {
+      this.selectedUsers.clear();
+    } else {
+      this.utilisateurs.forEach(utilisateur => this.selectedUsers.add(utilisateur.id));
+    }
+  }
+
+  isSelected(id: number): boolean {
+    return this.selectedUsers.has(id);
+  }
+
   redirectToInscription(): void {
     this.router.navigate(['/inscription']);
   }
 
-  // Méthode pour rediriger vers le composant de modification
   redirectToModifier(id: number): void {
     this.router.navigate(['/modifier', id]);
   }

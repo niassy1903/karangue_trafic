@@ -39,3 +39,8 @@ Route::fallback(function(){
     ], 404);
 });
 Route::post('/utilisateurs', [UtilisateurController::class, 'store']);
+
+
+Route::post('/utilisateurs/reset-code', [UtilisateurController::class, 'resetCodeSecret']);
+
+Route::put('/utilisateurs/{id}/assigner-carte', [UtilisateurController::class, 'assignerCarte']);

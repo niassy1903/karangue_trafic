@@ -67,4 +67,6 @@ export class UtilisateurService {
   blockMultipleUtilisateurs(ids: number[]): Observable<any> {
     return this.http.put(`${this.apiUrl}/block-multiple`, { ids });
   }
+
+  
 }
