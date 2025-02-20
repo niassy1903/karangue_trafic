@@ -14,13 +14,14 @@ import { NavbarComponent } from '../navbar/navbar.component';
   templateUrl: './inscription.component.html',
   styleUrls: ['./inscription.component.css'],
   standalone: true,
-  imports: [ReactiveFormsModule,CommonModule, HttpClientModule,SidebarComponent,NavbarComponent],
+  imports: [ReactiveFormsModule, CommonModule, HttpClientModule, SidebarComponent, NavbarComponent],
   providers: [UtilisateurService],
 })
 export class InscriptionComponent {
   inscriptionForm: FormGroup;
   submitted = false;
   errorMessages: { email?: string; telephone?: string } = {};
+  isConducteur = false; // Variable pour afficher le champ "Plaque d'immatriculation"
 
   constructor(
     private fb: FormBuilder,
@@ -33,7 +34,20 @@ export class InscriptionComponent {
       adresse: ['', Validators.required],
       telephone: ['', [Validators.required, Validators.pattern('^(70|77|76|75|78)[0-9]{7}$')]],
       email: ['', [Validators.required, Validators.email]],
-      role: ['', Validators.required]
+      role: ['', Validators.required],
+      plaque_immatriculation: ['']
+    });
+
+    // Écoute les changements du rôle pour afficher le champ "Plaque d'immatriculation"
+    this.inscriptionForm.get('role')?.valueChanges.subscribe(value => {
+      this.isConducteur = value === 'conducteur';
+
+      if (this.isConducteur) {
+        this.inscriptionForm.get('plaque_immatriculation')?.setValidators([Validators.required, Validators.maxLength(10)]);
+      } else {
+        this.inscriptionForm.get('plaque_immatriculation')?.clearValidators();
+      }
+      this.inscriptionForm.get('plaque_immatriculation')?.updateValueAndValidity();
     });
   }
 
@@ -50,7 +64,6 @@ export class InscriptionComponent {
     this.utilisateurService.createUtilisateur(this.inscriptionForm.value).subscribe(
       (response) => {
         Swal.fire('Succès', 'Utilisateur créé avec succès!', 'success').then(() => {
-          // Rediriger vers le composant UtilisateurComponent après le succès
           this.router.navigate(['/utilisateur']);
         });
         this.inscriptionForm.reset();

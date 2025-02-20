@@ -102,12 +102,12 @@ h2 {
 /* Style pour la table */
 .table {
   margin-bottom: 0;
-  border-radius: 30px;
+  
 }
 
 .table th, .table td {
   vertical-align: middle;
-  border-radius: 20px;
+  
 }
 
 /* Responsive */

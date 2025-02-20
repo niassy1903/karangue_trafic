@@ -93,26 +93,23 @@
             </table>
           </div><br>
 
-          <!-- Pagination -->
-          <nav aria-label="Page navigation">
-            <ul class="pagination justify-content-center">
-              <li class="page-item">
-                <a class="page-link text-orange" href="#">Précédente</a>
-              </li>
-              <li class="page-item">
-                <a class="page-link text-orange" href="#">1</a>
-              </li>
-              <li class="page-item">
-                <a class="page-link text-orange" href="#">2</a>
-              </li>
-              <li class="page-item">
-                <a class="page-link text-orange" href="#">3</a>
-              </li>
-              <li class="page-item">
-                <a class="page-link text-orange" href="#">Suivante</a>
-              </li>
-            </ul>
-          </nav>
+              <!-- Pagination -->
+          <div class="pagination-container d-flex justify-content-center">
+            <nav>
+              <ul class="pagination">
+                <li class="page-item" [class.disabled]="currentPage === 1">
+                  <a class="page-link" href="javascript:void(0)" (click)="changePage(currentPage - 1)">Précédent</a>
+                </li>
+                <li class="page-item" [class.active]="currentPage === (idx + 1)" *ngFor="let i of [].constructor(totalPages); let idx = index">
+                  <a class="page-link" href="javascript:void(0)" (click)="changePage(idx + 1)">{{ idx + 1 }}</a>
+                </li>
+                <li class="page-item" [class.disabled]="currentPage === totalPages">
+                  <a class="page-link" href="javascript:void(0)" (click)="changePage(currentPage + 1)">Suivant</a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+
         </div>
       </div>
     </div>

@@ -16,8 +16,12 @@ import { NavbarComponent } from '../navbar/navbar.component';
   providers: [UtilisateurService],
 })
 export class UtilisateurComponent implements OnInit {
-  utilisateurs: any[] = [];
+  allUtilisateurs: any[] = []; // Liste complète des utilisateurs
+  utilisateurs: any[] = []; // Liste paginée des utilisateurs
   selectedUsers: Set<number> = new Set();
+  currentPage: number = 1;
+  totalPages: number = 1;
+  itemsPerPage: number = 3; // Nombre d'éléments par page
 
   constructor(private utilisateurService: UtilisateurService, private router: Router) {}
 
@@ -28,12 +32,26 @@ export class UtilisateurComponent implements OnInit {
   getUtilisateurs(): void {
     this.utilisateurService.getUtilisateurs().subscribe(
       data => {
-        this.utilisateurs = data;
+        this.allUtilisateurs = data;
+        this.totalPages = Math.ceil(this.allUtilisateurs.length / this.itemsPerPage);
+        this.updatePaginatedList();
       },
       error => {
         console.error('Erreur lors de la récupération des utilisateurs', error);
       }
     );
+  }
+
+  updatePaginatedList(): void {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    this.utilisateurs = this.allUtilisateurs.slice(startIndex, startIndex + this.itemsPerPage);
+  }
+
+  changePage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.updatePaginatedList();
+    }
   }
 
   deleteUtilisateur(id: number): void {
@@ -61,7 +79,7 @@ export class UtilisateurComponent implements OnInit {
   }
 
   blockUtilisateur(id: number): void {
-    const utilisateur = this.utilisateurs.find(u => u.id === id);
+    const utilisateur = this.allUtilisateurs.find(u => u.id === id);
 
     if (!utilisateur) {
       console.error('Utilisateur non trouvé');

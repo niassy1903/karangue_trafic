@@ -6,7 +6,9 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
-        "guzzlehttp/guzzle": "^7.2",
+        "guzzlehttp/guzzle": "^7.9",
+        "infobip/infobip-api-php-client": "^4.0",
+        "laravel-notification-channels/twilio": "^3.4",
         "laravel/framework": "^10.10",
         "laravel/jetstream": "^4.3",
         "laravel/sanctum": "^3.3",
@@ -14,6 +16,7 @@
         "livewire/livewire": "^3.0",
         "mongodb/laravel-mongodb": "^5.1",
         "mongodb/mongodb": "^1.20",
+        "twilio/sdk": "^7.16",
         "tymon/jwt-auth": "^2.1"
     },
     "require-dev": {

@@ -38,6 +38,7 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('role');
     this.router.navigate(['/login']);
     clearTimeout(this.inactivityTimeout);
     window.removeEventListener('mousemove', this.resetInactivityTimer.bind(this));
@@ -51,9 +52,9 @@ export class AuthService {
   // auth.service.ts
   authenticate(codeSecret: string): Observable<any> {
     const code = parseInt(codeSecret, 10);
-    
+  
     if (isNaN(code)) {
-      return throwError(() => ({ 
+      return throwError(() => ({
         success: false,
         message: 'Code invalide',
         errors: { code_secret: 'Doit contenir uniquement des chiffres' }
@@ -62,34 +63,33 @@ export class AuthService {
   
     return this.http.post<any>(this.apiUrl, { code_secret: code }).pipe(
       tap(response => {
+        console.log("Réponse serveur :", response); // ✅ Ajoute ceci pour voir la réponse complète
+  
         if (response.token) {
           localStorage.setItem('token', response.token);
-          this.router.navigate(['/dashboard']);
+          localStorage.setItem('role', response.user.role); // Stocke le rôle
+          this.router.navigate(['/dashboard']).then(() => {
+            console.log("Redirection réussie vers /dashboard");
+          });
         }
       }),
       catchError(error => {
         console.error('Erreur complète:', error);
-        
-        let errorMessage = 'Erreur inconnue';
-        let errors = {};
-        
-        if (error.status === 0) {
-          errorMessage = 'Impossible de se connecter au serveur';
-        } else if (error.error) {
-          errorMessage = error.error.message || errorMessage;
-          errors = error.error.errors || {};
-        }
-  
-        return throwError(() => ({ 
+        return throwError(() => ({
           success: false,
-          message: errorMessage,
-          errors,
+          message: error.error?.message || 'Erreur inconnue',
+          errors: error.error?.errors || {},
           status: error.status
         }));
       })
     );
   }
-
+  
+  
+  // ✅ Ajoute cette méthode pour récupérer le rôle de l'utilisateur
+  getUserRole(): string | null {
+    return localStorage.getItem('role');
+  }
   getToken(): string | null {
     return localStorage.getItem('token');
   }

@@ -1,13 +1,16 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use MongoDB\Laravel\Eloquent\Model as Eloquent;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Auth\Authenticatable;
 
-class Utilisateur extends Eloquent implements JWTSubject
+class Utilisateur extends Eloquent implements JWTSubject, AuthenticatableContract
 {
-    use HasFactory;
+    use HasFactory, Authenticatable;
 
     protected $connection = 'mongodb';
     protected $collection = 'utilisateurs';
@@ -22,6 +25,7 @@ class Utilisateur extends Eloquent implements JWTSubject
         'matricule',
         'role',
         'carte_id',
+        'plaque_matriculation',
         'status'
     ];
 
@@ -33,5 +37,25 @@ class Utilisateur extends Eloquent implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    /**
+     * Get the name of the unique identifier for the user.
+     *
+     * @return string
+     */
+    public function getAuthIdentifierName()
+    {
+        return 'id'; // Assurez-vous que cela correspond à votre identifiant unique dans MongoDB
+    }
+
+    /**
+     * Get the password for the user.
+     *
+     * @return string
+     */
+    public function getAuthPassword()
+    {
+        return $this->password; // Assurez-vous que cela correspond à votre champ de mot de passe
     }
 }
