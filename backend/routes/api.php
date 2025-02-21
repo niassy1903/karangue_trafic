@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UtilisateurController;
+use App\Http\Controllers\HistoriqueController;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,7 +78,18 @@ Route::middleware(['isAdmin'])->group(function (){
 
     // Importe des utilisateurs depuis un fichier CSV
     Route::post('/utilisateurs/import', [UtilisateurController::class, 'importCsv']);
+
+    // Voir les logs de l'application
+    Route::get('/historiques', [HistoriqueController::class, 'index']);
+
+    //voir l'historique d'un utilisateur à partir de son id
+    Route::get('/historiques/{id}', [HistoriqueController::class, 'show']);
+
+ 
+
 });
+
+  
 
 // Authentifie un utilisateur (cette route ne nécessite pas d'être protégée par le middleware IsAdmin)
 Route::post('/utilisateurs/authenticate', [UtilisateurController::class, 'authenticate']);

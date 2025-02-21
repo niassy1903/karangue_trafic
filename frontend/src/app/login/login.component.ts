@@ -2,15 +2,13 @@ import { Component, ElementRef, QueryList, ViewChildren, HostListener, OnDestroy
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule,HttpClientModule],
+  imports: [CommonModule],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],
-  providers : [AuthService]
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnDestroy {
   @ViewChildren('input1, input2, input3, input4') inputs!: QueryList<ElementRef>;
@@ -19,8 +17,7 @@ export class LoginComponent implements OnDestroy {
   lockTime = 30;
   errorMessage = '';
   countdownInterval: any;
-  showForgotPassword = false;
-  email = '';
+  progress = 100;
 
   constructor(
     private authService: AuthService,
@@ -119,25 +116,39 @@ export class LoginComponent implements OnDestroy {
   private handleLoginError(error: any) {
     this.failedAttempts++;
     this.errorMessage = error.message || 'Code secret incorrect';
-
+    
     if (this.failedAttempts >= 3) {
       this.lockInputs();
+    } else {
+      this.errorMessage += ` (Tentatives restantes: ${3 - this.failedAttempts})`;
     }
-
+  
     this.resetInputs();
   }
 
   private lockInputs() {
     this.isLocked = true;
-    this.countdownInterval = setInterval(() => {
-      this.lockTime--;
-      if (this.lockTime <= 0) {
+    const startTime = Date.now();
+    const duration = 30 * 1000; // 30 secondes en millisecondes
+  
+    const updateProgress = () => {
+      const elapsed = Date.now() - startTime;
+      const remaining = duration - elapsed;
+      
+      if (remaining <= 0) {
+        this.progress = 100;
         clearInterval(this.countdownInterval);
         this.isLocked = false;
         this.lockTime = 30;
         this.failedAttempts = 0;
+      } else {
+        this.progress = (remaining / duration) * 100;
+        this.lockTime = Math.ceil(remaining / 1000);
       }
-    }, 1000);
+    };
+  
+    this.countdownInterval = setInterval(updateProgress, 50);
+    updateProgress(); // Appel initial
   }
 
   private resetInputs() {
@@ -153,6 +164,4 @@ export class LoginComponent implements OnDestroy {
       clearInterval(this.countdownInterval);
     }
   }
-
-  
 }
