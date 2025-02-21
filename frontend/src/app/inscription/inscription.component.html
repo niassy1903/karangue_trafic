@@ -15,7 +15,6 @@
         </div>
         <div class="card-body">
           <form [formGroup]="inscriptionForm" (ngSubmit)="onSubmit()">
-
             <div class="row g-3">
               <div class="col-md-6">
                 <label class="form-label">Prénom</label>
@@ -56,8 +55,16 @@
                 <option value="">Sélectionnez un rôle</option>
                 <option value="agent de sécurité">Agent de sécurité</option>
                 <option value="administrateur">Administrateur</option>
+                <option value="conducteur">Conducteur</option>
               </select>
               <div *ngIf="submitted && f['role'].errors" class="text-danger">Rôle requis</div>
+            </div>
+
+            <!-- Champ de Plaque d'immatriculation, affiché seulement si le rôle est "conducteur" -->
+            <div class="mt-2" *ngIf="isConducteur">
+              <label class="form-label">Plaque d'immatriculation</label>
+              <input formControlName="plaque_immatriculation" type="text" class="form-control" placeholder="Ex: AA-123-BB">
+              <div *ngIf="submitted && f['plaque_immatriculation'].errors" class="text-danger">Plaque requise (max 10 caractères)</div>
             </div>
 
             <div class="text-center mt-4">

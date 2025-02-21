@@ -149,6 +149,15 @@ code-inputs input {
     margin: 8px 0 0;
   }
 
+  .forgot-link {
+    color: orange; /* Définit la couleur du texte en orange */
+    text-decoration: none; /* Retire le surlignage par défaut */
+  }
+  
+  .forgot-link:hover {
+    text-decoration: none; /* Assure qu'il n'y a pas de surlignage au survol */
+  }
+  
 
 /* ✅ Media Queries pour le Responsive */
 @media (max-width: 1024px) {
@@ -201,4 +210,3 @@ code-inputs input {
         max-width: 250px;
     }
 }
-

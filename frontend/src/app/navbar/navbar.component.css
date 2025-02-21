@@ -1,123 +1,153 @@
+.dashboard-layout {
+  display: flex;
+  min-height: 100vh;
+  overflow-x: hidden; /* Empêche le défilement horizontal */
+}
 
-  
-  /*Style du Navbar*/
-  
-  .navbar {
-    background-color: #FD7401;
-    padding: 15px 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    
-    /* Ajoutez ces 3 lignes */
-    position: fixed;
-    top: 0;
-    z-index: 1000;
-    width: 76%;
-  }
-  
-  .search-bar {
-    padding: 10px;
-    border: 2px solid #fff;
-    border-radius: 20px;
-    width: 200px;
-    font-size: 16px;
-    outline: none;
-  }
-  
-  .search-bar::placeholder {
-    color: #FD7401;
-    opacity: 0.8;
-  }
-  
-  .icons {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-  
-  .profile {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-left: 400px; /* Ajustez selon la largeur de la sidebar */
+  padding: 20px;
+  transition: margin-left 0.3s;
+  box-sizing: border-box; /* Inclut les marges et les bordures dans la largeur totale */
+}
 
-  .navbar.scrolled {
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .profile-pic {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-  
-  .profile span {
-    color: white;
-    font-size: 16px;
-  }
-  
-  .fas.fa-bell {
-    font-size: 24px;
-    color: white;
-    cursor: pointer;
-  }
-  
-  
-  
-  .map-image {
-    width: 100%;
-    height: 400px;
-    object-fit: cover;
-    border-radius: 8px;
-  }
-  
-  .alert-card:hover {
-    transform: translateX(5px);
-  }
-  
-  .alert-info {
-    flex: 1;
-  }
-  
-  .alert-card i {
-    font-size: 24px;
-    color: #FD7401;
-    position: absolute;
-    right: 20px;
-  }
-  
-  .see-more {
-    background-color: #FD7401;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    margin-top: 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    position: absolute;
-    right: 20px;
-    top: auto;
+.dashboard-container {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto; /* Permet le défilement vertical si nécessaire */
+}
+
+.content-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap; /* Permet aux éléments de passer à la ligne si nécessaire */
+}
+
+.stats-section, .alerts-section {
+  flex: 1;
+  box-sizing: border-box; /* Inclut les marges et les bordures dans la largeur totale */
+}
+
+.map-image {
+  width: 100%;
+  height: auto; /* Ajuste automatiquement la hauteur pour maintenir les proportions */
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 80px; /* Réduit la marge pour correspondre à la largeur de la sidebar */
   }
 
-  .navbar.scrolled {
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  }
-  
-  .see-more:hover {
-    background-color: #e66b00;
+  .content-row {
+    flex-direction: column;
   }
 
-  @media (max-width: 768px) {
-    .navbar {
-      position: fixed;
-      width: calc(100% - 80px);
-      top: 0;
-    }
-    
-    .dashboard-container {
-      margin-top: 100px; /* Augmente la marge pour mobile */
-    }
+  .stats-section {
+    flex-direction: column;
   }
+}
+
+/*Style du Navbar*/
+
+.navbar {
+  background-color: #fd7401;
+  padding: 15px 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.search-bar {
+  padding: 10px;
+  border: 2px solid #fff;
+  border-radius: 20px;
+  width: 200px;
+  font-size: 16px;
+  outline: none;
+}
+
+.search-bar::placeholder {
+  color: #FF3131;
+  opacity: 0.8;
+}
+
+.icons {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile span {
+  color: white;
+  font-size: 16px;
+}
+
+.fas.fa-bell {
+  font-size: 24px;
+  color: white;
+  cursor: pointer;
+}
+
+
+
+.map-image {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.alert-card:hover {
+  transform: translateX(5px);
+}
+
+.alert-info {
+  flex: 1;
+}
+
+.alert-card i {
+  font-size: 24px;
+  color: #FD7401;
+  position: absolute;
+  right: 20px;
+}
+
+.see-more {
+  background-color: #FD7401;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin-top: 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  position: absolute;
+  right: 20px;
+  top: auto;
+}
+
+.see-more:hover {
+  background-color: #e66b00;
+}

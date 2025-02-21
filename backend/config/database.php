@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'mysql'),
+    'default' => env('DB_CONNECTION', 'mongodb'),
 
     /*
     |--------------------------------------------------------------------------
@@ -33,15 +33,24 @@ return [
     |
     */
 
-   'connections' => [
-    'mongodb' => [
-        'driver'   => 'mongodb',
-        'dsn'      => env('DB_DSN', 'mongodb://127.0.0.1:27017'),
-        'database' => env('DB_DATABASE', 'karangue_trafic'),
-    ],
+    'connections' => [
+        // Autres connexions...
+    
+        'mongodb' => [
+            'driver'   => 'mongodb',
+            'host'     => env('MONGO_DB_HOST', '127.0.0.1'),
+            'port'     => env('MONGO_DB_PORT', 27017),
+            'database' => env('MONGO_DB_DATABASE'),
+            'username' => env('MONGO_DB_USERNAME'),
+            'password' => env('MONGO_DB_PASSWORD'),
+            'options'  => [
+                'database' => env('MONGO_DB_DATABASE'), // spécifier la base de données
+            ],
+        ],
+    
 
 
-        'mysql' => [
+        /*'mysql' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
@@ -59,7 +68,7 @@ return [
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
-        ],
+        ],*/
 
         'pgsql' => [
             'driver' => 'pgsql',

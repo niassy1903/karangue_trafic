@@ -9,7 +9,7 @@
 
     <x-slot name="content">
         <h3 class="text-lg font-medium text-gray-900">
-            @if ($this->enabled)
+            @if ($enabled)
                 @if ($showingConfirmation)
                     {{ __('Finish enabling two factor authentication.') }}
                 @else
@@ -26,7 +26,7 @@
             </p>
         </div>
 
-        @if ($this->enabled)
+        @if ($enabled)
             @if ($showingQrCode)
                 <div class="mt-4 max-w-xl text-sm text-gray-600">
                     <p class="font-semibold">
@@ -39,12 +39,12 @@
                 </div>
 
                 <div class="mt-4 p-2 inline-block bg-white">
-                    {!! $this->user->twoFactorQrCodeSvg() !!}
+                    {!! auth()->user()->twoFactorQrCodeSvg() !!}
                 </div>
 
                 <div class="mt-4 max-w-xl text-sm text-gray-600">
                     <p class="font-semibold">
-                        {{ __('Setup Key') }}: {{ decrypt($this->user->two_factor_secret) }}
+                        {{ __('Setup Key') }}: {{ decrypt(auth()->user()->two_factor_secret) }}
                     </p>
                 </div>
 
@@ -69,7 +69,7 @@
                 </div>
 
                 <div class="grid gap-1 max-w-xl mt-4 px-4 py-4 font-mono text-sm bg-gray-100 rounded-lg">
-                    @foreach (json_decode(decrypt($this->user->two_factor_recovery_codes), true) as $code)
+                    @foreach (json_decode(decrypt(auth()->user()->two_factor_recovery_codes), true) as $code)
                         <div>{{ $code }}</div>
                     @endforeach
                 </div>
@@ -77,7 +77,7 @@
         @endif
 
         <div class="mt-5">
-            @if (! $this->enabled)
+            @if (! $enabled)
                 <x-confirms-password wire:then="enableTwoFactorAuthentication">
                     <x-button type="button" wire:loading.attr="disabled">
                         {{ __('Enable') }}

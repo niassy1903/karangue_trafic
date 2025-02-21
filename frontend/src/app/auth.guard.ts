@@ -7,14 +7,19 @@ import { AuthService } from './auth.service';
   providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
+
   constructor(private authService: AuthService, private router: Router) {}
 
   canActivate(): boolean {
-    if (!this.authService.isAuthenticated()) {
+    const isAuthenticated = this.authService.isAuthenticated();
+    const userRole = this.authService.getUserRole();
+
+    if (!isAuthenticated || userRole !== 'administrateur') {
       this.router.navigate(['/login']);
       return false;
     }
-    this.authService.initInactivityTimer();
+
+    this.authService.initInactivityTimer(); // Gérer l'inactivité
     return true;
   }
 }

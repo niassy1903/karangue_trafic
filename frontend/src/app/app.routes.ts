@@ -8,17 +8,16 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { AuthGuard } from './auth.guard';
 
-
-
 export const routes: Routes = [
+  { path: '', redirectTo: 'login', pathMatch: 'full' }, // Page par défaut
 
-
-  {path : 'utilisateur', component: UtilisateurComponent,canActivate: [AuthGuard] },// Protéger la route},
-  {path: 'dashboard', component: DashboardComponent,canActivate: [AuthGuard]},  // Protéger la route
-  {path : 'inscription', component : InscriptionComponent},
-  { path: 'modifier/:id', component: ModifierComponent },
-  {path:'login',component: LoginComponent},
-  {path:'accueil',component:DashboardComponent,canActivate: [AuthGuard]},
-  {path:'sidebar',component:SidebarComponent,canActivate: [AuthGuard]},
-  {path:'navbar',component: NavbarComponent,canActivate: [AuthGuard]},
+  { path: 'login', component: LoginComponent }, // Page de connexion
+  
+  { path: 'utilisateur', component: UtilisateurComponent, canActivate: [AuthGuard] },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
+  { path: 'inscription', component: InscriptionComponent, canActivate: [AuthGuard] },
+  { path: 'modifier/:id', component: ModifierComponent, canActivate: [AuthGuard] },
+  { path: 'accueil', component: DashboardComponent, canActivate: [AuthGuard] },
+  { path: 'sidebar', component: SidebarComponent, canActivate: [AuthGuard] },
+  { path: 'navbar', component: NavbarComponent, canActivate: [AuthGuard] },
 ];
