@@ -15,6 +15,8 @@
     <a class="menu-item" [class.active]="currentRoute === '/fines'" (click)="navigateTo('/fines')">
       <i class="fas fa-file-invoice-dollar"></i> Gestion des amendes
     </a>
+    <a class="menu-item" [class.active]="currentRoute === '/historique'" (click)="navigateTo('/infractions')">
+      <i class="fas fa-history"></i> Historique</a>
   </nav>
   
   <!-- Déconnexion -->

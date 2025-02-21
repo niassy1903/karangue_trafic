@@ -18,9 +18,9 @@ export class DashboardComponent {
 
   alerts = [
     { nom: 'Mouhamad Diop', matricule: 'DK2547A', zone: 1, vitesse: 100 },
-    { nom: 'Mouhamad Diop', matricule: 'DK2547A', zone: 1, vitesse: 100 },
-    { nom: 'Mouhamad Diop', matricule: 'DK2547A', zone: 1, vitesse: 100 },
-    { nom: 'Mouhamad Diop', matricule: 'DK2547A', zone: 1, vitesse: 100 }
+    { nom: 'Moustapha Dieng', matricule: 'DK2547A', zone: 1, vitesse: 100 },
+    { nom: 'Aly Gueye', matricule: 'DK2547A', zone: 1, vitesse: 100 },
+    { nom: 'Massamba Ndoye', matricule: 'DK2547A', zone: 1, vitesse: 100 }
   ];
 
   @HostListener('window:scroll', ['$event'])

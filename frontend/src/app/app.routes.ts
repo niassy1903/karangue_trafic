@@ -9,15 +9,16 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { AuthGuard } from './auth.guard';
 
 
+
 export const routes: Routes = [
 
 
-  {path : 'utilisateur', component: UtilisateurComponent},
-  {path: 'dashboard', component: DashboardComponent,canActivate: [AuthGuard] // Protéger la route
-  },  {path : 'inscription', component : InscriptionComponent},
+  {path : 'utilisateur', component: UtilisateurComponent,canActivate: [AuthGuard] },// Protéger la route},
+  {path: 'dashboard', component: DashboardComponent,canActivate: [AuthGuard]},  // Protéger la route
+  {path : 'inscription', component : InscriptionComponent},
   { path: 'modifier/:id', component: ModifierComponent },
   {path:'login',component: LoginComponent},
-  {path:'accueil',component:DashboardComponent},
-  {path:'sidebar',component:SidebarComponent},
-  {path:'navbar',component: NavbarComponent},
+  {path:'accueil',component:DashboardComponent,canActivate: [AuthGuard]},
+  {path:'sidebar',component:SidebarComponent,canActivate: [AuthGuard]},
+  {path:'navbar',component: NavbarComponent,canActivate: [AuthGuard]},
 ];

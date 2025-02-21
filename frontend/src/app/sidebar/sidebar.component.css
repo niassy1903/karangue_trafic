@@ -47,7 +47,7 @@
   
   .menu-item i {
     font-size: 20px;
-    color: #FF3131;
+    color: #FD7401;
   }
   
   .menu-item:hover,
@@ -63,7 +63,7 @@
   .logout-button {
     width: 100%;
     padding: 15px 20px;
-    background: #FF3131;
+    background: #FD7401;
     color: white;
     border: none;
     font-size: 16px;

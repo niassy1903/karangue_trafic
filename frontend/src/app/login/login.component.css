@@ -51,7 +51,7 @@ input[inputmode="numeric"] {
 /* Assurer que le logo s'adapte */
 .logo {
     width: 70%;
-    max-width: 300px;
+    max-width: 400px;
     margin-bottom: 20px;
 }
 /* Conteneur des champs de code */
@@ -111,6 +111,42 @@ code-inputs input {
     font-size: 16px;
     width: 100%;
 }
+
+/* Message d'erreur en rouge */
+.error-message {
+    color: red;
+    margin: 15px 0;
+    min-height: 20px;
+    font-weight: regular;
+  }
+  
+  /* Conteneur de la barre de progression */
+  .progress-container {
+    width: 80%;
+    height: 10px;
+    background-color: #ffe0cc;
+    border-radius: 5px;
+    overflow: hidden;
+    margin: 10px auto;
+  }
+  
+  /* Barre de progression animée */
+  .progress-bar {
+    height: 100%;
+    background-color: #FD7401;
+    transition: width 0.5s linear;
+  }
+  
+  /* Message de blocage */
+  .lock-message {
+    text-align: center;
+    color: #FD7401;
+    margin-top: 15px;
+  }
+  
+  .lock-message p {
+    margin: 8px 0 0;
+  }
 
 
 /* ✅ Media Queries pour le Responsive */

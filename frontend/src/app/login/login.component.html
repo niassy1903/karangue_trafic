@@ -53,11 +53,14 @@
     </div>
     
     <div class="error-message">{{errorMessage}}</div>
-    @if (isLocked) {
-      <div class="lock-message">
-        Compte bloqué pendant {{lockTime}} secondes
-      </div>
-    }
+@if (isLocked) {
+  <div class="lock-message">
+    <div class="progress-container">
+      <div class="progress-bar" [style.width.%]="progress"></div>
+    </div>
+    <p>Compte bloqué pendant {{lockTime}} secondes</p>
+  </div>
+}
     <a href="#" class="forgot-link">Code secret oublié</a>
   </div>
 

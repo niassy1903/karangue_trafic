@@ -3,7 +3,7 @@
   /*Style du Navbar*/
   
   .navbar {
-    background-color: #FF3131;
+    background-color: #FD7401;
     padding: 15px 20px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     display: flex;
@@ -27,7 +27,7 @@
   }
   
   .search-bar::placeholder {
-    color: #FF3131;
+    color: #FD7401;
     opacity: 0.8;
   }
   
