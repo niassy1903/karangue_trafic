@@ -1,11 +1,27 @@
-<!-- navbar.component.html -->
-<nav class="navbar">
-    <input type="text" placeholder="Rechercher..." class="search-bar">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <input type="text" placeholder="Rechercher..." class="form-control search-bar">
     <div class="icons">
-      <i class="fas fa-bell"></i>
+      <i class="fas fa-bell" (click)="markAsRead()"></i>
+      <span class="badge bg-danger" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+
       <div class="profile">
         <img src="avatarUser.png" alt="Admin" class="profile-pic">
         <span>Admin</span>
       </div>
     </div>
-  </nav>
+  </div>
+</nav>
+
+<!-- Notification temporaire -->
+<div *ngIf="temporaryNotification" class="temporary-notification">
+  🚨 {{ temporaryNotification.message }} ({{ temporaryNotification.plaque }}) à {{ temporaryNotification.heure }}
+</div>
+
+<!-- Liste des notifications permanentes -->
+<ul class="list-group" *ngIf="permanentNotifications.length > 0">
+  <li *ngFor="let notif of permanentNotifications" class="list-group-item">
+    🚨 {{ notif.message }} ({{ notif.plaque }}) à {{ notif.heure }}
+    <button (click)="transferNotification()">Transférer</button>
+  </li>
+</ul>

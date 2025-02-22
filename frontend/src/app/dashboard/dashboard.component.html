@@ -1,52 +1,78 @@
-<div class="dashboard-layout">
-    <app-sidebar></app-sidebar>
-  
-    <div class="main-content">
+<div class="container-fluid">
+  <div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-3 col-lg-2">
+      <app-sidebar></app-sidebar>
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-md-9 col-lg-10">
       <app-navbar></app-navbar>
-  
+
       <!-- Dashboard Content -->
-      <div class="dashboard-container">
+      <div class="container mt-4">
         <!-- Carte Map -->
-        <div class="map-section">
-          <img src="map.png" alt="Carte" class="map-image">
+        <div class="card mb-4">
+          <img src="map.png" class="card-img-top" alt="Carte">
         </div>
-  
-        <!-- Nouvelle section combinée -->
-        <div class="content-row">
-            <!-- Statistiques -->
-            <div class="stats-section">
-              <div class="stat-card">
-                <h3>Total Infractions</h3>
-                <i class="fas fa-car-crash"></i>
-                <span>{{ totalInfractions }}</span>
+
+        <!-- Row for Infractions and Alerts -->
+        <div class="row">
+          <!-- Colonne Gauche : Infractions et Historique -->
+          <div class="col-md-8 d-flex flex-column">
+
+            <!-- Total Infractions -->
+            <div class="card card-infraction-chart">
+              <div class="card-body text-center">
+                <h3 class="card-title">Total Infractions</h3>
+                <i class="fas fa-car-crash fa-4x text-danger"></i>
+                <span class="fs-1">{{ totalInfractions }}</span>
               </div>
-              <div class="stat-card">
-                <h3>Administrateurs</h3>
-                <i class="fas fa-user-shield"></i>
-                <span>{{ totalAdmins }}</span>
-              </div>
-              <div class="stat-card">
-                <h3>Utilisateurs</h3>
-                <i class="fas fa-users"></i>
-                <span>{{ totalUsers }}</span>
+            </div><br>
+
+            <!-- Historique des Infractions -->
+            <div class="card flex-grow-1">
+              <div class="card-body">
+                <h3 class="card-title">Historique des infractions</h3>
+                <canvas #infractionChart></canvas>
               </div>
             </div>
-  
-            <!-- Liste des alertes -->
-            <div class="alerts-section">
-              <h3>Liste des alertes</h3>
-              <div class="alert-card" *ngFor="let alert of alerts">
-                <div class="alert-info">
-                  <strong>{{ alert.nom }}</strong>, {{ alert.matricule }}<br>
-                  <span>Zone {{ alert.zone }}</span>
-                  <p>Excès de vitesse {{ alert.vitesse }} km/h</p>
+          </div>
+
+          <!-- Colonne Droite : Liste des alertes -->
+          <div class="col-md-4">
+            <div class="card h-100 card-alerts">
+              <div class="card-body">
+                <h3 class="card-title">Liste des alertes</h3>
+                <div class="list-group">
+                  <div class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let alert of alerts">
+                    <div>
+                      <strong>{{ alert.nom }}</strong>, {{ alert.matricule }}<br>
+                      <span class="text-muted">Zone {{ alert.zone }}</span>
+                      <p class="mb-0">Excès de vitesse {{ alert.vitesse }} km/h</p>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                  </div>
                 </div>
-                <i class="fas fa-chevron-right"></i>
+                <!-- Pagination -->
+                <nav aria-label="Page navigation">
+                  <ul class="pagination justify-content-center">
+                    <li class="page-item" [class.disabled]="currentPage === 1">
+                      <a class="page-link" (click)="goToPage(currentPage - 1)">Précédent</a>
+                    </li>
+                    <li class="page-item" *ngFor="let page of pages" [class.active]="page === currentPage">
+                      <a class="page-link" (click)="goToPage(page)">{{ page }}</a>
+                    </li>
+                    <li class="page-item" [class.disabled]="currentPage === totalPages">
+                      <a class="page-link" (click)="goToPage(currentPage + 1)">Suivant</a>
+                    </li>
+                  </ul>
+                </nav>
               </div>
-              <button class="see-more" (click)="voirPlus()">Voir tout</button>
             </div>
-        </div>
-      </div>
+          </div>
+        </div> <!-- Fin Row -->
+      </div> <!-- Fin Container -->
     </div>
   </div>
-  
+</div>

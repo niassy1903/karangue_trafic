@@ -1,27 +1,41 @@
 <div class="sidebar">
-    <!-- Logo -->
-    <div class="logo-container">
-      <img src="logo.png" alt="Logo" class="logo">
-    </div>
-  
-<!-- Menu -->
-<nav class="menu">
+  <!-- Logo -->
+  <div class="logo-container">
+    <img src="logo.png" alt="Logo" class="logo">
+  </div>
+
+  <!-- Menu -->
+  <nav class="menu">
+    <!-- Accueil (visible pour tous) -->
     <a class="menu-item" [class.active]="currentRoute === '/accueil'" (click)="navigateTo('/accueil')">
       <i class="fas fa-home"></i> Accueil
     </a>
-    <a class="menu-item" [class.active]="currentRoute === '/utilisateur'" (click)="navigateTo('/utilisateur')">
+
+    <!-- Gestion des utilisateurs (administrateur uniquement) -->
+    <a *ngIf="isAdministrateur()" class="menu-item" [class.active]="currentRoute === '/utilisateur'" (click)="navigateTo('/utilisateur')">
       <i class="fas fa-users"></i> Gestion des utilisateurs
     </a>
-    <a class="menu-item" [class.active]="currentRoute === '/fines'" (click)="navigateTo('/fines')">
+
+    <!-- Gestion des amendes (agent de sécurité uniquement) -->
+    <a *ngIf="isAgentDeSecurite()" class="menu-item" [class.active]="currentRoute === '/amendes'" (click)="navigateTo('/amendes')">
       <i class="fas fa-file-invoice-dollar"></i> Gestion des amendes
     </a>
+
+    <!-- Historiques des amendes (agent de sécurité uniquement) -->
+    <a *ngIf="isAgentDeSecurite()" class="menu-item" [class.active]="currentRoute === '/historiques-amendes'" (click)="navigateTo('/historiques-amendes')">
+      <i class="fas fa-history"></i> Historiques des amendes
+    </a>
+
+    <!-- Historiques (administrateur uniquement) -->
+    <a *ngIf="isAdministrateur()" class="menu-item" [class.active]="currentRoute === '/historique'" (click)="navigateTo('/historique')">
+      <i class="fas fa-clipboard-list"></i> Historiques
+    </a>
   </nav>
-  
+
   <!-- Déconnexion -->
   <div class="logout-container">
     <button class="logout-button" (click)="logout()">
       <i class="fas fa-sign-out-alt"></i> Déconnexion
     </button>
   </div>
-  
-  
+</div>

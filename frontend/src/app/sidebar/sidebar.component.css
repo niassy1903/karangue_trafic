@@ -1,18 +1,18 @@
 .sidebar {
-  width: 400px;
+  width: 320px;
   height: 100vh;
   background: white;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding-top: 20px;
-  border-right: 5px solid #FD7401; /* Bordure à droite */
+  border-right: 5px solid #FD7401;
   box-shadow: 5px 0 10px rgba(0, 0, 0, 0.1);
-  position: fixed; /* Fixe la sidebar */
+  position: fixed;
   top: 0;
   left: 0;
-  overflow-y: auto; /* Permet le défilement si le contenu dépasse la hauteur */
-  transition: width 0.3s; /* Ajoute une transition pour la largeur */
+  overflow-y: auto;
+  transition: width 0.3s;
 }
 
 .logo-container {
@@ -21,7 +21,7 @@
 
 .logo {
   width: 300px;
-  transition: width 0.3s; /* Ajoute une transition pour la largeur du logo */
+  transition: width 0.3s;
 }
 
 .menu {
@@ -86,11 +86,11 @@
 /* Responsive */
 @media (max-width: 768px) {
   .sidebar {
-    width: 80px; /* Réduit la largeur de la sidebar */
+    width: 80px;
   }
 
   .logo {
-    width: 60px; /* Réduit la largeur du logo */
+    width: 60px;
   }
 
   .menu-item {
@@ -105,7 +105,7 @@
   }
 
   .menu-item span {
-    display: none; /* Cache le texte des éléments de menu */
+    display: none;
   }
 
   .logout-button {
@@ -120,6 +120,6 @@
   }
 
   .logout-button span {
-    display: none; /* Cache le texte du bouton de déconnexion */
+    display: none;
   }
 }

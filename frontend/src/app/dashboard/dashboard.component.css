@@ -7,6 +7,7 @@
   transition: margin-left 0.3s;
   height: 100vh;
   overflow-y: auto;
+  margin-top: 50px; /* Correspond à la hauteur du navbar */
 }
 
 /* Ajoutez ces règles pour la sidebar et le contenu principal */
@@ -48,6 +49,11 @@ app-sidebar {
   object-fit: cover;
 }
 
+.map-image {
+  width: 100%;
+  height: 400px;
+}
+
 .content-row {
   display: flex;
   gap: 20px;
@@ -60,7 +66,7 @@ app-sidebar {
   width: 100%;
   padding: 20px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  border-left: 5px solid #FF3131;
+  border-left: 5px solid #FD7401;
   transition: transform 0.2s;
   position: relative;
 }
@@ -87,6 +93,7 @@ app-sidebar {
   padding: 20px;
   box-shadow: 0 2px 5px rgba(194, 36, 36, 0.1);
   text-align: center;
+  border-bottom: 5px solid #FD7401;
 }
 
 .stat-card h3 {
@@ -96,7 +103,7 @@ app-sidebar {
 .stat-card i {
   font-size: 48px;
   margin-bottom: 10px;
-  color: #FF3131;
+  color: #FD7401;
 }
 
 .stat-card span {
@@ -105,7 +112,7 @@ app-sidebar {
 }
 
 .see-more {
-  background-color: #FF3131;
+  background-color: #FD7401;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -134,3 +141,61 @@ app-sidebar {
       flex-direction: column;
   }
 }
+
+
+/* Ajoutez des styles personnalisés si nécessaire */
+.text-danger {
+  color: #FF3131 !important;
+}
+
+.btn-danger {
+  background-color: #FF3131;
+  border-color: #FF3131;
+}
+
+/* Style pour le graphique */
+#infractionsChart {
+  max-height: 400px;
+}
+
+/* Ajoutez des styles personnalisés si nécessaire */
+.text-danger {
+  color: #FF3131 !important;
+}
+
+.btn-danger {
+  background-color: #FF3131;
+  border-color: #FF3131;
+}
+
+/* Style pour le graphique */
+#infractionsChart {
+  max-height: 400px;
+}
+
+/* Réduction de la hauteur de la carte */
+.card img.card-img-top {
+  height: 200px; /* Ajustez la hauteur selon vos préférences */
+  object-fit: cover;
+}
+
+/* Ajuster la hauteur des cartes */
+.card-total-infractions,
+.card-infraction-chart,
+.card-alerts {
+  height: 140px; /* Ajuste la hauteur selon tes préférences */
+  box-shadow: 0 4px 10px rgba(255, 165, 0, 0.8); /* Ombre orange */
+  border-radius: 8px;
+}
+
+/* Ajustement spécifique du canvas du graphique */
+.card-infraction-chart canvas {
+  max-height: 150px; /* Limite la hauteur du graphique */
+}
+
+/* Ajustement du contenu des alertes */
+.card-alerts .list-group {
+  max-height: 180px; /* Limite la hauteur de la liste */
+  overflow-y: auto; /* Ajoute un défilement si nécessaire */
+}
+
