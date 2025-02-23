@@ -118,4 +118,25 @@ export class AuthService {
     });
   }
 
+  resetCodeSecret(email: string): Observable<any> {
+    const url = 'http://127.0.0.1:8000/api/utilisateurs/reset-code';
+  
+    return this.http.post<any>(url, { email }).pipe(
+      tap(response => {
+        console.log("Réponse du serveur :", response);
+      }),
+      catchError(error => {
+        console.error('Erreur lors de la réinitialisation du code secret:', error);
+        return throwError(() => ({
+          success: false,
+          message: error.error?.message || 'Erreur inconnue',
+          errors: error.error?.errors || {},
+          status: error.status
+        }));
+      })
+    );
+  }
+  
+  
+
 }

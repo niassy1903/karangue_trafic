@@ -332,3 +332,7 @@ code-inputs input {
         max-width: 250px;
     }
 }
+
+.button-spacer {
+  margin-left: 10px; /* Ajustez la valeur selon l'espacement souhaité */
+}
