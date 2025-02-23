@@ -6,6 +6,8 @@ import { LoginComponent } from './login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { NavbarComponent } from './navbar/navbar.component';
+import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
+
 import { AuthGuard } from './auth.guard';
 
 export const routes: Routes = [
@@ -20,4 +22,5 @@ export const routes: Routes = [
   { path: 'accueil', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'sidebar', component: SidebarComponent, canActivate: [AuthGuard] },
   { path: 'navbar', component: NavbarComponent, canActivate: [AuthGuard] },
+  { path: 'admin-dashboard', component: AdminDashboardComponent, canActivate: [AuthGuard] }
 ];

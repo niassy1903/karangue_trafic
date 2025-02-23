@@ -69,6 +69,10 @@ Route::middleware(['isAdmin'])->group(function (){
 
     // Compte le nombre d'administrateurs
     Route::get('/utilisateurs/administrateurs/count', [UtilisateurController::class, 'countAdministrateurs']);
+    // Compte le nombre d'agents de sécurité
+    Route::get('/utilisateurs/agents-securite/count', [UtilisateurController::class, 'countAgentsSecurite']);
+    // Compte le nombre de conducteurs
+    Route::get('/utilisateurs/conducteurs/count', [UtilisateurController::class, 'countConducteurs']);
 
     /*
     |--------------------------------------------------------------------------

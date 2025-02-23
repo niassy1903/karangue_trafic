@@ -1,0 +1,75 @@
+<div class="dashboard-layout">
+    <app-sidebar></app-sidebar>
+    <div class="main-content">
+      <app-navbar></app-navbar>
+      
+      <div class="dashboard-container">
+        <h1 class="dashboard-title">DASHBOARD</h1>
+        
+        <!-- Stats Cards -->
+        <div class="stats-cards">
+          <div class="stat-card" *ngFor="let card of statsCards">
+            <div class="stat-content">
+              <div class="stat-info">
+                <p class="stat-title">{{ card.title }}</p>
+                <p class="stat-count">{{ card.count }}</p>
+              </div>
+              <i class="fas {{ card.icon }} stat-icon"></i>
+            </div>
+          </div>
+        </div>
+  
+        <!-- History Section -->
+        <div class="history-section">
+          <div class="history-table">
+            <h2>Historique</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Matricule</th>
+                  <th>Prénom et Nom</th>
+                  <th>Date</th>
+                  <th>Heure</th>
+                  <th>Action</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of historyData">
+                  <td>{{ item.utilisateur.matricule }}</td>
+                  <td>{{ item.utilisateur.prenom }} {{ item.utilisateur.nom }}</td>
+                  <td>{{ item.date }}</td>
+                  <td>{{ item.heure }}</td>
+                  <td>{{ item.action }}</td>
+                  <td>
+                    <button (click)="deleteUtilisateur(item.utilisateur.id)">Supprimer</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            
+            <div class="pagination">
+              <button class="pagination-btn">Précédente</button>
+              <div class="page-numbers">
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+              </div>
+              <button class="pagination-btn">Suivante</button>
+            </div>
+          </div>
+          
+          
+        <div class="chart-section">
+          <!-- Nous utiliserons Chart.js ou NgxCharts ici -->
+           <app-pie-chart></app-pie-chart>
+        <!--  <div class="pie-chart">
+             Le composant de graphique sera inséré ici 
+            <p class="total-value">2065.01</p>
+          </div> -->
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

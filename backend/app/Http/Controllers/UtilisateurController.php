@@ -426,6 +426,32 @@ class UtilisateurController extends Controller
         return response()->json(['count' => $count]);
     }
 
+
+
+    /**
+ * Compte le nombre d'agents de sécurité.
+ *
+ * @return \Illuminate\Http\JsonResponse
+ */
+public function countAgentsSecurite()
+{
+    $count = Utilisateur::where('role', 'agent de sécurité')->count();
+    $this->logAction(auth()->id(), 'Comptage des agents de sécurité');
+    return response()->json(['count' => $count]);
+}
+
+/**
+ * Compte le nombre de conducteurs.
+ *
+ * @return \Illuminate\Http\JsonResponse
+ */
+public function countConducteurs()
+{
+    $count = Utilisateur::where('role', 'conducteur')->count();
+    $this->logAction(auth()->id(), 'Comptage des conducteurs');
+    return response()->json(['count' => $count]);
+}
+
     /**
      * Importe des utilisateurs à partir d'un fichier CSV.
      *

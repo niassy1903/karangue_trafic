@@ -14,7 +14,7 @@ export class AuthService {
   private apiUrl = 'http://127.0.0.1:8000/api/utilisateurs/authenticate';
 
    private inactivityTimeout: any;
-  private readonly TIMEOUT_DURATION = 3 * 60 * 1000; // 3 minutes
+  private readonly TIMEOUT_DURATION = 10 * 60 * 1000; // 3 minutes
 
   constructor(private http: HttpClient, private router: Router, private ngZone: NgZone) {}
 
@@ -105,4 +105,5 @@ export class AuthService {
       'Content-Type': 'application/json'
     });
   }
+
 }

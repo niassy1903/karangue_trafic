@@ -24,6 +24,16 @@ export class UtilisateurService {
     });
   }
 
+  // Méthodes pour récupérer les logs de l'historique
+  getHistoriques(): Observable<any> {
+    const headers = this.getAuthHeaders();
+    return this.http.get(`${this.apiUrl}/historiques`, { headers }).pipe(
+      catchError((error) => {
+        return throwError(error);
+      })
+    );
+  }
+
   // Récupérer tous les utilisateurs
   getUtilisateurs(): Observable<any> {
     const headers = this.getAuthHeaders();  // Ajoute les headers avec token
@@ -138,4 +148,58 @@ export class UtilisateurService {
   removeToken(): void {
     localStorage.removeItem('token');
   }
+
+
+
+  //Methode pour compter le nombre d'utilisateurs, d'administrateurs, d'agents de sécurité et de conducteurs
+
+ // Méthodes pour compter les utilisateurs, administrateurs, agents de sécurité et conducteurs
+ getTotalUsers(): Observable<any> {
+  const headers = this.getAuthHeaders();
+  return this.http.get(`${this.apiUrl}/users/count`, { headers }).pipe(
+    catchError((error) => {
+      return throwError(error);
+    })
+  );
+}
+
+getAdminCount(): Observable<any> {
+  const headers = this.getAuthHeaders();
+  return this.http.get(`${this.apiUrl}/administrateurs/count`, { headers }).pipe(
+    catchError((error) => {
+      return throwError(error);
+    })
+  );
+}
+
+getSecurityAgentsCount(): Observable<any> {
+  const headers = this.getAuthHeaders();
+  return this.http.get(`${this.apiUrl}/agents-securite/count`, { headers }).pipe(
+    catchError((error) => {
+      return throwError(error);
+    })
+  );
+}
+
+getDriversCount(): Observable<any> {
+  const headers = this.getAuthHeaders();
+  return this.http.get(`${this.apiUrl}/conducteurs/count`, { headers }).pipe(
+    catchError((error) => {
+      return throwError(error);
+    })
+  );
+}
+
+
+
+// Méthodes pour récupérer les logs de l'historique
+
+getHistoriqueById(id: string): Observable<any> {
+  const headers = this.getAuthHeaders();
+  return this.http.get(`${this.apiUrl}/${id}`, { headers }).pipe(
+    catchError((error) => {
+      return throwError(error);
+    })
+  );
+}
 }

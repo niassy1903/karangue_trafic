@@ -157,6 +157,128 @@ code-inputs input {
   .forgot-link:hover {
     text-decoration: none; /* Assure qu'il n'y a pas de surlignage au survol */
   }
+
+
+  /* Style pour la section de réinitialisation */
+.reset-form {
+    width: 80%;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
+  .email-input input {
+    width: 100%;
+    padding: 12px;
+    margin: 15px 0;
+    border: 2px solid #FD7401;
+    border-radius: 8px;
+    font-size: 16px;
+  }
+  
+  .reset-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+  }
+  
+  .submit-button {
+    background-color: #FD7401;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: opacity 0.3s;
+  }
+  
+  .submit-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  .resend-link {
+    color: #FD7401;
+    text-decoration: none;
+  }
+  
+  .back-link {
+    display: block;
+    margin-top: 20px;
+    color: #666;
+  }
+  
+  .password-reset {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.reset-message {
+  margin: 15px 0;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.text-success {
+  color: #28a745;
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+}
+
+.text-danger {
+  color: #dc3545;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+}
+
+.btn-primary {
+  background-color: #FD7401;
+  border-color: #FD7401;
+  margin: 15px 0;
+}
+
+.btn-primary:hover {
+  background-color: #e56700;
+  border-color: #e56700;
+}
+
+.btn-link {
+  color: #FD7401;
+}
+
+  /* Modal de succès */
+  .success-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+  }
+  
+  .modal-content i {
+    color: #4CAF50;
+    font-size: 50px;
+    margin-bottom: 15px;
+  }
   
 
 /* ✅ Media Queries pour le Responsive */
