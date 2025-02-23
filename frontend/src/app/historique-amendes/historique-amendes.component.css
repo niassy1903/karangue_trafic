@@ -1,0 +1,164 @@
+body {
+    background-color: #f8f9fa;
+  }
+  
+  .card {
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .table th, .table td {
+    vertical-align: middle;
+    text-align: center;
+  }
+  
+  .bg-custom-warning {
+    background-color: #fd7401; /* Couleur personnalisée pour l'en-tête */
+  }
+  
+  .btn-primary[disabled] {
+    background-color: #cccccc; /* Griser le bouton "Payer" */
+    border-color: #cccccc;
+    cursor: not-allowed;
+  }
+  
+  .page-item.active .page-link {
+    background-color: #ff9800;
+    border-color: #ff9800;
+  }
+  
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Assombrit l'arrière-plan */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    background: white;
+    width: 50%; /* Augmente la largeur du modal */
+    max-width: 600px; /* Limite la taille max */
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+  }
+  
+  .payment-options {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+  }
+  
+  .option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px; /* Espace entre l'image et le bouton */
+  }
+  
+  .option img {
+    width: 80px; /* Taille des icônes de paiement */
+    height: auto;
+  }
+  
+  .option button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  .wave-btn {
+    background-color: #0099ff;
+    color: white;
+  }
+  
+  .om-btn {
+    background-color: #ff6600;
+    color: white;
+  }
+  
+  .cash-btn {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .option button:hover {
+    opacity: 0.8;
+  }
+  
+  .btn-custom-orange {
+    background-color: #fd7401; /* Couleur orange personnalisée */
+    border-color: #fd7401;
+    color: white;
+  }
+  
+  .btn-custom-orange:hover {
+    background-color: #e06900; /* Couleur plus foncée pour l'effet de survol */
+    border-color: #e06900;
+  }
+  
+  .btn-custom-orange:disabled {
+    background-color: #cccccc; /* Griser le bouton lorsqu'il est désactivé */
+    border-color: #cccccc;
+    cursor: not-allowed;
+  }
+  
+  .text-custom-orange {
+    color: #fd7401; /* Couleur orange pour le texte */
+  }
+  
+  .page-item.active .page-link {
+    background-color: #fd7401;
+    border-color: #fd7401;
+    color: white;
+  }
+  
+  /* Style du Navbar */
+  .navbar {
+    background-color: #fd7401 !important;
+    padding: 15px 25px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 320px; /* Déplace la navbar vers la droite */
+    right: 0;
+    z-index: 1000;
+  }
+  
+  /* Style du Sidebar */
+  .sidebar {
+    width: 320px;
+    height: 100vh;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+    border-right: 5px solid #FD7401;
+    box-shadow: 5px 0 10px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+    transition: width 0.3s;
+  }
+  
+  /* Contenu principal */
+  .main-content {
+    margin-left: 340px; /* Ajusté pour tenir compte de la largeur du sidebar */
+    margin-top: 80px; /* Ajusté pour tenir compte de la hauteur du navbar */
+    padding: 20px;
+  }
+  

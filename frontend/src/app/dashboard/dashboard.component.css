@@ -141,3 +141,61 @@ app-sidebar {
       flex-direction: column;
   }
 }
+
+
+/* Ajoutez des styles personnalisés si nécessaire */
+.text-danger {
+  color: #FF3131 !important;
+}
+
+.btn-danger {
+  background-color: #FF3131;
+  border-color: #FF3131;
+}
+
+/* Style pour le graphique */
+#infractionsChart {
+  max-height: 400px;
+}
+
+/* Ajoutez des styles personnalisés si nécessaire */
+.text-danger {
+  color: #FF3131 !important;
+}
+
+.btn-danger {
+  background-color: #FF3131;
+  border-color: #FF3131;
+}
+
+/* Style pour le graphique */
+#infractionsChart {
+  max-height: 400px;
+}
+
+/* Réduction de la hauteur de la carte */
+.card img.card-img-top {
+  height: 200px; /* Ajustez la hauteur selon vos préférences */
+  object-fit: cover;
+}
+
+/* Ajuster la hauteur des cartes */
+.card-total-infractions,
+.card-infraction-chart,
+.card-alerts {
+  height: 140px; /* Ajuste la hauteur selon tes préférences */
+  box-shadow: 0 4px 10px rgba(255, 165, 0, 0.8); /* Ombre orange */
+  border-radius: 8px;
+}
+
+/* Ajustement spécifique du canvas du graphique */
+.card-infraction-chart canvas {
+  max-height: 150px; /* Limite la hauteur du graphique */
+}
+
+/* Ajustement du contenu des alertes */
+.card-alerts .list-group {
+  max-height: 180px; /* Limite la hauteur de la liste */
+  overflow-y: auto; /* Ajoute un défilement si nécessaire */
+}
+

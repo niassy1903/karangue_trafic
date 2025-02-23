@@ -114,3 +114,12 @@ Route::fallback(function(){
         'errors' => ['url' => 'URL invalide ou non prise en charge']
     ], 404);
 });
+
+
+use App\Http\Controllers\InfractionController;
+
+Route::post('/enregistrer-infraction', [InfractionController::class, 'enregistrerInfraction']);
+Route::post('/payer-amende/{id}', [InfractionController::class, 'payerAmende']);
+Route::get('/infractions-par-periode', [InfractionController::class, 'infractionsParPeriode']);
+Route::get('/toutes-infractions', [InfractionController::class, 'obtenirToutesInfractions']);
+Route::get('/infractions-avec-pagination', [InfractionController::class, 'obtenirInfractionsAvecPagination']);
