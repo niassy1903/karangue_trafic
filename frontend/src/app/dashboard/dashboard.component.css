@@ -30,16 +30,15 @@ app-sidebar {
   width: calc(100% - 400px);
 }
 
-
 .dashboard-container {
   flex: 1;
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  
+
   /* Ajoutez cette marge */
-  margin-top: 70px; /* Correspond à la hauteur du navbar */
+  margin-top: 90px; /* Correspond à la hauteur du navbar */
 }
 
 .profile-pic {
@@ -83,7 +82,6 @@ app-sidebar {
   flex: 1;
 }
 
-
 /* Ajustements des cartes */
 .stat-card {
   display: flex;
@@ -93,7 +91,7 @@ app-sidebar {
   padding: 20px;
   box-shadow: 0 2px 5px rgba(194, 36, 36, 0.1);
   text-align: center;
-  border-bottom: 5px solid #FD7401;
+  
 }
 
 .stat-card h3 {
@@ -103,7 +101,7 @@ app-sidebar {
 .stat-card i {
   font-size: 48px;
   margin-bottom: 10px;
-  color: #FD7401;
+ 
 }
 
 .stat-card span {
@@ -130,8 +128,6 @@ app-sidebar {
   }
 }
 
-
-/* Responsive */
 @media (max-width: 768px) {
   .content-row {
       flex-direction: column;
@@ -140,22 +136,6 @@ app-sidebar {
   .stats-section {
       flex-direction: column;
   }
-}
-
-
-/* Ajoutez des styles personnalisés si nécessaire */
-.text-danger {
-  color: #FF3131 !important;
-}
-
-.btn-danger {
-  background-color: #FF3131;
-  border-color: #FF3131;
-}
-
-/* Style pour le graphique */
-#infractionsChart {
-  max-height: 400px;
 }
 
 /* Ajoutez des styles personnalisés si nécessaire */
@@ -184,7 +164,7 @@ app-sidebar {
 .card-infraction-chart,
 .card-alerts {
   height: 140px; /* Ajuste la hauteur selon tes préférences */
-  box-shadow: 0 4px 10px rgba(255, 165, 0, 0.8); /* Ombre orange */
+  box-shadow: 0 4px 10px #FD7401; /* Ombre orange */
   border-radius: 8px;
 }
 
@@ -195,7 +175,10 @@ app-sidebar {
 
 /* Ajustement du contenu des alertes */
 .card-alerts .list-group {
-  max-height: 180px; /* Limite la hauteur de la liste */
-  overflow-y: auto; /* Ajoute un défilement si nécessaire */
+  max-height: 150px; /* Limite la hauteur de la liste */
 }
 
+.card.mb-4 {
+  height: auto; /* Ajuste automatiquement la hauteur */
+  padding: -10px;
+}

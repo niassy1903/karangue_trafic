@@ -9,6 +9,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { AuthGuard } from './auth.guard';
 import { AmendesComponent } from './amendes/amendes.component';
 import { HistoriqueAmendesComponent } from './historique-amendes/historique-amendes.component';
+import { MapComponent } from './map/map.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' }, // Page par défaut
@@ -23,5 +24,6 @@ export const routes: Routes = [
   { path: 'sidebar', component: SidebarComponent, canActivate: [AuthGuard] },
   { path: 'navbar', component: NavbarComponent, canActivate: [AuthGuard] },
   {path:'amendes',component:AmendesComponent,canActivate: [AuthGuard]},
-  {path:'historiques-amendes',component:HistoriqueAmendesComponent, canActivate :[AuthGuard]}
+  {path:'historiques-amendes',component:HistoriqueAmendesComponent, canActivate :[AuthGuard]},
+  {path:'map',component:MapComponent,canActivate: [AuthGuard]}
 ];

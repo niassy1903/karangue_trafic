@@ -11,9 +11,10 @@ export class InfractionService {
   constructor(private http: HttpClient) {}
 
   // Récupérer toutes les infractions
-  getAllInfractions(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/toutes-infractions`);
+  getAllInfractions(page: number, limit: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/toutes-infractions?page=${page}&limit=${limit}`);
   }
+  
 
   // Enregistrer une nouvelle infraction
   addInfraction(data: any): Observable<any> {

@@ -1,41 +1,45 @@
 <div class="sidebar">
-  <!-- Logo -->
-  <div class="logo-container">
-    <img src="logo.png" alt="Logo" class="logo">
+  <div class="logo">
+    <img src="logo.png" alt="Karangë Trafic">
   </div>
-
-  <!-- Menu -->
-  <nav class="menu">
+  <h3>DASHBOARD</h3>
+  <ul class="nav flex-column">
     <!-- Accueil (visible pour tous) -->
-    <a class="menu-item" [class.active]="currentRoute === '/accueil'" (click)="navigateTo('/accueil')">
-      <i class="fas fa-home"></i> Accueil
-    </a>
+    <li class="nav-item" [class.active]="currentRoute === '/accueil'">
+      <a class="nav-link" (click)="navigateTo('/accueil')">
+        <i class="fas fa-home"></i> Accueil
+      </a>
+    </li>
 
     <!-- Gestion des utilisateurs (administrateur uniquement) -->
-    <a *ngIf="isAdministrateur()" class="menu-item" [class.active]="currentRoute === '/utilisateur'" (click)="navigateTo('/utilisateur')">
-      <i class="fas fa-users"></i> Gestion des utilisateurs
-    </a>
+    <li class="nav-item" *ngIf="isAdministrateur()" [class.active]="currentRoute === '/utilisateur'">
+      <a class="nav-link" (click)="navigateTo('/utilisateur')">
+        <i class="fas fa-users"></i> Gestion des utilisateurs
+      </a>
+    </li>
 
     <!-- Gestion des amendes (agent de sécurité uniquement) -->
-    <a *ngIf="isAgentDeSecurite()" class="menu-item" [class.active]="currentRoute === '/amendes'" (click)="navigateTo('/amendes')">
-      <i class="fas fa-file-invoice-dollar"></i> Gestion des amendes
-    </a>
+    <li class="nav-item" *ngIf="isAgentDeSecurite()" [class.active]="currentRoute === '/amendes'">
+      <a class="nav-link" (click)="navigateTo('/amendes')">
+        <i class="fas fa-file-invoice-dollar"></i> Gestion des amendes
+      </a>
+    </li>
 
     <!-- Historiques des amendes (agent de sécurité uniquement) -->
-    <a *ngIf="isAgentDeSecurite()" class="menu-item" [class.active]="currentRoute === '/historiques-amendes'" (click)="navigateTo('/historiques-amendes')">
-      <i class="fas fa-history"></i> Historiques des amendes
-    </a>
+    <li class="nav-item" *ngIf="isAgentDeSecurite()" [class.active]="currentRoute === '/historiques-amendes'">
+      <a class="nav-link" (click)="navigateTo('/historiques-amendes')">
+        <i class="fas fa-history"></i> Historiques des amendes
+      </a>
+    </li>
 
     <!-- Historiques (administrateur uniquement) -->
-    <a *ngIf="isAdministrateur()" class="menu-item" [class.active]="currentRoute === '/historique'" (click)="navigateTo('/historique')">
-      <i class="fas fa-clipboard-list"></i> Historiques
-    </a>
-  </nav>
-
-  <!-- Déconnexion -->
-  <div class="logout-container">
-    <button class="logout-button" (click)="logout()">
-      <i class="fas fa-sign-out-alt"></i> Déconnexion
-    </button>
-  </div>
+    <li class="nav-item" *ngIf="isAdministrateur()" [class.active]="currentRoute === '/historique'">
+      <a class="nav-link" (click)="navigateTo('/historique')">
+        <i class="fas fa-clipboard-list"></i> Historiques
+      </a>
+    </li>
+  </ul>
+  <button class="btn btn-danger logout-btn" (click)="logout()">
+    <i class="fas fa-sign-out-alt"></i> Déconnexion
+  </button>
 </div>

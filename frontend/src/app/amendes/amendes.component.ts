@@ -20,22 +20,42 @@ export class AmendesComponent implements OnInit {
   currentInfractionId: number | null = null;
   currentPage: number = 1;
   totalPages: number = 1;
-  itemsPerPage: number = 10; // Nombre d'éléments par page
-  montant : string = '--';
+  itemsPerPage: number = 5; // Nombre d'éléments par page
+  totalInfractions: number = 0; // Total des infractions pour la pagination
+  montant: string = '--';
+  pages: number[] = []; // Tableau des numéros de pages
 
   constructor(private infractionService: InfractionService) {}
 
   ngOnInit(): void {
     this.loadInfractionsForPage(this.currentPage);
+    this.loadTotalInfractions(); // Charger le total des infractions
+  }
+
+  // Charger le total des infractions
+  loadTotalInfractions(): void {
+    this.infractionService.getAllInfractions(1, 10).subscribe(data => {
+      this.totalInfractions = data.data.length;
+      this.totalPages = Math.ceil(this.totalInfractions / this.itemsPerPage); // Calculer le nombre total de pages
+      this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1); // Générer les pages
+    });
   }
 
   // Charger les infractions pour une page spécifique
   loadInfractionsForPage(page: number): void {
-    this.infractionService.getAllInfractions().subscribe(response => {
+    this.infractionService.getAllInfractions(page, this.itemsPerPage).subscribe(response => {
       this.amendes = response.data;
-      this.totalPages = response.totalPages;
     });
   }
+
+  // Fonction pour changer de page
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.loadInfractionsForPage(this.currentPage);
+    }
+  }
+  
 
   // Payer une amende
   payAmende(id: number): void {

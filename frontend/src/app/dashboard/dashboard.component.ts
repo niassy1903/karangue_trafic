@@ -5,12 +5,13 @@ import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { FormsModule } from '@angular/forms';
 import { InfractionService } from '../infraction.service';
+import { MapComponent } from '../map/map.component';
 
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [SidebarComponent, CommonModule, NavbarComponent, FormsModule],
+  imports: [SidebarComponent, CommonModule, NavbarComponent, FormsModule,MapComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
   providers : [InfractionService]
@@ -23,7 +24,7 @@ export class DashboardComponent implements OnInit {
   alerts: any[] = [];
   currentPage = 1;
   totalPages = 1;
-  perPage = 10;
+  perPage = 5;
   pages: number[] = [];
 
   constructor(private infractionService: InfractionService) {}
@@ -35,7 +36,7 @@ export class DashboardComponent implements OnInit {
   }
 
   loadTotalInfractions() {
-    this.infractionService.getAllInfractions().subscribe(data => {
+    this.infractionService.getAllInfractions(1, 10).subscribe(data => {
       this.totalInfractions = data.data.length;
     });
   }
