@@ -30,10 +30,11 @@ export class InfractionService {
   getInfractionsByPeriod(periode: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/infractions-par-periode`, { params: { periode } });
   }
+
   getInfractionsWithPagination(page: number, perPage: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}/infractions-avec-pagination`, {
-      params: { page, per_page: perPage }
-    });
-  }
-  
+  return this.http.get(`${this.apiUrl}/infractions-avec-pagination`, {
+    params: { page, per_page: perPage }
+  });
+}
+
 }

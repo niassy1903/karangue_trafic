@@ -11,7 +11,7 @@ import { NavbarComponent } from '../navbar/navbar.component';
   templateUrl: './amendes.component.html',
   styleUrls: ['./amendes.component.css'],
   standalone: true,
-  imports: [CommonModule, HttpClientModule,SidebarComponent,NavbarComponent],
+  imports: [CommonModule, HttpClientModule, SidebarComponent, NavbarComponent],
   providers: [InfractionService]
 })
 export class AmendesComponent implements OnInit {
@@ -43,11 +43,15 @@ export class AmendesComponent implements OnInit {
 
   // Charger les infractions pour une page spécifique
   loadInfractionsForPage(page: number): void {
-    this.infractionService.getAllInfractions(page, this.itemsPerPage).subscribe(response => {
-      this.amendes = response.data;
+    this.infractionService.getInfractionsWithPagination(page, this.itemsPerPage).subscribe(response => {
+      console.log('Data received:', response); // Ajoutez ce log
+      this.amendes = response.data.data;
+      this.totalInfractions = response.data.total;
+      this.totalPages = response.data.last_page;
+      this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
     });
   }
-
+  
   // Fonction pour changer de page
   goToPage(page: number): void {
     if (page >= 1 && page <= this.totalPages) {
@@ -55,7 +59,6 @@ export class AmendesComponent implements OnInit {
       this.loadInfractionsForPage(this.currentPage);
     }
   }
-  
 
   // Payer une amende
   payAmende(id: number): void {
@@ -72,14 +75,6 @@ export class AmendesComponent implements OnInit {
   // Fonction pour fermer le modal
   closeModal(): void {
     this.showModal = false;
-  }
-
-  // Fonction pour changer de page
-  changePage(page: number): void {
-    if (page >= 1 && page <= this.totalPages) {
-      this.currentPage = page;
-      this.loadInfractionsForPage(this.currentPage);
-    }
   }
 
   showWavePayment(id: number): void {

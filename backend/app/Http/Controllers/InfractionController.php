@@ -83,11 +83,13 @@ class InfractionController extends Controller
     }
 
     public function obtenirInfractionsAvecPagination(Request $request)
-{
-    $perPage = $request->query('per_page', 10); // Nombre d'éléments par page
-    $infractions = Infraction::orderBy('created_at', 'desc')->paginate($perPage);
-
-    return response()->json(['data' => $infractions]);
-}
+    {
+        $perPage = $request->query('per_page', 10); // Nombre d'éléments par page
+        $page = $request->query('page', 1); // Page actuelle
+        $infractions = Infraction::orderBy('created_at', 'desc')->paginate($perPage, ['*'], 'page', $page);
+    
+        return response()->json(['data' => $infractions]);
+    }
+    
 
 }

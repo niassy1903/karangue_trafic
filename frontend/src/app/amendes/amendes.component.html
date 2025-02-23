@@ -51,26 +51,25 @@
         </div>
   
         <!-- Pagination -->
+        <!-- Pagination -->
         <div class="pagination-container d-flex justify-content-center mt-3">
-                    <!-- Pagination -->
             <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center">
+            <ul class="pagination justify-content-center">
                 <li class="page-item" [class.disabled]="currentPage === 1">
-                    <a class="page-link" (click)="goToPage(currentPage - 1)">Précédent</a>
+                <a class="page-link" (click)="goToPage(currentPage - 1)">Précédent</a>
                 </li>
-                
+        
                 <li class="page-item" *ngFor="let page of pages" [class.active]="page === currentPage">
-                    <a class="page-link" (click)="goToPage(page)">{{ page }}</a>
+                <a class="page-link" (click)="goToPage(page)">{{ page }}</a>
                 </li>
-                
+        
                 <li class="page-item" [class.disabled]="currentPage === totalPages">
-                    <a class="page-link" (click)="goToPage(currentPage + 1)">Suivant</a>
+                <a class="page-link" (click)="goToPage(currentPage + 1)">Suivant</a>
                 </li>
-                </ul>
+            </ul>
             </nav>
-  
-          </div>
-          
+        </div>
+        
       <!-- Fenêtre modale -->
       <div *ngIf="showModal" class="modal-overlay" (click)="closeModal()">
         <div class="modal-content" (click)="$event.stopPropagation()">

@@ -14,7 +14,7 @@ export class AuthService {
   private apiUrl = 'http://127.0.0.1:8000/api/utilisateurs/authenticate';
 
    private inactivityTimeout: any;
-  private readonly TIMEOUT_DURATION = 3 * 60 * 1000; // 3 minutes
+  private readonly TIMEOUT_DURATION = 10 * 60 * 1000; // 3 minutes
 
   constructor(private http: HttpClient, private router: Router, private ngZone: NgZone) {}
 
@@ -51,39 +51,51 @@ export class AuthService {
 
   // auth.service.ts
   authenticate(codeSecret: string): Observable<any> {
-    const code = parseInt(codeSecret, 10);
-  
-    if (isNaN(code)) {
-      return throwError(() => ({
-        success: false,
-        message: 'Code invalide',
-        errors: { code_secret: 'Doit contenir uniquement des chiffres' }
-      }));
-    }
-  
-    return this.http.post<any>(this.apiUrl, { code_secret: code }).pipe(
-      tap(response => {
-        console.log("Réponse serveur :", response); // ✅ Ajoute ceci pour voir la réponse complète
-  
-        if (response.token) {
-          localStorage.setItem('token', response.token);
-          localStorage.setItem('role', response.user.role); // Stocke le rôle
+  const code = parseInt(codeSecret, 10);
+
+  if (isNaN(code)) {
+    return throwError(() => ({
+      success: false,
+      message: 'Code invalide',
+      errors: { code_secret: 'Doit contenir uniquement des chiffres' }
+    }));
+  }
+
+  return this.http.post<any>(this.apiUrl, { code_secret: code }).pipe(
+    tap(response => {
+      console.log("Réponse serveur :", response); // ✅ Ajoute ceci pour voir la réponse complète
+
+      if (response.token) {
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('role', response.user.role); // Stocke le rôle
+
+        // ✅ Redirection en fonction du rôle
+        if (response.user.role === 'administrateur') {
+          this.router.navigate(['/admin-dashboard']).then(() => {
+            console.log("Redirection réussie vers /admin-dashboard");
+          });
+        } else if (response.user.role === 'agent de sécurité') {
           this.router.navigate(['/dashboard']).then(() => {
             console.log("Redirection réussie vers /dashboard");
           });
+        } else {
+          console.log("Rôle inconnu, redirection par défaut vers /dashboard");
+          this.router.navigate(['/dashboard']);
         }
-      }),
-      catchError(error => {
-        console.error('Erreur complète:', error);
-        return throwError(() => ({
-          success: false,
-          message: error.error?.message || 'Erreur inconnue',
-          errors: error.error?.errors || {},
-          status: error.status
-        }));
-      })
-    );
-  }
+      }
+    }),
+    catchError(error => {
+      console.error('Erreur complète:', error);
+      return throwError(() => ({
+        success: false,
+        message: error.error?.message || 'Erreur inconnue',
+        errors: error.error?.errors || {},
+        status: error.status
+      }));
+    })
+  );
+}
+
   
   
   // ✅ Ajoute cette méthode pour récupérer le rôle de l'utilisateur
@@ -105,4 +117,5 @@ export class AuthService {
       'Content-Type': 'application/json'
     });
   }
+
 }
