@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Infraction;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
+use App\Models\HistoriquePaiement;
 
 class InfractionController extends Controller
 
@@ -44,16 +45,34 @@ class InfractionController extends Controller
         return response()->json(['message' => 'Infraction enregistrée', 'data' => $infraction], 201);
     }
 
+    private function logPaiementAction($infractionId, $utilisateurId, $action)
+    {
+        $date = Carbon::now()->format('d/m/Y');
+        $heure = Carbon::now()->format('H:i');
+
+        HistoriquePaiement::create([
+            'infraction_id' => $infractionId,
+            'utilisateur_id' => $utilisateurId, // Enregistrer l'ID de l'utilisateur
+            'action' => $action,
+            'date' => $date,
+            'heure' => $heure,
+        ]);
+    }
+
     public function payerAmende(Request $request, $id)
     {
         $validatedData = $request->validate([
             'montant' => 'required|numeric',
+            'utilisateur_id' => 'required|string', // Ajoutez ce champ
         ]);
 
         $infraction = Infraction::findOrFail($id);
         $infraction->montant = $validatedData['montant'];
         $infraction->status = 'payé';
         $infraction->save();
+
+        // Enregistrer l'action de paiement dans les logs
+        $this->logPaiementAction($id, $validatedData['utilisateur_id'], 'Paiement enregistré');
 
         return response()->json(['message' => 'Paiement enregistré']);
     }

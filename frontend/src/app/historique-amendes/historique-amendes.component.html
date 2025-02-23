@@ -10,16 +10,16 @@
       <div class="card-body">
         <!-- Recherche par matricule -->
         <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text"><i class="fas fa-search"></i></span>
-            </div>
-            <input type="text" class="form-control" placeholder="Recherche par matricule" aria-label="Recherche par matricule">
-            <div class="input-group-append">
-              <button class="btn btn-outline-secondary" type="button">
-                <i class="fas fa-filter"></i>
-              </button>
-            </div>
+          <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
           </div>
+          <input type="text" class="form-control" placeholder="Recherche par matricule" aria-label="Recherche par matricule">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button">
+              <i class="fas fa-filter"></i>
+            </button>
+          </div>
+        </div>
 
         <!-- Tableau des historiques -->
         <table class="table table-striped table-bordered text-center">
@@ -36,7 +36,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let historique of historiques">
+            <tr *ngFor="let historique of historiques | paginate: { itemsPerPage: 10, currentPage: currentPage }">
               <td>
                 <input type="checkbox" [id]="historique.id">
               </td>

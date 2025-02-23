@@ -123,3 +123,8 @@ Route::post('/payer-amende/{id}', [InfractionController::class, 'payerAmende']);
 Route::get('/infractions-par-periode', [InfractionController::class, 'infractionsParPeriode']);
 Route::get('/toutes-infractions', [InfractionController::class, 'obtenirToutesInfractions']);
 Route::get('/infractions-avec-pagination', [InfractionController::class, 'obtenirInfractionsAvecPagination']);
+
+use App\Http\Controllers\HistoriquePaiementController;
+
+Route::get('/historique-paiements', [HistoriquePaiementController::class, 'index']);
+Route::get('/historique-paiements/{id}', [HistoriquePaiementController::class, 'show']);
