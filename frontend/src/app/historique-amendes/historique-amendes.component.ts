@@ -43,8 +43,8 @@ export class HistoriqueAmendesComponent implements OnInit {
       this.historiques = data.data.map((item: any) => ({
         id: item._id,
         plaque_matriculation: item.infraction.plaque_matriculation, 
-        prenom: item.utilisateur ? item.utilisateur.prenom : 'Inconnu', 
-        nom: item.utilisateur ? item.utilisateur.nom : 'Inconnu', 
+        prenom: item.utilisateur ? item.utilisateur.prenom : 'Agent', 
+        nom: item.utilisateur ? item.utilisateur.nom : 'sécurité', 
         date: item.date,
         heure: item.heure,
         action: item.action,

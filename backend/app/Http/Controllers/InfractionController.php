@@ -18,7 +18,7 @@ class InfractionController extends Controller
         return response()->json(['data' => $infractions]);
     }
 
-    
+
     public function enregistrerInfraction(Request $request)
     {
         $validatedData = $request->validate([
@@ -29,9 +29,9 @@ class InfractionController extends Controller
             'date' => 'required|date_format:d/m/Y',
             'heure' => 'required|date_format:H:i',
         ]);
-    
+
         $infraction = Infraction::create($validatedData);
-    
+
         // Envoyer la notification au serveur Node.js
         Http::post('http://localhost:3000/send-notification', [
             'message' => 'Nouvelle infraction détectée',
@@ -41,7 +41,7 @@ class InfractionController extends Controller
             'date' => $validatedData['date'],
             'heure' => $validatedData['heure'],
         ]);
-    
+
         return response()->json(['message' => 'Infraction enregistrée', 'data' => $infraction], 201);
     }
 
@@ -59,24 +59,37 @@ class InfractionController extends Controller
         ]);
     }
 
-    public function payerAmende(Request $request, $id)
-{
-    $validatedData = $request->validate([
-        'montant' => 'required|numeric',
-        'utilisateur_id' => 'required|string',
-        'agent_nom' => 'required|string' // Récupérer le nom de l'agent
-    ]);
+    public function payerAmende(Request $request, $id) {
+        $validatedData = $request->validate([
+            'montant' => 'required|numeric',
+            'utilisateur_id' => 'required|string',
+            'agent_nom' => 'nullable|string',
+            'agent_prenom' => 'nullable|string'
+        ]);
+        
+        $infraction = Infraction::findOrFail($id);
+        $infraction->montant = $validatedData['montant'];
+        $infraction->status = 'payé';
+        $infraction->save();
+        
+        // Créez directement l'historique avec les informations de l'agent
+        $date = Carbon::now()->format('d/m/Y');
+        $heure = Carbon::now()->format('H:i');
+        
+        HistoriquePaiement::create([
+            'infraction_id' => $id,
+            'utilisateur_id' => $validatedData['utilisateur_id'],
+            'action' => 'Paiement enregistré',
+            'date' => $date,
+            'heure' => $heure,
+            'agent_prenom' => $validatedData['agent_prenom'] ?? 'Agent',
+            'agent_nom' => $validatedData['agent_nom'] ?? 'Sécurité'
+        ]);
+        
+        return response()->json(['message' => 'Paiement enregistré']);
+    }
 
-    $infraction = Infraction::findOrFail($id);
-    $infraction->montant = $validatedData['montant'];
-    $infraction->status = 'payé';
-    $infraction->agent_nom = $validatedData['agent_nom']; // Stocker le nom
-    $infraction->save();
-
-    $this->logPaiementAction($id, $validatedData['utilisateur_id'], 'Paiement enregistré');
-
-    return response()->json(['message' => 'Paiement enregistré']);
-}
+    
 
     public function infractionsParPeriode(Request $request)
     {
@@ -107,9 +120,9 @@ class InfractionController extends Controller
         $perPage = $request->query('per_page', 10); // Nombre d'éléments par page
         $page = $request->query('page', 1); // Page actuelle
         $infractions = Infraction::orderBy('created_at', 'desc')->paginate($perPage, ['*'], 'page', $page);
-    
+
         return response()->json(['data' => $infractions]);
     }
-    
+
 
 }

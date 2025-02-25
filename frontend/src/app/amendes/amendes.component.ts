@@ -26,7 +26,7 @@ export class AmendesComponent implements OnInit {
   montant: string = '--';
   pages: number[] = []; // Tableau des numéros de pages
 
-  constructor(private infractionService: InfractionService) {}
+  constructor(public infractionService: InfractionService) {}
 
   ngOnInit(): void {
     this.loadInfractionsForPage(this.currentPage);
@@ -61,19 +61,25 @@ export class AmendesComponent implements OnInit {
     }
   }
 
-  // Payer une amende
+  // Fonction pour payer une amende
   payAmende(id: number, montant: number): void {
     this.infractionService.payAmende(id, montant).subscribe({
       next: () => {
         this.loadInfractionsForPage(this.currentPage);
+        Swal.fire('Succès', 'Le paiement a été effectué avec succès', 'success');
       },
       error: (err) => {
         console.error('Erreur de paiement:', err);
-        Swal.fire('Erreur', 'Le paiement a échoué', 'error');
+        if (err.status === 422) {
+          Swal.fire('Erreur', 'ID de l\'utilisateur non valide ou autre erreur de validation.', 'error');
+        } else {
+          Swal.fire('Erreur', 'Le paiement a échoué', 'error');
+        }
       }
     });
   }
-
+  
+  
   openModal(id: number): void {
     this.showModal = true;
     this.currentInfractionId = id; // Stockez l'ID de l'infraction actuelle
@@ -90,7 +96,7 @@ export class AmendesComponent implements OnInit {
       title: 'Paiement avec Wave',
       html: `
         <div style="text-align: center;">
-          <img src="wave_logo.png" alt="Wave" style="width: 100px; height: auto;">
+          <img src="wave_qr-1.png" alt="Wave" style="width: 100px; height: auto;">
           <input type="text" id="wave-input" class="swal2-input" placeholder="Saisir le montant...">
         </div>
       `,
