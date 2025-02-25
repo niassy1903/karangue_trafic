@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UtilisateurController;
 use App\Http\Controllers\HistoriqueController;
+use App\Http\Controllers\InfractionController;
+use App\Http\Controllers\HistoriquePaiementController;
 
 /*
 |--------------------------------------------------------------------------
@@ -103,6 +105,12 @@ Route::post('/utilisateurs/authenticate', [UtilisateurController::class, 'authen
 // Route pour la déconnexion
 Route::middleware('auth:utilisateur')->post('/utilisateurs/logout', [UtilisateurController::class, 'logout']);
 
+
+
+
+Route::post('/check-plate', [UtilisateurController::class, 'checkPlate']);
+
+
 /*
 |--------------------------------------------------------------------------
 | Route de secours pour les endpoints inexistants
@@ -118,10 +126,18 @@ Route::fallback(function(){
 });
 
 
-use App\Http\Controllers\InfractionController;
+// Routes pour la gestion des infractions
 
 Route::post('/enregistrer-infraction', [InfractionController::class, 'enregistrerInfraction']);
 Route::post('/payer-amende/{id}', [InfractionController::class, 'payerAmende']);
 Route::get('/infractions-par-periode', [InfractionController::class, 'infractionsParPeriode']);
 Route::get('/toutes-infractions', [InfractionController::class, 'obtenirToutesInfractions']);
 Route::get('/infractions-avec-pagination', [InfractionController::class, 'obtenirInfractionsAvecPagination']);
+
+
+
+
+
+// Routes pour la gestion des historiques de paiement
+Route::get('/historique-paiements', [HistoriquePaiementController::class, 'index']);
+Route::get('/historique-paiements/{id}', [HistoriquePaiementController::class, 'show']);

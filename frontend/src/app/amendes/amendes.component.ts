@@ -5,6 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 import Swal from 'sweetalert2';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { NavbarComponent } from '../navbar/navbar.component';
+import jsPDF from 'jspdf';
 
 @Component({
   selector: 'app-amendes',
@@ -25,7 +26,7 @@ export class AmendesComponent implements OnInit {
   montant: string = '--';
   pages: number[] = []; // Tableau des numéros de pages
 
-  constructor(private infractionService: InfractionService) {}
+  constructor(public infractionService: InfractionService) {}
 
   ngOnInit(): void {
     this.loadInfractionsForPage(this.currentPage);
@@ -60,13 +61,25 @@ export class AmendesComponent implements OnInit {
     }
   }
 
-  // Payer une amende
-  payAmende(id: number): void {
-    this.infractionService.payAmende(id, 35000).subscribe(() => {
-      this.loadInfractionsForPage(this.currentPage); // Recharger les infractions après le paiement
+  // Fonction pour payer une amende
+  payAmende(id: number, montant: number): void {
+    this.infractionService.payAmende(id, montant).subscribe({
+      next: () => {
+        this.loadInfractionsForPage(this.currentPage);
+        Swal.fire('Succès', 'Le paiement a été effectué avec succès', 'success');
+      },
+      error: (err) => {
+        console.error('Erreur de paiement:', err);
+        if (err.status === 422) {
+          Swal.fire('Erreur', 'ID de l\'utilisateur non valide ou autre erreur de validation.', 'error');
+        } else {
+          Swal.fire('Erreur', 'Le paiement a échoué', 'error');
+        }
+      }
     });
   }
-
+  
+  
   openModal(id: number): void {
     this.showModal = true;
     this.currentInfractionId = id; // Stockez l'ID de l'infraction actuelle
@@ -83,7 +96,7 @@ export class AmendesComponent implements OnInit {
       title: 'Paiement avec Wave',
       html: `
         <div style="text-align: center;">
-          <img src="wave_logo.png" alt="Wave" style="width: 100px; height: auto;">
+          <img src="wave_qr-1.png" alt="Wave" style="width: 100px; height: auto;">
           <input type="text" id="wave-input" class="swal2-input" placeholder="Saisir le montant...">
         </div>
       `,
@@ -98,10 +111,7 @@ export class AmendesComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         // Appeler le service pour payer l'amende
-        this.infractionService.payAmende(id, parseFloat(result.value)).subscribe(() => {
-          Swal.fire('Paiement effectué', 'Le paiement a été enregistré avec succès.', 'success');
-          this.loadInfractionsForPage(this.currentPage); // Recharger les infractions après le paiement
-        });
+        this.payAmende(id, parseFloat(result.value));
       }
     });
   }
@@ -127,10 +137,7 @@ export class AmendesComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         // Appeler le service pour payer l'amende
-        this.infractionService.payAmende(id, parseFloat(result.value)).subscribe(() => {
-          Swal.fire('Paiement effectué', 'Le paiement a été enregistré avec succès.', 'success');
-          this.loadInfractionsForPage(this.currentPage); // Recharger les infractions après le paiement
-        });
+        this.payAmende(id, parseFloat(result.value));
       }
     });
   }
@@ -156,11 +163,40 @@ export class AmendesComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         // Appeler le service pour payer l'amende
-        this.infractionService.payAmende(id, parseFloat(result.value)).subscribe(() => {
-          Swal.fire('Paiement effectué', 'Le paiement a été enregistré avec succès.', 'success');
-          this.loadInfractionsForPage(this.currentPage); // Recharger les infractions après le paiement
-        });
+        this.payAmende(id, parseFloat(result.value));
       }
     });
   }
+
+
+  // Ajouter cette méthode dans la classe AmendesComponent
+generateFacture(amende: any): void {
+  const doc = new jsPDF();
+  
+  // Entête
+  doc.setFontSize(18);
+  doc.text('Facture d\'amende', 15, 20);
+  doc.setLineWidth(0.5);
+  doc.line(15, 25, 195, 25);
+
+  // Informations principales
+  doc.setFontSize(12);
+  doc.text(`Nom du conducteur: ${amende.prenom_conducteur} ${amende.nom_conducteur}`, 15, 35);
+  doc.text(`Matricule: ${amende.plaque_matriculation}`, 15, 45);
+  doc.text(`Montant: ${amende.montant} FCFA`, 15, 55);
+  doc.text(`Date: ${amende.date}`, 15, 65);
+  doc.text(`Heure: ${amende.heure}`, 15, 75);
+  
+  // Récupérer le nom de l'agent depuis le localStorage ou un service d'authentification
+  const agentName = localStorage.getItem('agentName') || 'Agent de sécurité';
+  doc.text(`Agent enregistreur: ${agentName}`, 15, 85);
+
+  // Signature
+  doc.setFontSize(10);
+  doc.text('Signature:', 15, 110);
+  doc.line(15, 115, 60, 115);
+
+  // Sauvegarder le PDF
+  doc.save(`facture_${amende.id}_${new Date().getTime()}.pdf`);
+}
 }

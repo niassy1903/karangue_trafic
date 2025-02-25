@@ -140,12 +140,12 @@ app-sidebar {
 
 /* Ajoutez des styles personnalisés si nécessaire */
 .text-danger {
-  color: #FF3131 !important;
+  color: #fd7401 !important;
 }
 
 .btn-danger {
-  background-color: #FF3131;
-  border-color: #FF3131;
+  background-color: #fd7401;
+  border-color: #fd7401;
 }
 
 /* Style pour le graphique */

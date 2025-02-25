@@ -7,18 +7,19 @@
       <!-- Navbar -->
       <app-navbar></app-navbar>
   
-      <div class="container mt-4">
+      <!-- Contenu Principal -->
+      <div class="dashboard-container container mt-4">
         <div class="card">
           <div class="card-header bg-custom-warning text-white text-center">
             <h4 class="mb-0">Historique des Amendes</h4>
           </div>
           <div class="card-body">
-            <!-- Recherche par matricule -->
+            <!-- Recherche par plaque_matriculation, prénom, nom -->
             <div class="input-group mb-3">
               <div class="input-group-prepend">
                 <span class="input-group-text"><i class="fas fa-search"></i></span>
               </div>
-              <input type="text" class="form-control" placeholder="Recherche par matricule" aria-label="Recherche par matricule">
+              <input type="text" class="form-control" placeholder="Recherche par plaque_matriculation, prénom, nom" aria-label="Recherche par plaque_matriculation, prénom, nom" (input)="onSearchChange($event)">
               <div class="input-group-append">
                 <button class="btn btn-outline-secondary" type="button">
                   <i class="fas fa-filter"></i>
@@ -33,7 +34,7 @@
                   <th>
                     <input type="checkbox" id="select-all">
                   </th>
-                  <th>Matricule</th>
+                  <th>Plaque d'immatriculation</th>
                   <th>Prénom et Nom</th>
                   <th>Date</th>
                   <th>Heure</th>
@@ -41,11 +42,11 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let historique of historiques">
+                <tr *ngFor="let historique of filteredHistoriques | paginate: { itemsPerPage: 10, currentPage: currentPage }">
                   <td>
                     <input type="checkbox" [id]="historique.id">
                   </td>
-                  <td>{{ historique.matricule }}</td>
+                  <td>{{ historique.plaque_matriculation }}</td>
                   <td>{{ historique.prenom }} {{ historique.nom }}</td>
                   <td>{{ historique.date }}</td>
                   <td>{{ historique.heure }}</td>
@@ -75,4 +76,3 @@
       </div>
     </div>
   </div>
-  

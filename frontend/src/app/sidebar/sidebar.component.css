@@ -10,7 +10,12 @@
 }
 
 .logo img {
-  width: 120px;
+  width: 200px; /* Augmentez la taille du logo */
+  transition: transform 0.3s; /* Ajoutez un effet de transition */
+}
+
+.logo img:hover {
+  transform: scale(1.1); /* Agrandit légèrement le logo au survol */
 }
 
 h3 {

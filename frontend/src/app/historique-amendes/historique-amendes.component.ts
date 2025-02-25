@@ -1,17 +1,21 @@
+import { Component, OnInit } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-import { Component } from '@angular/core';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { CommonModule } from '@angular/common';
+import { HistoriquePaiementService } from '../historique-paiement.service';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { AuthService } from '../auth.service'; // Assurez-vous d'importer AuthService
 
 interface Historique {
   id: string;
-  matricule: string;
+  plaque_matriculation: string;
   prenom: string;
   nom: string;
   date: string;
   heure: string;
   action: string;
+  montant: number;
 }
 
 @Component({
@@ -19,23 +23,63 @@ interface Historique {
   templateUrl: './historique-amendes.component.html',
   styleUrls: ['./historique-amendes.component.css'],
   standalone: true,
-  imports : [HttpClientModule,SidebarComponent,NavbarComponent,CommonModule]
+  imports: [HttpClientModule, SidebarComponent, NavbarComponent, CommonModule, NgxPaginationModule],
+  providers: [HistoriquePaiementService]
 })
-export class HistoriqueAmendesComponent {
-  // Données fictives
-  historiques: Historique[] = [
-    { id: '1', matricule: 'AA123CD', prenom: 'Jean', nom: 'Cooper', date: '21/09/2021', heure: '12:00', action: 'créer un utilisateur' },
-    { id: '2', matricule: 'BB456EF', prenom: 'Wade', nom: 'Warren', date: '05/07/2016', heure: '14:15', action: 'supprimer un utilisateur' },
-    { id: '3', matricule: 'CC789GH', prenom: 'Esther', nom: 'Howard', date: '09/08/2016', heure: '15:00', action: 'supprimer un utilisateur' },
-    { id: '4', matricule: 'DD234IJ', prenom: 'Cameron', nom: 'Williamson', date: '22/11/2012', heure: '15:45', action: 'supprimer un utilisateur' },
-    { id: '5', matricule: 'EE567KL', prenom: 'Brooklyn', nom: 'Simmons', date: '09/08/2016', heure: '10:00', action: 'supprimer un utilisateur' },
-    { id: '6', matricule: 'FF890MN', prenom: 'Leslie', nom: 'Alexander', date: '01/02/2017', heure: '16:03', action: 'mettre à jour un utilisateur' },
-    { id: '7', matricule: 'GG123OP', prenom: 'Jenny', nom: 'Wilson', date: '05/27/2015', heure: '18:09', action: 'bloquer un utilisateur' },
-    { id: '8', matricule: 'HH456PQ', prenom: 'Guy', nom: 'Hawkins', date: '08/02/2019', heure: '17:00', action: 'assigner une carte' }
-  ];
-
+export class HistoriqueAmendesComponent implements OnInit {
+  historiques: Historique[] = [];
+  filteredHistoriques: Historique[] = [];
   currentPage: number = 1;
-  totalPages: number = 4; // Exemple de nombre total de pages
+  totalPages: number = 1;
+  searchQuery: string = '';
+  prenom: string = '';
+  nom: string = '';
+
+  constructor(
+    private historiquePaiementService: HistoriquePaiementService,
+    private authService: AuthService // Injecter AuthService
+  ) {}
+
+  ngOnInit() {
+    this.loadUserInfo();
+    this.loadHistoriquePaiements();
+  }
+
+  loadUserInfo() {
+    this.prenom = this.authService.getUserPrenom() || 'Inconnu';
+    this.nom = this.authService.getUserNom() || 'Inconnu';
+  }
+
+  loadHistoriquePaiements() {
+    this.historiquePaiementService.getHistoriquePaiements().subscribe(data => {
+      this.historiques = data.data.map((item: any) => ({
+        id: item._id,
+        plaque_matriculation: item.infraction.plaque_matriculation,
+        prenom: this.prenom, // Utiliser le prénom de l'utilisateur connecté
+        nom: this.nom, // Utiliser le nom de l'utilisateur connecté
+        date: item.date,
+        heure: item.heure,
+        action: item.action,
+        montant: item.montant || 0 // Utilisation du montant si disponible
+      }));
+      this.filterHistoriques();
+    });
+  }
+
+  filterHistoriques() {
+    this.filteredHistoriques = this.historiques.filter(historique =>
+      historique.plaque_matriculation.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+      historique.prenom.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+      historique.nom.toLowerCase().includes(this.searchQuery.toLowerCase())
+    );
+    this.totalPages = Math.ceil(this.filteredHistoriques.length / 10);
+  }
+
+  onSearchChange(event: Event) {
+    const inputElement = event.target as HTMLInputElement;
+    this.searchQuery = inputElement.value;
+    this.filterHistoriques();
+  }
 
   changePage(page: number) {
     if (page >= 1 && page <= this.totalPages) {

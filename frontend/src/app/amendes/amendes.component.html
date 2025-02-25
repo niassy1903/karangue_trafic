@@ -19,6 +19,7 @@
                 <tr>
                   <th>Matricule</th>
                   <th>Conducteur</th>
+                  <th>Téléphone</th>
                   <th>Vitesse (km/h)</th>
                   <th>Date</th>
                   <th>Heure</th>
@@ -31,6 +32,7 @@
                 <tr *ngFor="let amende of amendes">
                   <td>{{ amende.plaque_matriculation }}</td>
                   <td>{{ amende.prenom_conducteur }} {{ amende.nom_conducteur }}</td>
+                  <td>{{ amende.telephone }}</td>
                   <td>{{ amende.vitesse }}</td>
                   <td>{{ amende.date }}</td>
                   <td>{{ amende.heure }}</td>
@@ -42,7 +44,16 @@
                     </span>
                   </td>
                   <td>
-                    <button class="btn btn-custom-orange" [disabled]="amende.status === 'payé'" (click)="openModal(amende.id)">Payer</button>
+                    <button *ngIf="amende.status !== 'payé'" 
+                            class="btn btn-custom-orange" 
+                            (click)="openModal(amende.id)">
+                      Payer
+                    </button>
+                    <button *ngIf="amende.status === 'payé'" 
+                            class="btn btn-info" 
+                            (click)="generateFacture(amende)">
+                      Reçu
+                    </button>
                   </td>
                 </tr>
               </tbody>
@@ -51,48 +62,45 @@
         </div>
   
         <!-- Pagination -->
-        <!-- Pagination -->
         <div class="pagination-container d-flex justify-content-center mt-3">
-            <nav aria-label="Page navigation">
+          <nav aria-label="Page navigation">
             <ul class="pagination justify-content-center">
-                <li class="page-item" [class.disabled]="currentPage === 1">
+              <li class="page-item" [class.disabled]="currentPage === 1">
                 <a class="page-link" (click)="goToPage(currentPage - 1)">Précédent</a>
-                </li>
-        
-                <li class="page-item" *ngFor="let page of pages" [class.active]="page === currentPage">
+              </li>
+              <li class="page-item" *ngFor="let page of pages" [class.active]="page === currentPage">
                 <a class="page-link" (click)="goToPage(page)">{{ page }}</a>
-                </li>
-        
-                <li class="page-item" [class.disabled]="currentPage === totalPages">
+              </li>
+              <li class="page-item" [class.disabled]="currentPage === totalPages">
                 <a class="page-link" (click)="goToPage(currentPage + 1)">Suivant</a>
-                </li>
+              </li>
             </ul>
-            </nav>
+          </nav>
         </div>
-        
-      <!-- Fenêtre modale -->
-      <div *ngIf="showModal" class="modal-overlay" (click)="closeModal()">
-        <div class="modal-content" (click)="$event.stopPropagation()">
-          <h3>Veuillez choisir votre mode de paiement !</h3>
   
-          <div class="payment-options">
-            <div class="option">
-              <img src="wave_logo.png" alt="Wave">
-              <button class="wave-btn" (click)="currentInfractionId !== null && showWavePayment(currentInfractionId)">Wave</button>
-            </div>
+        <!-- Fenêtre modale -->
+        <div *ngIf="showModal" class="modal-overlay" (click)="closeModal()">
+          <div class="modal-content" (click)="$event.stopPropagation()">
+            <h3>Veuillez choisir votre mode de paiement !</h3>
   
-            <div class="option">
-              <img src="orange_money_logo.jpeg" alt="Orange Money">
-              <button class="om-btn" (click)="currentInfractionId !== null && showOrangeMoneyPayment(currentInfractionId)">OM</button>
-            </div>
+            <div class="payment-options">
+              <div class="option">
+                <img src="wave_logo.png" alt="Wave">
+                <button class="wave-btn" (click)="currentInfractionId !== null && showWavePayment(currentInfractionId)">Wave</button>
+              </div>
   
-            <div class="option">
-              <img src="espece.png" alt="Espèces">
-              <button class="cash-btn" (click)="currentInfractionId !== null && showCashPayment(currentInfractionId)">Espèces</button>
+              <div class="option">
+                <img src="orange_money_logo.jpeg" alt="Orange Money">
+                <button class="om-btn" (click)="currentInfractionId !== null && showOrangeMoneyPayment(currentInfractionId)">OM</button>
+              </div>
+  
+              <div class="option">
+                <img src="espece.png" alt="Espèces">
+                <button class="cash-btn" (click)="currentInfractionId !== null && showCashPayment(currentInfractionId)">Espèces</button>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-  

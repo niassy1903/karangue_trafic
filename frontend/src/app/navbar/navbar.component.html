@@ -11,7 +11,10 @@
       <span class="badge bg-danger" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
       <div class="user-profile">
         <img src="avatarUser.png" alt="Admin">
-        <span>Admin</span>
+        <div class="user-info">
+          <span class="user-name">{{ userPrenom }} {{ userNom }}</span> <!-- ✅ Prénom Nom en haut -->
+          <small class="user-role text-muted">{{ userRole }}</small> <!-- ✅ Rôle en dessous -->
+        </div>
       </div>
     </div>
   </div>

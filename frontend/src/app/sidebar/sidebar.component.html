@@ -1,6 +1,6 @@
 <div class="sidebar">
   <div class="logo">
-    <img src="logo.png" alt="Karangë Trafic">
+    <img src="logo.png" alt="Karangë Trafic" (click)="navigateTo('/accueil')" style="cursor: pointer;">
   </div>
   <h3>DASHBOARD</h3>
   <ul class="nav flex-column">
@@ -29,13 +29,6 @@
     <li class="nav-item" *ngIf="isAgentDeSecurite()" [class.active]="currentRoute === '/historiques-amendes'">
       <a class="nav-link" (click)="navigateTo('/historiques-amendes')">
         <i class="fas fa-history"></i> Historiques des amendes
-      </a>
-    </li>
-
-    <!-- Historiques (administrateur uniquement) -->
-    <li class="nav-item" *ngIf="isAdministrateur()" [class.active]="currentRoute === '/historique'">
-      <a class="nav-link" (click)="navigateTo('/historique')">
-        <i class="fas fa-clipboard-list"></i> Historiques
       </a>
     </li>
   </ul>

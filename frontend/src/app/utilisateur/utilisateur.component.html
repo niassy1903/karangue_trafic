@@ -21,14 +21,12 @@
             <button (click)="redirectToInscription()" class="btn btn-success" title="Ajouter un nouvel utilisateur">
               <i class="fas fa-plus"></i> Ajouter
             </button>
-            <button class="btn btn-secondary" title="Ajouter des utilisateurs par CSV">
+            <label class="btn btn-secondary" title="Ajouter des utilisateurs par CSV">
               <i class="fas fa-file-csv"></i> Ajouter par CSV
-            </button>
+              <input type="file" (change)="importCsv($event)" style="display: none;">
+            </label>
             <button class="btn btn-warning" (click)="blockMultipleUtilisateurs()" title="Bloquer/Débloquer les utilisateurs sélectionnés">
               <i class="fas fa-ban"></i> Bloquer/Débloquer
-            </button>
-            <button class="btn btn-info" title="Changer le rôle des utilisateurs sélectionnés">
-              <i class="fas fa-sync-alt"></i> Changer Rôle
             </button>
             <span class="badge bg-primary" title="Nombre d'utilisateurs sélectionnés">
               {{ selectedUsers.size }} Sélectionné(s)
@@ -37,8 +35,19 @@
 
           <!-- Barre de recherche et filtre -->
           <div class="d-flex gap-2 mb-3">
-            <input type="text" class="form-control small-search" placeholder="Rechercher par Prenom, Email, Matricule..." />
+            <input type="text" class="form-control small-search" placeholder="Rechercher par Matricule..." [(ngModel)]="searchTerm" (input)="filterUsers()" />
+            <select class="form-control small-search" [(ngModel)]="selectedRole" (change)="filterUsers()">
+              <option value="">Tous</option>
+              <option value="administrateur">Administrateur</option>
+              <option value="agent de sécurité">Agent de Sécurité</option>
+              <option value="conducteur">Conducteur</option>
+            </select>
             <button class="btn btn-primary small-button">✔ Filtre</button>
+          </div>
+
+          <!-- Message d'erreur si aucun résultat n'est trouvé -->
+          <div *ngIf="noResults" class="alert alert-success" role="alert">
+            Aucun résultat pour "{{ searchTerm }}"
           </div>
 
           <!-- Tableau des utilisateurs -->
@@ -84,7 +93,7 @@
                     <button class="btn btn-sm text-orange" title="Bloquer/Débloquer" (click)="blockUtilisateur(utilisateur.id)">
                       <i class="fas fa-ban"></i>
                     </button>
-                    <button class="btn btn-sm text-orange" title="Assigner">
+                    <button class="btn btn-sm text-orange" title="Assigner une carte" (click)="assignCard(utilisateur.id)">
                       <i class="fas fa-clipboard"></i>
                     </button>
                   </td>

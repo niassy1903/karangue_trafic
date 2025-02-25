@@ -15,6 +15,7 @@ class Infraction extends Eloquent
     protected $fillable = [
         'nom_conducteur',
         'prenom_conducteur',
+        'telephone',
         'plaque_matriculation',
         'vitesse',
         'date',
