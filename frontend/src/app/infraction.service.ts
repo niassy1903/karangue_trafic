@@ -35,7 +35,8 @@ export class InfractionService {
   return this.http.post(`${this.apiUrl}/payer-amende/${id}`, {
     montant,
     utilisateur_id: utilisateurId, // Utilisez l'ID de l'utilisateur récupéré
-    agent_nom: this.authService.getUserNom() || 'Agent Inconnu' // Ajouter le nom de l'agent
+    agent_nom: `${this.authService.getUserNom()} ${this.authService.getUserPrenom()}`.trim() || 'Agent Inconnu'
+
   });
 }
 
