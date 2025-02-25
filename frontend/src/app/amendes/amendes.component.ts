@@ -62,15 +62,17 @@ export class AmendesComponent implements OnInit {
   }
 
   // Payer une amende
-  // Dans AmendesComponent
-payAmende(id: number, montant: number): void {
-  const utilisateurId = '12345';
-  const agentNom = localStorage.getItem('userName') || 'Agent'; // Récupérer depuis le service d'authentification
-  
-  this.infractionService.payAmende(id, montant).subscribe(() => {
-    this.loadInfractionsForPage(this.currentPage);
-  });
-}
+  payAmende(id: number, montant: number): void {
+    this.infractionService.payAmende(id, montant).subscribe({
+      next: () => {
+        this.loadInfractionsForPage(this.currentPage);
+      },
+      error: (err) => {
+        console.error('Erreur de paiement:', err);
+        Swal.fire('Erreur', 'Le paiement a échoué', 'error');
+      }
+    });
+  }
 
   openModal(id: number): void {
     this.showModal = true;
@@ -162,11 +164,8 @@ payAmende(id: number, montant: number): void {
 
 
   // Ajouter cette méthode dans la classe AmendesComponent
-  generateFacture(amende: any): void {
-    const doc = new jsPDF();
-    
-    // Récupérer l'agent depuis localStorage
-    
+generateFacture(amende: any): void {
+  const doc = new jsPDF();
   
   // Entête
   doc.setFontSize(18);
@@ -183,8 +182,8 @@ payAmende(id: number, montant: number): void {
   doc.text(`Heure: ${amende.heure}`, 15, 75);
   
   // Récupérer le nom de l'agent depuis le localStorage ou un service d'authentification
-  const agent = JSON.parse(localStorage.getItem('currentUser') || '{}')
-  doc.text(`Agent enregistreur: ${amende.agent_nom || agent.nom || 'Non spécifié'}`, 15, 85);
+  const agentName = localStorage.getItem('agentName') || 'Agent de sécurité';
+  doc.text(`Agent enregistreur: ${agentName}`, 15, 85);
 
   // Signature
   doc.setFontSize(10);

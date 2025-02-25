@@ -21,16 +21,15 @@ export class InfractionService {
   }
 
   // Payer une amende
-  payAmende(id: number, montant: number): Observable<any> {
-    // Récupérer les informations de l'agent connecté
-    const agent = JSON.parse(localStorage.getItem('currentUser') || '{}');
-    
-    return this.http.post(`${this.apiUrl}/payer-amende/${id}`, { 
-      montant,
-      utilisateur_id: agent.id, // ID de l'agent
-      agent_nom: agent.nom // Nom de l'agent
-    });
-  }
+payAmende(id: number, montant: number): Observable<any> {
+  const agent = JSON.parse(localStorage.getItem('currentUser') || '{}'); // Récupérer l'agent connecté
+  
+  return this.http.post(`${this.apiUrl}/payer-amende/${id}`, { 
+    montant,
+    utilisateur_id: agent.id || '12345', // ID par défault si non trouvé
+    agent_nom: agent.nom || 'Agent Inconnu' // Ajouter le nom de l'agent
+  });
+}
 
   // Récupérer les infractions par période (jour, semaine, mois)
   getInfractionsByPeriod(periode: string): Observable<any> {
