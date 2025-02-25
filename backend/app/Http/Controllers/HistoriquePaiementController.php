@@ -9,13 +9,13 @@ class HistoriquePaiementController extends Controller
 {
     public function index()
     {
-        $historiquePaiements = HistoriquePaiement::all();
+        $historiquePaiements = HistoriquePaiement::with(['infraction', 'utilisateur'])->get();
         return response()->json(['data' => $historiquePaiements]);
     }
 
     public function show($id)
     {
-        $historiquePaiement = HistoriquePaiement::where('infraction_id', $id)->get();
+        $historiquePaiement = HistoriquePaiement::with(['infraction', 'utilisateur'])->where('infraction_id', $id)->get();
         return response()->json(['data' => $historiquePaiement]);
     }
 }

@@ -1,5 +1,5 @@
-import { HttpClientModule } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { CommonModule } from '@angular/common';
@@ -8,12 +8,13 @@ import { NgxPaginationModule } from 'ngx-pagination';
 
 interface Historique {
   id: string;
-  matricule: string;
+  plaque_matriculation: string;
   prenom: string;
   nom: string;
   date: string;
   heure: string;
   action: string;
+  montant: number;
 }
 
 @Component({
@@ -26,8 +27,10 @@ interface Historique {
 })
 export class HistoriqueAmendesComponent implements OnInit {
   historiques: Historique[] = [];
+  filteredHistoriques: Historique[] = [];
   currentPage: number = 1;
-  totalPages: number = 1; // Initialisez à 1 pour éviter les erreurs de pagination
+  totalPages: number = 1; 
+  searchQuery: string = '';
 
   constructor(private historiquePaiementService: HistoriquePaiementService) {}
 
@@ -39,15 +42,31 @@ export class HistoriqueAmendesComponent implements OnInit {
     this.historiquePaiementService.getHistoriquePaiements().subscribe(data => {
       this.historiques = data.data.map((item: any) => ({
         id: item._id,
-        matricule: item.infraction.plaque_matriculation,
-        prenom: item.utilisateur.prenom,
-        nom: item.utilisateur.nom,
+        plaque_matriculation: item.infraction.plaque_matriculation, 
+        prenom: item.utilisateur ? item.utilisateur.prenom : 'Inconnu', 
+        nom: item.utilisateur ? item.utilisateur.nom : 'Inconnu', 
         date: item.date,
         heure: item.heure,
-        action: item.action
+        action: item.action,
+        montant: item.montant || 0 // Utilisation du montant si disponible
       }));
-      this.totalPages = Math.ceil(this.historiques.length / 10); // Exemple de calcul de pagination
+      this.filterHistoriques();
     });
+  }
+
+  filterHistoriques() {
+    this.filteredHistoriques = this.historiques.filter(historique => 
+      historique.plaque_matriculation.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+      historique.prenom.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+      historique.nom.toLowerCase().includes(this.searchQuery.toLowerCase())
+    );
+    this.totalPages = Math.ceil(this.filteredHistoriques.length / 10);
+  }
+
+  onSearchChange(event: Event) {
+    const inputElement = event.target as HTMLInputElement;
+    this.searchQuery = inputElement.value;
+    this.filterHistoriques();
   }
 
   changePage(page: number) {

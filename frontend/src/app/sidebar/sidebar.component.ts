@@ -8,9 +8,9 @@ import { HttpClientModule } from '@angular/common/http';
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css'],
-  standalone : true,
-  imports : [CommonModule,HttpClientModule],
-  providers : [AuthService]
+  standalone: true,
+  imports: [CommonModule, HttpClientModule],
+  providers: [AuthService]
 })
 export class SidebarComponent implements OnInit {
   currentRoute: string = '';

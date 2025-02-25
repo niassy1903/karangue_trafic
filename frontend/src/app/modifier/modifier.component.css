@@ -1,19 +1,25 @@
+.dashboard-layout {
+  display: flex;
+  min-height: 100vh;
+  overflow-x: hidden; /* Empêche le défilement horizontal */
+}
+
 .main-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    margin-left: 400px; /* Ajustez selon la largeur de la sidebar */
-    padding: 20px;
-    transition: margin-left 0.3s;
-    box-sizing: border-box;
-    margin-top: 70px; /* Correspond à la hauteur du navbar */
-  }
-  .dashboard-container {
-    flex: 1;
-    display: flex;
-    justify-content: center; /* Centre le contenu horizontalement */
-    align-items: flex-start; /* Aligne le contenu au début verticalement */
-    padding: 20px;
-    width: 100%; /* Assure que le conteneur prend toute la largeur disponible */
-  }
-  
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  transition: margin-left 0.3s;
+  box-sizing: border-box; /* Inclut les marges et les bordures dans la largeur totale */
+}
+
+.content-box {
+  flex: 1;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Box-shadow subtil */
+  border-radius: 8px;
+  background-color: #fff;
+  max-width: 1200px; /* Assure que le conteneur ne dépasse pas */
+  margin: 20px auto; /* Centre le conteneur avec un peu de marge */
+  overflow-x: auto; /* Permet le défilement horizontal si nécessaire */
+}

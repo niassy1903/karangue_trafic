@@ -9,6 +9,7 @@ import { AuthService } from './auth.service';  // Assure-toi d'importer AuthServ
 })
 export class UtilisateurService {
   private apiUrl = 'http://localhost:8000/api/utilisateurs';
+  private apiUrl2 = 'http://localhost:8000/api'; // Modifier selon l'URL de ton API
 
   constructor(
     private http: HttpClient,
@@ -27,7 +28,7 @@ export class UtilisateurService {
   // Méthodes pour récupérer les logs de l'historique
   getHistoriques(): Observable<any> {
     const headers = this.getAuthHeaders();
-    return this.http.get(`${this.apiUrl}/historiques`, { headers }).pipe(
+    return this.http.get(`${this.apiUrl2}/historiques`, { headers }).pipe(
       catchError((error) => {
         return throwError(error);
       })
@@ -114,15 +115,6 @@ export class UtilisateurService {
     );
   }
 
-  // Authentifier un utilisateur
-  authenticate(codeSecret: string): Observable<any> {
-    const headers = this.getAuthHeaders();  // Ajoute les headers avec token
-    return this.http.post(`${this.apiUrl}/authenticate`, { code_secret: codeSecret }, { headers }).pipe(
-      catchError((error) => {
-        return throwError(error);
-      })
-    );
-  }
 
   // Déconnexion de l'utilisateur
   logout(): Observable<any> {

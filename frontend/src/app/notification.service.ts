@@ -25,7 +25,13 @@ export class NotificationService {
     return this.permanentNotifications;
   }
 
-  markAsRead(): void {
-    this.permanentNotifications = [];
+  getUnreadNotifications(): any[] {
+    return this.permanentNotifications.filter(notif => !notif.read);
+  }
+
+  markAsRead(index: number): void {
+    if (this.permanentNotifications[index]) {
+      this.permanentNotifications[index].read = true;
+    }
   }
 }

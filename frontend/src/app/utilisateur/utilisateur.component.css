@@ -8,36 +8,27 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  margin-left: 400px; /* Ajustez selon la largeur de la sidebar */
   padding: 20px;
   transition: margin-left 0.3s;
   box-sizing: border-box; /* Inclut les marges et les bordures dans la largeur totale */
 }
 
-.dashboard-container {
-  flex: 1;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  overflow-y: auto; /* Permet le défilement vertical si nécessaire */
-}
-
 .content-box {
   flex: 1;
   padding: 20px;
-  box-shadow: 0 4px 8px rgba(253, 116, 1, 0.5); /* Box-shadow orange */
-  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Box-shadow subtil */
+  border-radius: 8px;
   background-color: #fff;
-  max-width: calc(100% - 40px); /* Assure que le conteneur ne dépasse pas */
-  margin: 0 auto; /* Centre le conteneur */
+  max-width: 1200px; /* Assure que le conteneur ne dépasse pas */
+  margin: 20px auto; /* Centre le conteneur avec un peu de marge */
+  overflow-x: auto; /* Permet le défilement horizontal si nécessaire */
 }
 
 h2 {
   text-align: center;
   background-color: #FD7401;
-  border-radius: 15px;
-  color: aliceblue;
+  border-radius: 8px;
+  color: #fff;
   padding: 10px 0;
   margin-bottom: 20px;
 }
@@ -48,29 +39,14 @@ h2 {
 }
 
 /* Styles pour les boutons d'actions */
-.btn-outline-primary {
-  color: #007bff;
-  border-color: #007bff;
-}
-
-.btn-outline-warning {
-  color: #FD7401;
-  border-color: #FD7401;
-}
-
-.btn-outline-danger {
-  color: #dc3545;
-  border-color: #dc3545;
-}
-
-.btn-outline-secondary {
-  color: #6c757d;
-  border-color: #6c757d;
-}
-
+.btn-outline-primary,
+.btn-outline-warning,
+.btn-outline-danger,
+.btn-outline-secondary,
 .btn-outline-info {
-  color: #17a2b8;
-  border-color: #17a2b8;
+  border-radius: 5px;
+  padding: 8px 12px;
+  font-size: 14px;
 }
 
 /* Styles pour le statut */
@@ -85,50 +61,50 @@ h2 {
 .small-search {
   max-width: 250px; /* Réduit la largeur de la barre de recherche */
   font-size: 14px; /* Réduit la taille du texte */
-  padding: 5px 10px; /* Ajuste le padding */
+  padding: 8px; /* Ajuste le padding */
 }
 
 .small-button {
   font-size: 14px; /* Réduit la taille du texte du bouton */
-  padding: 5px 10px; /* Ajuste le padding */
+  padding: 8px 12px; /* Ajuste le padding */
 }
 
 /* Ajouter un style pour les boutons */
 .btn-sm {
   font-size: 14px;
   padding: 5px 10px;
+  border-radius: 4px;
 }
 
 /* Style pour la table */
 .table {
   margin-bottom: 0;
-  
+  border-collapse: separate;
+  border-spacing: 0 10px;
+  width: 100%;
+  overflow-x: auto; /* Permet le défilement horizontal si nécessaire */
 }
 
 .table th, .table td {
   vertical-align: middle;
-  
+  padding: 12px;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
   .main-content {
-    margin-left: 80px; /* Réduit la marge pour correspondre à la largeur de la sidebar */
+    padding: 10px; /* Réduit le padding pour les petits écrans */
   }
 
-  .content-row {
-    flex-direction: column;
-  }
-
-  .stats-section {
-    flex-direction: column;
+  .content-box {
+    max-width: 100%; /* Assure que le conteneur s'adapte à l'écran */
+    padding: 10px; /* Réduit le padding pour les petits écrans */
   }
 }
 
-/* Style du Navbar */
 .navbar {
   background-color: #fd7401;
-  padding: 15px 20px;
+  padding: 10px 20px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: space-between;
@@ -136,17 +112,24 @@ h2 {
 }
 
 .search-bar {
-  padding: 10px;
-  border: 2px solid #fff;
-  border-radius: 20px;
-  width: 200px;
-  font-size: 16px;
-  outline: none;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
 }
 
-.search-bar::placeholder {
-  color: #FF3131;
-  opacity: 0.8;
+.search-bar input {
+  flex-grow: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.search-bar button {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  cursor: pointer;
 }
 
 .icons {
@@ -177,43 +160,4 @@ h2 {
   font-size: 24px;
   color: white;
   cursor: pointer;
-}
-
-.map-image {
-  width: 100%;
-  height: 400px;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-.alert-card:hover {
-  transform: translateX(5px);
-}
-
-.alert-info {
-  flex: 1;
-}
-
-.alert-card i {
-  font-size: 24px;
-  color: #FD7401;
-  position: absolute;
-  right: 20px;
-}
-
-.see-more {
-  background-color: #FD7401;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  margin-top: 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  position: absolute;
-  right: 20px;
-  top: auto;
-}
-
-.see-more:hover {
-  background-color: #e66b00;
 }

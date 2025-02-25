@@ -26,3 +26,7 @@ Route::middleware([
         return view('dashboard');
     })->name('dashboard');
 });
+
+use App\Http\Controllers\InfractionController;
+
+Route::get('/test-email/{id}', [InfractionController::class, 'envoyerFactureParEmail']);

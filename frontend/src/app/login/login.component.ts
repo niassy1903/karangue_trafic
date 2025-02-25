@@ -1,6 +1,6 @@
-import { 
-  Component, ElementRef, QueryList, ViewChildren, 
-  HostListener, OnDestroy, ViewChild 
+import {
+  Component, ElementRef, QueryList, ViewChildren,
+  HostListener, OnDestroy, ViewChild
 } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
@@ -13,7 +13,8 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
+  providers: [AuthService]
 })
 export class LoginComponent implements OnDestroy {
   @ViewChildren('input1, input2, input3, input4') inputs!: QueryList<ElementRef>;
@@ -29,12 +30,13 @@ export class LoginComponent implements OnDestroy {
 
   // Réinitialisation de mot de passe
   showPasswordReset = false;
-  resetEmail = '';
-  resetMessage = '';
-  isSuccess = false;
-  isSending = false;
   showResend = false;
-  showSuccessModal = false;
+  isResendDisabled = false;
+  resendTimeout: any;
+  resetEmail: string = '';
+  resetMessage: string = '';
+  isSending: boolean = false;
+  isSuccess: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -42,9 +44,18 @@ export class LoginComponent implements OnDestroy {
     private http: HttpClient
   ) {
     this.checkLockStatus();
-    
+
     if (this.authService.isAuthenticated()) {
-      this.router.navigate(['/dashboard']);
+      const userRole = this.authService.getUserRole(); // Récupère le rôle depuis le localStorage
+
+      if (userRole === 'administrateur') {
+        this.router.navigate(['/admin-dashboard']);
+      } else if (userRole === 'agent de sécurité') {
+        this.router.navigate(['/dashboard']);
+      } else {
+        console.log("Rôle inconnu, redirection par défaut vers /dashboard");
+        this.router.navigate(['/dashboard']);
+      }
     }
   }
 
@@ -79,7 +90,7 @@ export class LoginComponent implements OnDestroy {
 
     if (event.key === 'Backspace') {
       event.preventDefault();
-      
+
       if (target.value !== '') {
         target.value = '';
         if (currentIndex > 0) inputsArray[currentIndex - 1].focus();
@@ -111,9 +122,9 @@ export class LoginComponent implements OnDestroy {
 
   goToNext(currentInput: HTMLInputElement, nextIndex: number) {
     currentInput.value = currentInput.value.replace(/[^0-9]/g, '');
-    
+
     const inputsArray = this.inputs.toArray().map(input => input.nativeElement);
-    
+
     currentInput.type = 'text';
     setTimeout(() => {
       currentInput.type = 'password';
@@ -127,7 +138,7 @@ export class LoginComponent implements OnDestroy {
 
   validateCode() {
     const enteredCode = this.inputs.toArray().map(input => input.nativeElement.value).join('');
-    
+
     if (enteredCode.length !== 4) {
       this.errorMessage = 'Veuillez saisir un code complet';
       this.resetInputs();
@@ -135,7 +146,16 @@ export class LoginComponent implements OnDestroy {
     }
 
     this.authService.authenticate(enteredCode).subscribe({
-      next: () => this.router.navigate(['/admin-dashboard']),
+      next: (user) => {
+        // Vérification du rôle avant redirection
+        if (user.role === 'administrateur') {
+          this.router.navigate(['/admin-dashboard']);
+        } else if (user.role === 'agent de sécurité') {
+          this.router.navigate(['/dashboard']);
+        } else {
+          this.errorMessage = 'Rôle non reconnu';
+        }
+      },
       error: (err) => this.handleLoginError(err)
     });
   }
@@ -143,13 +163,13 @@ export class LoginComponent implements OnDestroy {
   private handleLoginError(error: any) {
     this.failedAttempts++;
     this.errorMessage = error.message || 'Code secret incorrect';
-    
+
     if (this.failedAttempts >= 3) {
       this.lockInputs();
     } else {
       this.errorMessage += ` (Tentatives restantes: ${3 - this.failedAttempts})`;
     }
-  
+
     this.resetInputs();
   }
 
@@ -162,11 +182,11 @@ export class LoginComponent implements OnDestroy {
   private activateLock(duration: number) {
     this.isLocked = true;
     const startTime = Date.now();
-    
+
     this.countdownInterval = setInterval(() => {
       const elapsed = Date.now() - startTime;
       const remaining = duration - elapsed;
-      
+
       if (remaining <= 0) {
         this.unlock();
       } else {
@@ -195,67 +215,51 @@ export class LoginComponent implements OnDestroy {
 
   // Gestion réinitialisation
   togglePasswordReset(event?: Event) {
-    if (event) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
+    if (event) event.preventDefault();
     this.showPasswordReset = !this.showPasswordReset;
-    
-    if (this.showPasswordReset) {
-      setTimeout(() => {
-        this.emailInput.nativeElement.focus();
-      }, 0);
-    }
-    
     this.resetMessage = '';
-    this.resetEmail = '';
   }
 
-  async sendResetCode(isResend: boolean = false) {
+  sendResetCode() {
+    if (!this.resetEmail) return;
+
     this.isSending = true;
-    this.resetMessage = '';
+    this.authService.resetCodeSecret(this.resetEmail).subscribe({
+      next: (response) => {
+        this.resetMessage = response.message;
+        this.isSuccess = true;
+        this.isSending = false;
+        this.showResend = true;
+        this.isResendDisabled = true;
 
-    try {
-      const response = await this.http.post<any>('/api/utilisateurs/reset-code', {
-        email: this.resetEmail
-      }).toPromise();
-
-      this.isSuccess = true;
-      this.resetMessage = response.message;
-      this.showSuccessModal = true;
-      this.showResend = true;
-
-      if (!isResend) {
-        setTimeout(() => {
-          this.showSuccessModal = false;
-          this.togglePasswordReset();
-        }, 3000);
+        // Désactiver le bouton "Renvoyer" pendant 30 secondes
+        this.resendTimeout = setTimeout(() => {
+          this.isResendDisabled = false;
+        }, 30000);
+      },
+      error: (error) => {
+        this.resetMessage = error.message;
+        this.isSuccess = false;
+        this.isSending = false;
       }
-    } catch (error: any) {
-      this.isSuccess = false;
-      this.handleResetError(error);
-    } finally {
-      this.isSending = false;
-    }
+    });
   }
 
-  private handleResetError(error: any) {
-    const defaultMessage = 'Une erreur est survenue. Veuillez réessayer.';
-    
-    if (error.status === 404) {
-      this.resetMessage = 'Email invalide ou inexistant.';
-    } else if (error.status === 403) {
-      this.resetMessage = 'Compte bloqué. Réinitialisation impossible.';
-    } else {
-      this.resetMessage = error.error?.message || defaultMessage;
+  resendCode() {
+    if (this.isResendDisabled) {
+      this.resetMessage = 'Veuillez attendre 30 secondes avant de renvoyer le code.';
+      return;
     }
-    
-    this.showResend = true;
+
+    this.sendResetCode();
   }
 
   ngOnDestroy() {
     if (this.countdownInterval) {
       clearInterval(this.countdownInterval);
+    }
+    if (this.resendTimeout) {
+      clearTimeout(this.resendTimeout);
     }
   }
 }

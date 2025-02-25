@@ -2,10 +2,9 @@
     <app-sidebar></app-sidebar>
     <div class="main-content">
       <app-navbar></app-navbar>
-      
       <div class="dashboard-container">
-        <h1 class="dashboard-title">DASHBOARD</h1>
-        
+        <br>
+  
         <!-- Stats Cards -->
         <div class="stats-cards">
           <div class="stat-card" *ngFor="let card of statsCards">
@@ -35,41 +34,45 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let item of historyData">
+                <tr *ngFor="let item of paginatedData">
                   <td>{{ item.utilisateur.matricule }}</td>
                   <td>{{ item.utilisateur.prenom }} {{ item.utilisateur.nom }}</td>
                   <td>{{ item.date }}</td>
                   <td>{{ item.heure }}</td>
                   <td>{{ item.action }}</td>
                   <td>
-                    <button (click)="deleteUtilisateur(item.utilisateur.id)">Supprimer</button>
+                    <button class="btn-delete" (click)="deleteUtilisateur(item.utilisateur.id)">Supprimer</button>
                   </td>
                 </tr>
               </tbody>
-            </table>
-            
+            </table><br>
+  
             <div class="pagination">
-              <button class="pagination-btn">Précédente</button>
-              <div class="page-numbers">
-                <button class="page-btn active">1</button>
-                <button class="page-btn">2</button>
-                <button class="page-btn">3</button>
-              </div>
-              <button class="pagination-btn">Suivante</button>
+              <button class="pagination-btn" (click)="prevPage()" [disabled]="currentPage === 1">
+                &lt;&lt;
+              </button>
+  
+              <button
+                *ngFor="let page of pages"
+                [class.active]="page === currentPage"
+                (click)="goToPage(page)"
+                class="pagination-btn page-btn"
+              >
+                {{ page }}
+              </button>
+  
+              <button class="pagination-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">
+                &gt;&gt;
+              </button>
             </div>
           </div>
-          
-          
-        <div class="chart-section">
-          <!-- Nous utiliserons Chart.js ou NgxCharts ici -->
-           <app-pie-chart></app-pie-chart>
-        <!--  <div class="pie-chart">
-             Le composant de graphique sera inséré ici 
-            <p class="total-value">2065.01</p>
-          </div> -->
-          
+  
+          <div class="chart-section">
+            <!-- Nous utiliserons Chart.js ou NgxCharts ici -->
+            <app-pie-chart></app-pie-chart>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+  

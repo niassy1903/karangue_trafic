@@ -60,22 +60,23 @@ class InfractionController extends Controller
     }
 
     public function payerAmende(Request $request, $id)
-    {
-        $validatedData = $request->validate([
-            'montant' => 'required|numeric',
-            'utilisateur_id' => 'required|string', // Ajoutez ce champ
-        ]);
+{
+    $validatedData = $request->validate([
+        'montant' => 'required|numeric',
+        'utilisateur_id' => 'required|string',
+        'agent_nom' => 'required|string' // Récupérer le nom de l'agent
+    ]);
 
-        $infraction = Infraction::findOrFail($id);
-        $infraction->montant = $validatedData['montant'];
-        $infraction->status = 'payé';
-        $infraction->save();
+    $infraction = Infraction::findOrFail($id);
+    $infraction->montant = $validatedData['montant'];
+    $infraction->status = 'payé';
+    $infraction->agent_nom = $validatedData['agent_nom']; // Stocker le nom
+    $infraction->save();
 
-        // Enregistrer l'action de paiement dans les logs
-        $this->logPaiementAction($id, $validatedData['utilisateur_id'], 'Paiement enregistré');
+    $this->logPaiementAction($id, $validatedData['utilisateur_id'], 'Paiement enregistré');
 
-        return response()->json(['message' => 'Paiement enregistré']);
-    }
+    return response()->json(['message' => 'Paiement enregistré']);
+}
 
     public function infractionsParPeriode(Request $request)
     {
@@ -102,11 +103,13 @@ class InfractionController extends Controller
     }
 
     public function obtenirInfractionsAvecPagination(Request $request)
-{
-    $perPage = $request->query('per_page', 10); // Nombre d'éléments par page
-    $infractions = Infraction::orderBy('created_at', 'desc')->paginate($perPage);
-
-    return response()->json(['data' => $infractions]);
-}
+    {
+        $perPage = $request->query('per_page', 10); // Nombre d'éléments par page
+        $page = $request->query('page', 1); // Page actuelle
+        $infractions = Infraction::orderBy('created_at', 'desc')->paginate($perPage, ['*'], 'page', $page);
+    
+        return response()->json(['data' => $infractions]);
+    }
+    
 
 }

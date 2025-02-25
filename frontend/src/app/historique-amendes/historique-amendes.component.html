@@ -1,71 +1,78 @@
-<app-sidebar></app-sidebar>
-<app-navbar></app-navbar>
+<div class="dashboard-layout">
+  <!-- Sidebar -->
+  <app-sidebar></app-sidebar>
 
-<div class="main-content">
-  <div class="container mt-4">
-    <div class="card">
-      <div class="card-header bg-custom-warning text-white text-center">
-        <h4 class="mb-0">Historique des Amendes</h4>
-      </div>
-      <div class="card-body">
-        <!-- Recherche par matricule -->
-        <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <span class="input-group-text"><i class="fas fa-search"></i></span>
-          </div>
-          <input type="text" class="form-control" placeholder="Recherche par matricule" aria-label="Recherche par matricule">
-          <div class="input-group-append">
-            <button class="btn btn-outline-secondary" type="button">
-              <i class="fas fa-filter"></i>
-            </button>
-          </div>
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Navbar -->
+    <app-navbar></app-navbar>
+
+    <!-- Contenu Principal -->
+    <div class="dashboard-container container mt-4">
+      <div class="card">
+        <div class="card-header bg-custom-warning text-white text-center">
+          <h4 class="mb-0">Historique des Amendes</h4>
         </div>
+        <div class="card-body">
+          <!-- Recherche par plaque_matriculation, prénom, nom -->
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="fas fa-search"></i></span>
+            </div>
+            <input type="text" class="form-control" placeholder="Recherche par plaque_matriculation, prénom, nom" aria-label="Recherche par plaque_matriculation, prénom, nom" (input)="onSearchChange($event)">
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary" type="button">
+                <i class="fas fa-filter"></i>
+              </button>
+            </div>
+          </div>
 
-        <!-- Tableau des historiques -->
-        <table class="table table-striped table-bordered text-center">
-          <thead class="table-light">
-            <tr>
-              <th>
-                <input type="checkbox" id="select-all">
-              </th>
-              <th>Matricule</th>
-              <th>Prénom et Nom</th>
-              <th>Date</th>
-              <th>Heure</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let historique of historiques | paginate: { itemsPerPage: 10, currentPage: currentPage }">
-              <td>
-                <input type="checkbox" [id]="historique.id">
-              </td>
-              <td>{{ historique.matricule }}</td>
-              <td>{{ historique.prenom }} {{ historique.nom }}</td>
-              <td>{{ historique.date }}</td>
-              <td>{{ historique.heure }}</td>
-              <td>{{ historique.action }}</td>
-            </tr>
-          </tbody>
-        </table>
+          <!-- Tableau des historiques -->
+          <table class="table table-striped table-bordered text-center">
+            <thead class="table-light">
+              <tr>
+                <th>
+                  <input type="checkbox" id="select-all">
+                </th>
+                <th>Plaque d'immatriculation</th>
+                <th>Prénom et Nom</th>
+                <th>Date</th>
+                <th>Heure</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let historique of filteredHistoriques | paginate: { itemsPerPage: 10, currentPage: currentPage }">
+                <td>
+                  <input type="checkbox" [id]="historique.id">
+                </td>
+                <td>{{ historique.plaque_matriculation }}</td>
+                <td>{{ historique.prenom }} {{ historique.nom }}</td>
+                <td>{{ historique.date }}</td>
+                <td>{{ historique.heure }}</td>
+                <td>{{ historique.action }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
 
-    <!-- Pagination -->
-    <div class="pagination-container d-flex justify-content-center mt-3">
-      <nav>
-        <ul class="pagination">
-          <li class="page-item" [class.disabled]="currentPage === 1">
-            <a class="page-link text-custom-orange" href="javascript:void(0)" (click)="changePage(currentPage - 1)">Précédent</a>
-          </li>
-          <li class="page-item" [class.active]="currentPage === (idx + 1)" *ngFor="let i of [].constructor(totalPages); let idx = index">
-            <a class="page-link text-custom-orange" href="javascript:void(0)" (click)="changePage(idx + 1)">{{ idx + 1 }}</a>
-          </li>
-          <li class="page-item" [class.disabled]="currentPage === totalPages">
-            <a class="page-link text-custom-orange" href="javascript:void(0)" (click)="changePage(currentPage + 1)">Suivant</a>
-          </li>
-        </ul>
-      </nav>
+      <!-- Pagination -->
+      <div class="pagination-container d-flex justify-content-center mt-3">
+        <nav>
+          <ul class="pagination">
+            <li class="page-item" [class.disabled]="currentPage === 1">
+              <a class="page-link text-custom-orange" href="javascript:void(0)" (click)="changePage(currentPage - 1)">Précédent</a>
+            </li>
+            <li class="page-item" [class.active]="currentPage === (idx + 1)" *ngFor="let i of [].constructor(totalPages); let idx = index">
+              <a class="page-link text-custom-orange" href="javascript:void(0)" (click)="changePage(idx + 1)">{{ idx + 1 }}</a>
+            </li>
+            <li class="page-item" [class.disabled]="currentPage === totalPages">
+              <a class="page-link text-custom-orange" href="javascript:void(0)" (click)="changePage(currentPage + 1)">Suivant</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
     </div>
   </div>
 </div>

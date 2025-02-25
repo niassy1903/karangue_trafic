@@ -11,8 +11,8 @@ export class InfractionService {
   constructor(private http: HttpClient) {}
 
   // Récupérer toutes les infractions
-  getAllInfractions(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/toutes-infractions`);
+  getAllInfractions(page: number, limit: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/toutes-infractions?page=${page}&limit=${limit}`);
   }
 
   // Enregistrer une nouvelle infraction
@@ -22,17 +22,24 @@ export class InfractionService {
 
   // Payer une amende
   payAmende(id: number, montant: number): Observable<any> {
-    return this.http.post(`${this.apiUrl}/payer-amende/${id}`, { montant });
+    // Récupérer les informations de l'agent connecté
+    const agent = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    
+    return this.http.post(`${this.apiUrl}/payer-amende/${id}`, { 
+      montant,
+      utilisateur_id: agent.id, // ID de l'agent
+      agent_nom: agent.nom // Nom de l'agent
+    });
   }
 
   // Récupérer les infractions par période (jour, semaine, mois)
   getInfractionsByPeriod(periode: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/infractions-par-periode`, { params: { periode } });
   }
+
   getInfractionsWithPagination(page: number, perPage: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/infractions-avec-pagination`, {
       params: { page, per_page: perPage }
     });
   }
-  
 }

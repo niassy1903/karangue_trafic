@@ -19,4 +19,14 @@ class HistoriquePaiement extends Eloquent
         'date',
         'heure',
     ];
+
+    public function infraction()
+    {
+        return $this->belongsTo(Infraction::class, 'infraction_id');
+    }
+
+    public function utilisateur()
+    {
+        return $this->belongsTo(Utilisateur::class, 'utilisateur_id');
+    }
 }

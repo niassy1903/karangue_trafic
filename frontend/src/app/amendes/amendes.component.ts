@@ -5,13 +5,14 @@ import { HttpClientModule } from '@angular/common/http';
 import Swal from 'sweetalert2';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { NavbarComponent } from '../navbar/navbar.component';
+import jsPDF from 'jspdf';
 
 @Component({
   selector: 'app-amendes',
   templateUrl: './amendes.component.html',
   styleUrls: ['./amendes.component.css'],
   standalone: true,
-  imports: [CommonModule, HttpClientModule,SidebarComponent,NavbarComponent],
+  imports: [CommonModule, HttpClientModule, SidebarComponent, NavbarComponent],
   providers: [InfractionService]
 })
 export class AmendesComponent implements OnInit {
@@ -20,29 +21,56 @@ export class AmendesComponent implements OnInit {
   currentInfractionId: number | null = null;
   currentPage: number = 1;
   totalPages: number = 1;
-  itemsPerPage: number = 10; // Nombre d'éléments par page
-  montant : string = '--';
+  itemsPerPage: number = 5; // Nombre d'éléments par page
+  totalInfractions: number = 0; // Total des infractions pour la pagination
+  montant: string = '--';
+  pages: number[] = []; // Tableau des numéros de pages
 
   constructor(private infractionService: InfractionService) {}
 
   ngOnInit(): void {
     this.loadInfractionsForPage(this.currentPage);
+    this.loadTotalInfractions(); // Charger le total des infractions
+  }
+
+  // Charger le total des infractions
+  loadTotalInfractions(): void {
+    this.infractionService.getAllInfractions(1, 10).subscribe(data => {
+      this.totalInfractions = data.data.length;
+      this.totalPages = Math.ceil(this.totalInfractions / this.itemsPerPage); // Calculer le nombre total de pages
+      this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1); // Générer les pages
+    });
   }
 
   // Charger les infractions pour une page spécifique
   loadInfractionsForPage(page: number): void {
-    this.infractionService.getAllInfractions().subscribe(response => {
-      this.amendes = response.data;
-      this.totalPages = response.totalPages;
+    this.infractionService.getInfractionsWithPagination(page, this.itemsPerPage).subscribe(response => {
+      console.log('Data received:', response); // Ajoutez ce log
+      this.amendes = response.data.data;
+      this.totalInfractions = response.data.total;
+      this.totalPages = response.data.last_page;
+      this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
     });
+  }
+  
+  // Fonction pour changer de page
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.loadInfractionsForPage(this.currentPage);
+    }
   }
 
   // Payer une amende
-  payAmende(id: number): void {
-    this.infractionService.payAmende(id, 35000).subscribe(() => {
-      this.loadInfractionsForPage(this.currentPage); // Recharger les infractions après le paiement
-    });
-  }
+  // Dans AmendesComponent
+payAmende(id: number, montant: number): void {
+  const utilisateurId = '12345';
+  const agentNom = localStorage.getItem('userName') || 'Agent'; // Récupérer depuis le service d'authentification
+  
+  this.infractionService.payAmende(id, montant).subscribe(() => {
+    this.loadInfractionsForPage(this.currentPage);
+  });
+}
 
   openModal(id: number): void {
     this.showModal = true;
@@ -52,14 +80,6 @@ export class AmendesComponent implements OnInit {
   // Fonction pour fermer le modal
   closeModal(): void {
     this.showModal = false;
-  }
-
-  // Fonction pour changer de page
-  changePage(page: number): void {
-    if (page >= 1 && page <= this.totalPages) {
-      this.currentPage = page;
-      this.loadInfractionsForPage(this.currentPage);
-    }
   }
 
   showWavePayment(id: number): void {
@@ -83,10 +103,7 @@ export class AmendesComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         // Appeler le service pour payer l'amende
-        this.infractionService.payAmende(id, parseFloat(result.value)).subscribe(() => {
-          Swal.fire('Paiement effectué', 'Le paiement a été enregistré avec succès.', 'success');
-          this.loadInfractionsForPage(this.currentPage); // Recharger les infractions après le paiement
-        });
+        this.payAmende(id, parseFloat(result.value));
       }
     });
   }
@@ -112,10 +129,7 @@ export class AmendesComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         // Appeler le service pour payer l'amende
-        this.infractionService.payAmende(id, parseFloat(result.value)).subscribe(() => {
-          Swal.fire('Paiement effectué', 'Le paiement a été enregistré avec succès.', 'success');
-          this.loadInfractionsForPage(this.currentPage); // Recharger les infractions après le paiement
-        });
+        this.payAmende(id, parseFloat(result.value));
       }
     });
   }
@@ -141,11 +155,43 @@ export class AmendesComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         // Appeler le service pour payer l'amende
-        this.infractionService.payAmende(id, parseFloat(result.value)).subscribe(() => {
-          Swal.fire('Paiement effectué', 'Le paiement a été enregistré avec succès.', 'success');
-          this.loadInfractionsForPage(this.currentPage); // Recharger les infractions après le paiement
-        });
+        this.payAmende(id, parseFloat(result.value));
       }
     });
   }
+
+
+  // Ajouter cette méthode dans la classe AmendesComponent
+  generateFacture(amende: any): void {
+    const doc = new jsPDF();
+    
+    // Récupérer l'agent depuis localStorage
+    
+  
+  // Entête
+  doc.setFontSize(18);
+  doc.text('Facture d\'amende', 15, 20);
+  doc.setLineWidth(0.5);
+  doc.line(15, 25, 195, 25);
+
+  // Informations principales
+  doc.setFontSize(12);
+  doc.text(`Nom du conducteur: ${amende.prenom_conducteur} ${amende.nom_conducteur}`, 15, 35);
+  doc.text(`Matricule: ${amende.plaque_matriculation}`, 15, 45);
+  doc.text(`Montant: ${amende.montant} FCFA`, 15, 55);
+  doc.text(`Date: ${amende.date}`, 15, 65);
+  doc.text(`Heure: ${amende.heure}`, 15, 75);
+  
+  // Récupérer le nom de l'agent depuis le localStorage ou un service d'authentification
+  const agent = JSON.parse(localStorage.getItem('currentUser') || '{}')
+  doc.text(`Agent enregistreur: ${amende.agent_nom || agent.nom || 'Non spécifié'}`, 15, 85);
+
+  // Signature
+  doc.setFontSize(10);
+  doc.text('Signature:', 15, 110);
+  doc.line(15, 115, 60, 115);
+
+  // Sauvegarder le PDF
+  doc.save(`facture_${amende.id}_${new Date().getTime()}.pdf`);
+}
 }

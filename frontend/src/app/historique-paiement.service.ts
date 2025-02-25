@@ -11,6 +11,6 @@ export class HistoriquePaiementService {
   constructor(private http: HttpClient) {}
 
   getHistoriquePaiements(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/historique-paiements`);
+    return this.http.get(`${this.apiUrl}/historique-paiements?include=infraction,utilisateur`);
   }
 }

@@ -2,6 +2,7 @@ body {
     background-color: #f8f9fa;
   }
   
+  
   .card {
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -155,10 +156,90 @@ body {
     transition: width 0.3s;
   }
   
-  /* Contenu principal */
-  .main-content {
-    margin-left: 340px; /* Ajusté pour tenir compte de la largeur du sidebar */
-    margin-top: 80px; /* Ajusté pour tenir compte de la hauteur du navbar */
-    padding: 20px;
+  .dashboard-layout {
+    display: flex;
+    min-height: 100vh;
+    overflow-x: hidden; /* Empêche le défilement horizontal */
   }
   
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    transition: margin-left 0.3s;
+    box-sizing: border-box; /* Inclut les marges et les bordures dans la largeur totale */
+  }
+  
+  .content-box {
+    flex: 1;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Box-shadow subtil */
+    border-radius: 8px;
+    background-color: #fff;
+    max-width: 1200px; /* Assure que le conteneur ne dépasse pas */
+    margin: 20px auto; /* Centre le conteneur avec un peu de marge */
+    overflow-x: auto; /* Permet le défilement horizontal si nécessaire */
+  }
+  
+  /* Responsive Styles for Small Screens */
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 60px; /* Ajustez en fonction de la largeur réduite de la sidebar */
+    padding: 10px;
+  }
+
+  .card {
+    padding: 15px; /* Réduisez le padding */
+  }
+
+  .card-header h4 {
+    font-size: 20px; /* Réduisez la taille du titre */
+  }
+
+  .input-group-prepend, .input-group-append {
+    display: none; /* Masquez les icônes de recherche et de filtre */
+  }
+
+  .form-control {
+    font-size: 14px; /* Réduisez la taille de la police dans le champ de recherche */
+  }
+
+  .table th, .table td {
+    padding: 8px; /* Réduisez le padding des cellules du tableau */
+    font-size: 14px; /* Réduisez la taille de la police dans le tableau */
+  }
+
+  .pagination-container {
+    margin-top: 20px;
+  }
+
+  .page-link {
+    padding: 5px 10px; /* Réduisez le padding des liens de pagination */
+    font-size: 14px; /* Réduisez la taille de la police des liens de pagination */
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 10px; /* Réduisez davantage le padding */
+  }
+
+  .card-header h4 {
+    font-size: 18px; /* Réduisez davantage la taille du titre */
+  }
+
+  .form-control {
+    font-size: 12px; /* Réduisez davantage la taille de la police dans le champ de recherche */
+  }
+
+  .table th, .table td {
+    padding: 6px; /* Réduisez davantage le padding des cellules du tableau */
+    font-size: 12px; /* Réduisez davantage la taille de la police dans le tableau */
+  }
+
+  .page-link {
+    padding: 4px 8px; /* Réduisez davantage le padding des liens de pagination */
+    font-size: 12px; /* Réduisez davantage la taille de la police des liens de pagination */
+  }
+}

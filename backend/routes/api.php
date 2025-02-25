@@ -52,9 +52,7 @@ Route::middleware(['isAdmin'])->group(function (){
     // Bloque plusieurs utilisateurs en une seule requête
     Route::post('/utilisateurs/block-multiple', [UtilisateurController::class, 'blockMultiple']);
 
-    // Réinitialisation du code secret d'un utilisateur
-    Route::post('/utilisateurs/reset-code', [UtilisateurController::class, 'resetCodeSecret']);
-
+   
     // Assigne une carte à un utilisateur spécifique
     Route::put('/utilisateurs/{id}/assigner-carte', [UtilisateurController::class, 'assignerCarte']);
 
@@ -98,6 +96,10 @@ Route::middleware(['isAdmin'])->group(function (){
 // Authentifie un utilisateur (cette route ne nécessite pas d'être protégée par le middleware IsAdmin)
 Route::post('/utilisateurs/authenticate', [UtilisateurController::class, 'authenticate']);
 
+ // Réinitialisation du code secret d'un utilisateur
+ Route::post('/utilisateurs/reset-code', [UtilisateurController::class, 'resetCodeSecret']);
+
+
 // Route pour la déconnexion
 Route::middleware('auth:utilisateur')->post('/utilisateurs/logout', [UtilisateurController::class, 'logout']);
 
@@ -124,7 +126,16 @@ Route::get('/infractions-par-periode', [InfractionController::class, 'infraction
 Route::get('/toutes-infractions', [InfractionController::class, 'obtenirToutesInfractions']);
 Route::get('/infractions-avec-pagination', [InfractionController::class, 'obtenirInfractionsAvecPagination']);
 
+
+Route::get('/test-email/{id}', [InfractionController::class, 'envoyerFactureParEmail']);
+Route::get('/test', function () {
+    return 'Test route is working!';
+});
+
 use App\Http\Controllers\HistoriquePaiementController;
 
 Route::get('/historique-paiements', [HistoriquePaiementController::class, 'index']);
 Route::get('/historique-paiements/{id}', [HistoriquePaiementController::class, 'show']);
+
+
+

@@ -1,7 +1,7 @@
 <div class="login-container">
   <div class="left-side">
     <img src="logo.png" alt="Logo" class="logo">
-    
+
     <!-- Section de connexion normale -->
     <div *ngIf="!showPasswordReset">
       <h1>Connexion</h1>
@@ -12,48 +12,48 @@
       <p class="rfid-text">ou par carte RFID : Approchez votre carte du lecteur</p>
 
       <div class="code-inputs">
-        <input 
-          [disabled]="isLocked" 
-          type="password" 
-          maxlength="1" 
-          (input)="goToNext($any($event).target, 1)" 
+        <input
+          [disabled]="isLocked"
+          type="password"
+          maxlength="1"
+          (input)="goToNext($any($event).target, 1)"
           #input1
           inputmode="numeric"
           pattern="[0-9]*"
           autocomplete="off"
         >
-        <input 
-          [disabled]="isLocked" 
-          type="password" 
-          maxlength="1" 
-          (input)="goToNext($any($event).target, 2)" 
+        <input
+          [disabled]="isLocked"
+          type="password"
+          maxlength="1"
+          (input)="goToNext($any($event).target, 2)"
           #input2
           inputmode="numeric"
           pattern="[0-9]*"
           autocomplete="off"
         >
-        <input 
-          [disabled]="isLocked" 
-          type="password" 
-          maxlength="1" 
-          (input)="goToNext($any($event).target, 3)" 
+        <input
+          [disabled]="isLocked"
+          type="password"
+          maxlength="1"
+          (input)="goToNext($any($event).target, 3)"
           #input3
           inputmode="numeric"
           pattern="[0-9]*"
           autocomplete="off"
         >
-        <input 
-          [disabled]="isLocked" 
-          type="password" 
-          maxlength="1" 
-          (input)="goToNext($any($event).target, 4)" 
+        <input
+          [disabled]="isLocked"
+          type="password"
+          maxlength="1"
+          (input)="goToNext($any($event).target, 4)"
           #input4
           inputmode="numeric"
           pattern="[0-9]*"
           autocomplete="off"
         >
       </div>
-      
+
       <div class="error-message">{{errorMessage}}</div>
       <div *ngIf="isLocked" class="lock-message">
         <div class="progress-container">
@@ -62,8 +62,8 @@
         <p>Compte bloqué pendant {{lockTime}} secondes</p>
       </div>
       <p>
-        Si vous avez oublié votre code, veuillez cliquer sur 
-        <a href="#" class="forgot-link" (click)="togglePasswordReset($event)">Code secret oublié</a>>.
+        Si vous avez oublié votre code, veuillez cliquer sur
+        <a href="#" class="forgot-link" (click)="togglePasswordReset($event)">Code secret oublié</a>
       </p>
     </div>
 
@@ -71,32 +71,42 @@
     <div *ngIf="showPasswordReset" class="password-reset">
       <h1>Réinitialisation du Code Secret</h1>
       <p>Veuillez entrer votre adresse email pour recevoir un code de réinitialisation.</p>
-      <input 
-  type="email" 
-  [(ngModel)]="resetEmail" 
-  class="form-control" 
-  placeholder="Email" 
-  [disabled]="isSending"
-  (click)="$event.stopPropagation()"
->
-      <button 
-        class="btn btn-primary" 
-        (click)="sendResetCode()" 
+      <input
+        type="email"
+        [(ngModel)]="resetEmail"
+        class="form-control"
+        placeholder="Email"
+        [disabled]="isSending"
+        (click)="$event.stopPropagation()"
+      >
+      <button
+        class="btn btn-primary"
+        (click)="sendResetCode()"
         [disabled]="isSending || !resetEmail"
       >
         Envoyer le Code
       </button>
+      <span class="button-spacer"></span> <!-- Ajout d'un espace entre les boutons -->
+      <button
+        *ngIf="showResend"
+        class="btn btn-secondary"
+        (click)="resendCode()"
+        [disabled]="isResendDisabled"
+      >
+        Renvoyer le Code
+      </button>
       <div *ngIf="resetMessage" class="reset-message" [ngClass]="{'text-success': isSuccess, 'text-danger': !isSuccess}">
         {{ resetMessage }}
       </div>
-      
-      <button 
-        class="btn btn-link" 
+    
+      <button
+        class="btn btn-link"
         (click)="togglePasswordReset()"
       >
         Retour à la Connexion
       </button>
     </div>
+    
   </div>
 
   <!-- Partie droite avec l'avatar agrandi -->
