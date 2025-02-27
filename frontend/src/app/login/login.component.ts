@@ -1,6 +1,6 @@
 import {
   Component, ElementRef, QueryList, ViewChildren,
-  HostListener, OnDestroy, ViewChild
+  HostListener, OnDestroy, ViewChild, AfterViewInit
 } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
@@ -16,7 +16,7 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./login.component.css'],
   providers: [AuthService]
 })
-export class LoginComponent implements OnDestroy {
+export class LoginComponent implements OnDestroy, AfterViewInit {
   @ViewChildren('input1, input2, input3, input4') inputs!: QueryList<ElementRef>;
   @ViewChild('emailInput') emailInput!: ElementRef<HTMLInputElement>;
 
@@ -70,6 +70,44 @@ export class LoginComponent implements OnDestroy {
         this.activateLock(remainingTime);
       } else {
         localStorage.removeItem('lockExpiration');
+      }
+    }
+  }
+
+  ngAfterViewInit() {
+    // Focus initial sur le premier input
+    setTimeout(() => {
+      this.focusFirstInput();
+    });
+    
+    // Ajout d'un écouteur d'événement global pour la perte de focus
+    document.addEventListener('focusout', this.handleFocusOut.bind(this));
+  }
+  
+  focusFirstInput() {
+    // Ne focus que si nous sommes sur la page de login (pas de reset) et que l'input n'est pas verrouillé
+    if (!this.isLocked && !this.showPasswordReset && this.inputs?.first) {
+      this.inputs.first.nativeElement.focus();
+    }
+  }
+
+  handleFocusOut(event: FocusEvent) {
+    // Vérifie si l'élément qui vient de perdre le focus est dans notre composant
+    const relatedTarget = event.relatedTarget as HTMLElement;
+    const target = event.target as HTMLElement;
+    
+    // Si on est sur la page de login (pas de reset) et que l'élément cible n'est pas un autre input de code
+    if (!this.showPasswordReset && !this.isLocked) {
+      const inputsArray = this.inputs?.toArray().map(input => input.nativeElement);
+      
+      // Si on clique ailleurs que sur un input de notre code
+      if (inputsArray && !inputsArray.includes(relatedTarget) && inputsArray.includes(target)) {
+        // Petite temporisation pour permettre à d'autres événements de se terminer
+        setTimeout(() => {
+          // Trouve le premier input vide ou revient au premier si tous sont remplis
+          const emptyInput = inputsArray.find(input => !input.value) || inputsArray[0];
+          emptyInput.focus();
+        }, 10);
       }
     }
   }
@@ -210,7 +248,7 @@ export class LoginComponent implements OnDestroy {
       input.nativeElement.value = '';
       input.nativeElement.type = 'password';
     });
-    this.inputs.first.nativeElement.focus();
+    setTimeout(() => this.inputs.first.nativeElement.focus(), 0);
   }
 
   // Gestion réinitialisation
@@ -218,6 +256,16 @@ export class LoginComponent implements OnDestroy {
     if (event) event.preventDefault();
     this.showPasswordReset = !this.showPasswordReset;
     this.resetMessage = '';
+    
+    // Si on retourne à la page de login, on met le focus sur le premier input
+    setTimeout(() => {
+      if (!this.showPasswordReset) {
+        this.focusFirstInput();
+      } else if (this.emailInput) {
+        // Si on est sur la page de reset, on met le focus sur l'input email
+        this.emailInput.nativeElement.focus();
+      }
+    });
   }
 
   sendResetCode() {
@@ -255,11 +303,16 @@ export class LoginComponent implements OnDestroy {
   }
 
   ngOnDestroy() {
+    // Nettoyage des écouteurs d'événement
     if (this.countdownInterval) {
       clearInterval(this.countdownInterval);
     }
     if (this.resendTimeout) {
       clearTimeout(this.resendTimeout);
     }
+    
+    // Suppression de l'écouteur de perte de focus
+    document.removeEventListener('focusout', this.handleFocusOut.bind(this));
   }
 }
+

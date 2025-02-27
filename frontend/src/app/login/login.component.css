@@ -203,11 +203,41 @@ code-inputs input {
     text-decoration: none;
   }
   
-  .back-link {
-    display: block;
-    margin-top: 20px;
-    color: #666;
-  }
+
+  /* Conteneur pour aligner les boutons sur la même ligne */
+.buttons-container {
+  display: flex;
+  justify-content: center;
+  gap: 15px; /* Espace entre les boutons */
+  margin-top: 20px;
+}
+
+/* Assurez-vous que les boutons ont une taille similaire */
+.buttons-container button {
+  min-width: 150px; /* Largeur minimale pour l'uniformité */
+}
+  /* Style pour le bouton de retour */
+.btn-back {
+  background-color: #f4f4f4;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin: 15px 0;
+    margin-top: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-back:hover {
+  background-color: #e4e4e4;
+}
+
+/* Pour s'assurer que le lien n'a pas de soulignement */
+.btn-link {
+  text-decoration: none !important;
+}
   
   .password-reset {
   animation: fadeIn 0.3s ease-in;
