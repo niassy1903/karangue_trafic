@@ -53,7 +53,7 @@ class UtilisateurController extends Controller
             "plaque_matriculation.unique" => "La plaque d'immatriculation existe déjà.",
             "police_id.exists" => "Le poste de police sélectionné est invalide.",
         ]);
-
+    
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
@@ -61,11 +61,11 @@ class UtilisateurController extends Controller
                 'errors' => $validator->errors()
             ], 422);
         }
-
+    
         // Vérification si police_id est renseigné pour un agent de sécurité
         if ($request->role === 'agent de sécurité' && $request->police_id) {
             $police = Police::find($request->police_id);
-
+    
             if (!$police) {
                 return response()->json([
                     'success' => false,
@@ -74,10 +74,10 @@ class UtilisateurController extends Controller
                 ], 422);
             }
         }
-
+    
         // Génération d'un code secret
         $codeSecret = rand(1000, 9999);
-
+    
         // Génération d'un matricule basé sur le rôle
         $prefixes = [
             'agent de sécurité' => 'AG',
@@ -86,7 +86,7 @@ class UtilisateurController extends Controller
         ];
         $prefix = $prefixes[$request->role] ?? 'XX';
         $matricule = sprintf("%s-25-%03d", $prefix, rand(000, 999));
-
+    
         // Création de l'utilisateur
         $utilisateur = Utilisateur::create([
             'nom' => $request->nom,
@@ -102,9 +102,13 @@ class UtilisateurController extends Controller
             'status' => 'actif',
             'police_id' => $request->police_id,
         ]);
-
+    
+        // Log action
+        $this->logAction($utilisateur->id, 'Création d\'un utilisateur');
+    
         return response()->json($utilisateur, 201);
     }
+    
 
     
     
