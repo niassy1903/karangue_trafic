@@ -13,95 +13,96 @@
         <div class="container mt-4">
           <h2 class="mb-4">Gestion des Utilisateurs</h2><br>
 
-          <!-- Boutons d'actions -->
-          <div class="d-flex gap-2 mb-3">
-            <button class="btn btn-danger" (click)="deleteMultipleUtilisateurs()" title="Supprimer les utilisateurs sélectionnés">
-              <i class="fas fa-trash-alt"></i> Supprimer
-            </button>
-            <button (click)="redirectToInscription()" class="btn btn-success" title="Ajouter un nouvel utilisateur">
-              <i class="fas fa-plus"></i> Ajouter
-            </button>
-            <label class="btn btn-secondary" title="Ajouter des utilisateurs par CSV">
-              <i class="fas fa-file-csv"></i> Ajouter par CSV
-              <input type="file" (change)="importCsv($event)" style="display: none;">
-            </label>
-            <button class="btn btn-warning" (click)="blockMultipleUtilisateurs()" title="Bloquer/Débloquer les utilisateurs sélectionnés">
-              <i class="fas fa-ban"></i> Bloquer/Débloquer
-            </button>
-            <span class="badge bg-primary" title="Nombre d'utilisateurs sélectionnés">
-              {{ selectedUsers.size }} Sélectionné(s)
-            </span>
-          </div><br>
+                <!-- Boutons d'actions -->
+       
+      <div class="d-flex gap-2 mb-3">
+        <button class="btn btn-danger" (click)="deleteMultipleUtilisateurs()" title="Supprimer les utilisateurs sélectionnés">
+          <i class="fas fa-trash-alt"></i> Supprimer
+        </button>
+        <button (click)="redirectToInscription()" class="btn btn-success" title="Ajouter un nouvel utilisateur">
+          <i class="fas fa-plus"></i> Ajouter
+        </button>
+        <button class="btn btn-secondary" title="Ajouter des utilisateurs par CSV" (click)="csvInput.click()">
+          <i class="fas fa-file-csv"></i> Ajouter par CSV
+        </button>
+        <input #csvInput type="file" (change)="importCsv($event)" style="display: none;">
+        <button class="btn btn-warning" (click)="blockMultipleUtilisateurs()" title="Bloquer/Débloquer les utilisateurs sélectionnés">
+          <i class="fas fa-ban"></i> Bloquer/Débloquer
+        </button>
+        <span class="badge bg-primary" title="Nombre d'utilisateurs sélectionnés">
+          {{ selectedUsers.size }} Sélectionné(s)
+        </span>
+      </div><br>
 
-          <!-- Barre de recherche et filtre -->
-          <div class="d-flex gap-2 mb-3">
-            <input type="text" class="form-control small-search" placeholder="Rechercher par Matricule..." [(ngModel)]="searchTerm" (input)="filterUsers()" />
-            <select class="form-control small-search" [(ngModel)]="selectedRole" (change)="filterUsers()">
-              <option value="">Tous</option>
-              <option value="administrateur">Administrateur</option>
-              <option value="agent de sécurité">Agent de Sécurité</option>
-              <option value="conducteur">Conducteur</option>
-            </select>
-            <button class="btn btn-primary small-button">✔ Filtre</button>
-          </div>
 
-          <!-- Message d'erreur si aucun résultat n'est trouvé -->
-          <div *ngIf="noResults" class="alert alert-success" role="alert">
-            Aucun résultat pour "{{ searchTerm }}"
-          </div>
 
-          <!-- Tableau des utilisateurs -->
-          <div class="table-responsive">
-            <table class="table table-bordered table-hover">
-              <thead class="table-light">
-                <tr>
-                  <th>
-                    <input type="checkbox" (change)="toggleSelectAll()">
-                  </th>
-                  <th>Matricule</th>
-                  <th>Prenom et Nom</th>
-                  <th>Email</th>
-                  <th>Role</th>
-                  <th>Carte</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let utilisateur of utilisateurs">
-                  <td>
-                    <input type="checkbox" [checked]="isSelected(utilisateur.id)" (change)="toggleSelection(utilisateur.id)">
-                  </td>
-                  <td>{{ utilisateur.matricule }}</td>
-                  <td>{{ utilisateur.prenom }} {{ utilisateur.nom }}</td>
-                  <td>{{ utilisateur.email }}</td>
-                  <td>{{ utilisateur.role }}</td>
-                  <td>{{ utilisateur.carte_id }}</td>
-                  <td>
-                    <span [ngClass]="{'text-success': utilisateur.status === 'Actif', 'text-danger': utilisateur.status === 'Inactif'}">
-                      {{ utilisateur.status }}
-                    </span>
-                  </td>
-                  <td>
-                    <button (click)="redirectToModifier(utilisateur.id)" class="btn btn-sm text-orange" title="Modifier">
-                      <i class="fas fa-pencil-alt"></i>
-                    </button>
-                   
-                    <button class="btn btn-sm text-orange" title="Supprimer" (click)="deleteUtilisateur(utilisateur.id)">
-                      <i class="fas fa-trash-alt"></i>
-                    </button>
-                    <button class="btn btn-sm text-orange" title="Bloquer/Débloquer" (click)="blockUtilisateur(utilisateur.id)">
-                      <i class="fas fa-ban"></i>
-                    </button>
-                    <button class="btn btn-sm text-orange" title="Assigner une carte" (click)="assignCard(utilisateur.id)">
-                      <i class="fas fa-clipboard"></i>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div><br>
+              <!-- Barre de recherche et filtre -->
+        <div class="d-flex gap-2 mb-3">
+          <input type="text" class="form-control small-search" placeholder="Rechercher par Matricule..." [(ngModel)]="searchTerm" (input)="filterUsers()" />
+          <select class="form-control small-search" [(ngModel)]="selectedRole" (change)="filterUsers()">
+            <option value="">Tous</option>
+            <option value="administrateur">Administrateur</option>
+            <option value="agent de sécurité">Agent de Sécurité</option>
+            <option value="conducteur">Conducteur</option>
+          </select>
+          <button class="btn btn-primary small-button">✔ Filtre</button>
+        </div>
 
+        <!-- Message d'erreur si aucun résultat n'est trouvé -->
+        <div *ngIf="noResults" class="alert alert-success" role="alert">
+          Aucun résultat pour "{{ searchTerm }}"
+        </div>
+
+        <!-- Tableau des utilisateurs -->
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover">
+            <thead class="table-light">
+              <tr>
+                <th>
+                  <input type="checkbox" (change)="toggleSelectAll()">
+                </th>
+                <th>Matricule</th>
+                <th>Prenom et Nom</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Carte</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let utilisateur of utilisateurs">
+                <td>
+                  <input type="checkbox" [checked]="isSelected(utilisateur.id)" (change)="toggleSelection(utilisateur.id)">
+                </td>
+                <td>{{ utilisateur.matricule }}</td>
+                <td>{{ utilisateur.prenom }} {{ utilisateur.nom }}</td>
+                <td>{{ utilisateur.email }}</td>
+                <td>{{ utilisateur.role }}</td>
+                <td>{{utilisateur.carte_id}}</td>
+                <td>
+                  <span [ngClass]="{'text-success': utilisateur.status === 'Actif', 'text-danger': utilisateur.status === 'Inactif'}">
+                    {{ utilisateur.status }}
+                  </span>
+                </td>
+                <td>
+                  <button (click)="redirectToModifier(utilisateur.id)" class="btn btn-sm text-orange" title="Modifier">
+                    <i class="fas fa-pencil-alt"></i>
+                  </button>
+                  <button class="btn btn-sm text-orange" title="Supprimer" (click)="deleteUtilisateur(utilisateur.id)">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                  <button class="btn btn-sm text-orange" title="Bloquer/Débloquer" (click)="blockUtilisateur(utilisateur.id)">
+                    <i class="fas fa-ban"></i>
+                  </button>
+                  <button class="btn btn-sm text-orange" title="Assigner une carte" (click)="assignCard(utilisateur.id)">
+                    <i class="fas fa-clipboard"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
           <!-- Pagination -->
           <div class="pagination-container d-flex justify-content-center">
             <nav>

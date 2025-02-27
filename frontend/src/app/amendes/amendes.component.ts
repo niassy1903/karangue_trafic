@@ -99,13 +99,15 @@ export class AmendesComponent implements OnInit {
         <div style="text-align: center;">
           <img src="wave_qr-1.png" alt="Wave" style="width: 100px; height: auto;">
           <input type="text" id="wave-input" class="swal2-input" placeholder="Saisir le montant...">
+          <div id="wave-error" style="color: red; display: none;">Veuillez saisir un montant valide supérieur à 6000.</div>
         </div>
       `,
       confirmButtonText: 'Confirmer',
       preConfirm: () => {
         const amount = (document.getElementById('wave-input') as HTMLInputElement).value;
-        if (!amount) {
-          Swal.showValidationMessage('Veuillez saisir un montant.');
+        if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 6000) {
+          Swal.showValidationMessage('Veuillez saisir un montant valide supérieur à 6000.');
+          return false; // Empêche la soumission si le montant est invalide
         }
         return amount;
       }
@@ -115,7 +117,22 @@ export class AmendesComponent implements OnInit {
         this.payAmende(id, parseFloat(result.value));
       }
     });
+  
+    // Contrôle en temps réel
+    const waveInput = document.getElementById('wave-input') as HTMLInputElement;
+    const waveError = document.getElementById('wave-error') as HTMLDivElement;
+  
+    waveInput.addEventListener('input', () => {
+      const amount = waveInput.value;
+      if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 6000) {
+        waveError.style.display = 'block';
+      } else {
+        waveError.style.display = 'none';
+      }
+    });
   }
+  
+  
 
   showOrangeMoneyPayment(id: number): void {
     this.closeModal(); // Fermer le modal avant d'afficher le SweetAlert
@@ -125,13 +142,15 @@ export class AmendesComponent implements OnInit {
         <div style="text-align: center;">
           <img src="orange_money_logo.jpeg" alt="Orange Money" style="width: 100px; height: auto;">
           <input type="text" id="om-input" class="swal2-input" placeholder="Saisir le montant...">
+          <div id="om-error" style="color: red; display: none;">Veuillez saisir un montant valide supérieur à 6000.</div>
         </div>
       `,
       confirmButtonText: 'Confirmer',
       preConfirm: () => {
         const amount = (document.getElementById('om-input') as HTMLInputElement).value;
-        if (!amount) {
-          Swal.showValidationMessage('Veuillez saisir un montant.');
+        if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 6000) {
+          Swal.showValidationMessage('Veuillez saisir un montant valide supérieur à 6000.');
+          return false; // Empêche la soumission si le montant est invalide
         }
         return amount;
       }
@@ -141,7 +160,21 @@ export class AmendesComponent implements OnInit {
         this.payAmende(id, parseFloat(result.value));
       }
     });
+  
+    // Contrôle en temps réel
+    const omInput = document.getElementById('om-input') as HTMLInputElement;
+    const omError = document.getElementById('om-error') as HTMLDivElement;
+  
+    omInput.addEventListener('input', () => {
+      const amount = omInput.value;
+      if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 6000) {
+        omError.style.display = 'block';
+      } else {
+        omError.style.display = 'none';
+      }
+    });
   }
+  
 
   showCashPayment(id: number): void {
     this.closeModal(); // Fermer le modal avant d'afficher le SweetAlert
@@ -151,13 +184,15 @@ export class AmendesComponent implements OnInit {
         <div style="text-align: center;">
           <img src="espece.png" alt="Espèces" style="width: 100px; height: auto;">
           <input type="text" id="cash-input" class="swal2-input" placeholder="Saisir le montant...">
+          <div id="cash-error" style="color: red; display: none;">Veuillez saisir un montant valide supérieur à 6000.</div>
         </div>
       `,
       confirmButtonText: 'Confirmer',
       preConfirm: () => {
         const amount = (document.getElementById('cash-input') as HTMLInputElement).value;
-        if (!amount) {
-          Swal.showValidationMessage('Veuillez saisir un montant.');
+        if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 6000) {
+          Swal.showValidationMessage('Veuillez saisir un montant valide supérieur à 6000.');
+          return false; // Empêche la soumission si le montant est invalide
         }
         return amount;
       }
@@ -167,8 +202,21 @@ export class AmendesComponent implements OnInit {
         this.payAmende(id, parseFloat(result.value));
       }
     });
+  
+    // Contrôle en temps réel
+    const cashInput = document.getElementById('cash-input') as HTMLInputElement;
+    const cashError = document.getElementById('cash-error') as HTMLDivElement;
+  
+    cashInput.addEventListener('input', () => {
+      const amount = cashInput.value;
+      if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 6000) {
+        cashError.style.display = 'block';
+      } else {
+        cashError.style.display = 'none';
+      }
+    });
   }
-
+  
 
   // Ajouter cette méthode dans la classe AmendesComponent
 generateFacture(amende: any): void {

@@ -402,36 +402,44 @@ class UtilisateurController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function resetCodeSecret(Request $request)
-{
-    $request->validate([
-        'email' => 'required|email',
-    ], [
-        'email.required' => 'L\'email est obligatoire.',
-        'email.email' => 'L\'email doit être valide.',
-    ]);
-
-    $utilisateur = Utilisateur::where('email', $request->email)->first();
-
-    if (!$utilisateur) {
-        return response()->json(['message' => 'Email invalide ou inexistant.'], 404);
+    {
+        // Validation de l'email
+        $request->validate([
+            'email' => 'required|email',
+        ], [
+            'email.required' => 'L\'email est obligatoire.',
+            'email.email' => 'L\'email doit être valide.',
+        ]);
+    
+        // Recherche de l'utilisateur
+        $utilisateur = Utilisateur::where('email', $request->email)->first();
+    
+        // Vérification si l'email existe
+        if (!$utilisateur) {
+            return response()->json(['message' => 'Cet email n\'existe pas dans notre base de données.'], 404);
+        }
+    
+        // Vérification si le compte est bloqué
+        if ($utilisateur->status === 'bloqué') {
+            return response()->json([
+                'message' => 'Votre compte est bloqué. Veuillez contacter le support pour plus d\'assistance.'
+            ], 403);
+        }
+    
+        // Génération du nouveau code secret
+        $newCode = rand(1000, 9999);
+        $utilisateur->code_secret = $newCode;
+        $utilisateur->save();
+    
+        // Envoi du code par email
+        Mail::raw("Votre nouveau code secret est : $newCode", function ($message) use ($utilisateur) {
+            $message->to($utilisateur->email)
+                     ->subject('Réinitialisation de votre code secret');
+        });
+    
+        return response()->json(['message' => 'Un nouveau code secret a été envoyé à votre adresse email.']);
     }
-
-    if ($utilisateur->status === 'bloqué') {
-        return response()->json(['message' => 'Votre compte est bloqué. Vous ne pouvez pas réinitialiser votre code secret.'], 403);
-    }
-
-    $newCode = rand(1000, 9999);
-    $utilisateur->code_secret = $newCode;
-    $utilisateur->save();
-
-    Mail::raw("Votre nouveau code secret est : $newCode", function ($message) use ($utilisateur) {
-        $message->to($utilisateur->email)
-                 ->subject('Votre nouveau code secret');
-    });
-
-    return response()->json(['message' => 'Veuillez vérifier votre email pour obtenir votre nouveau code secret.']);
-}
-
+    
 
     /**
      * Assigne une carte à un utilisateur.

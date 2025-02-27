@@ -17,9 +17,9 @@ import { HttpClientModule } from '@angular/common/http';
 export class NavbarComponent implements OnInit, OnDestroy {
   temporaryNotification: any = null;
   unreadCount = 0;
-  userPrenom: string | null = ''; // ✅ Stocker le prénom
-  userNom: string | null = ''; // ✅ Stocker le nom
-  userRole: string | null = ''; // ✅ Stocker le rôle
+  userPrenom: string | null = '';
+  userNom: string | null = '';
+  userRole: string | null = '';
   private notificationSubscription!: Subscription;
 
   constructor(private notificationService: NotificationService, private authService: AuthService) {}
@@ -28,35 +28,44 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.userPrenom = this.authService.getUserPrenom();
     this.userNom = this.authService.getUserNom();
     this.userRole = this.authService.getUserRole();
-  
-    const policeId = localStorage.getItem('policeId'); // ✅ Récupérer la police de l'agent connecté
-  
-    // Gestion des notifications
+
+    const policeId = localStorage.getItem('policeId');
+
+    // Écoute des notifications et mise à jour du compteur
     this.notificationSubscription = this.notificationService.getNotifications().subscribe((notification) => {
-      if (notification.police_id === policeId) { // ✅ Vérifier si l'infraction concerne cette police
+      if (notification.police_id === policeId) {
         this.temporaryNotification = notification;
+        
+        // Affiche la notification temporaire pendant 5 secondes
         setTimeout(() => {
           this.temporaryNotification = null;
-        }, 10000);
-        this.unreadCount++;
+        }, 5000); // 5 secondes
+        
+        this.updateUnreadCount(); // Met à jour le badge des notifications
       }
     });
-  
-    // Rejoindre la salle de la police spécifique
+
     if (policeId) {
       this.notificationService.joinPoliceRoom(policeId);
     }
+
+    this.updateUnreadCount(); // Initialisation
   }
-  
+
   ngOnDestroy() {
     if (this.notificationSubscription) {
       this.notificationSubscription.unsubscribe();
     }
   }
 
+  updateUnreadCount() {
+    this.unreadCount = this.notificationService.getUnreadCount();
+  }
+
   showUnreadNotifications() {
     const unreadNotifications = this.notificationService.getUnreadNotifications();
     if (unreadNotifications.length > 0) {
+      // Afficher les notifications dans un modal
       Swal.fire({
         title: '<strong>Notifications</strong>',
         icon: 'info',
@@ -72,6 +81,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
           </div>
         `,
         confirmButtonText: 'Fermer'
+      }).then(() => {
+        // Marque les notifications comme lues
+        this.notificationService.clearUnreadNotifications(); 
+        this.updateUnreadCount(); // Met à jour le badge
       });
     } else {
       Swal.fire({

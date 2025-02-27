@@ -10,7 +10,13 @@
 }
 
 .logo img {
-  width: 120px;
+  width: 200px; /* Augmentez la taille du logo */
+  transition: transform 0.3s; /* Ajoutez un effet de transition */
+  cursor: default; /* Change le curseur en flèche */
+}
+
+.logo img:hover {
+  transform: scale(1.1); /* Agrandit légèrement le logo au survol */
 }
 
 h3 {
@@ -26,6 +32,7 @@ h3 {
   align-items: center;
   width: 100%;
   text-align: left;
+  cursor: default; /* Change le curseur en flèche */
 }
 
 .nav-link i {
@@ -34,9 +41,14 @@ h3 {
 }
 
 .nav-item.active .nav-link {
-  background-color: #ffcc99;
+  background-color: #ffbb88 !important; /* Couleur de fond du hover */
   border-radius: 5px;
 }
+
+.nav-item.active .nav-link:hover {
+  background-color: #ffbb88 !important; /* Empêche le hover de modifier la couleur */
+}
+
 
 .logout-btn {
   margin-top: auto;

@@ -14,7 +14,7 @@ export class WebSocketService {
 
   // Établir la connexion WebSocket
   private connect() {
-    this.socket = new WebSocket('ws://localhost:3000/sse'); // Remplace par l'URL de ton serveur WebSocket
+    this.socket = new WebSocket('ws://localhost:3000'); // Remplace par l'URL de ton serveur WebSocket
 
     this.socket.onopen = () => {
       console.log('Connexion WebSocket établie.');

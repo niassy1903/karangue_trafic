@@ -296,31 +296,48 @@ export class LoginComponent implements OnDestroy, AfterViewInit {
     });
   }
 
+  validateEmail() {
+    if (!this.resetEmail) {
+      this.resetMessage = "L'email est obligatoire.";
+      this.isSuccess = false;
+      return false;
+    }
+  
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    if (!emailPattern.test(this.resetEmail)) {
+      this.resetMessage = "L'email doit être valide.";
+      this.isSuccess = false;
+      return false;
+    }
+  
+    this.resetMessage = ""; // Efface le message si tout est correct
+    return true;
+  }
+  
   sendResetCode() {
-    if (!this.resetEmail) return;
-
+    if (!this.validateEmail()) return;
+  
     this.isSending = true;
-    this.authService.resetCodeSecret(this.resetEmail).subscribe({
-      next: (response) => {
+    this.http.post('/api/reset-code', { email: this.resetEmail }).subscribe({
+      next: (response: any) => {
         this.resetMessage = response.message;
         this.isSuccess = true;
         this.isSending = false;
-        this.showResend = true;
-        this.isResendDisabled = true;
-
-        // Désactiver le bouton "Renvoyer" pendant 30 secondes
-        this.resendTimeout = setTimeout(() => {
-          this.isResendDisabled = false;
-        }, 30000);
       },
       error: (error) => {
-        this.resetMessage = error.message;
+        if (error.status === 404) {
+          this.resetMessage = "Email invalide ou inexistant.";
+        } else if (error.status === 403) {
+          this.resetMessage = "Votre compte est bloqué. Vous ne pouvez pas réinitialiser votre code secret.";
+        } else {
+          this.resetMessage = "l'email n'existe pas. Veuillez réessayer.";
+        }
         this.isSuccess = false;
         this.isSending = false;
       }
     });
   }
-
+  
   resendCode() {
     if (this.isResendDisabled) {
       this.resetMessage = 'Veuillez attendre 30 secondes avant de renvoyer le code.';
