@@ -85,7 +85,14 @@ export class InscriptionComponent implements OnInit {
 
     this.utilisateurService.createUtilisateur(this.inscriptionForm.value).subscribe(
       (response) => {
-        Swal.fire('Succès', 'Utilisateur créé avec succès!', 'success').then(() => {
+        Swal.fire({
+          title: 'Succès',
+          text: 'Utilisateur créé avec succès!',
+          icon: 'success',
+          timer: 2000,
+          timerProgressBar: true,
+          showConfirmButton: false
+        }).then(() => {
           this.router.navigate(['/utilisateur']);
         });
         this.inscriptionForm.reset();
@@ -95,7 +102,14 @@ export class InscriptionComponent implements OnInit {
         if (error.error.errors) {
           this.errorMessages = error.error.errors;
         } else {
-          Swal.fire('Erreur', 'Une erreur est survenue. Veuillez réessayer.', 'error');
+          Swal.fire({
+            title: 'Erreur',
+            text: 'Une erreur est survenue. Veuillez réessayer.',
+            icon: 'error',
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: false
+          });
         }
       }
     );

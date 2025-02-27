@@ -108,23 +108,18 @@ class InfractionController extends Controller
             'montant' => 'required|numeric',
             'utilisateur_id' => 'required|exists:utilisateurs,id', // Ajoutez cette validation
         ]);
-
+    
         $infraction = Infraction::findOrFail($id);
         $infraction->montant = $validatedData['montant'];
         $infraction->status = 'payé';
         $infraction->save();
-
-        // Enregistrer l'action de paiement dans HistoriquePaiement
-        HistoriquePaiement::create([
-            'infraction_id' => $infraction->id,
-            'utilisateur_id' => $validatedData['utilisateur_id'],
-            'action' => 'paiement effectué avec succès',
-            'date' => now()->format('Y-m-d'),
-            'heure' => now()->format('H:i:s'),
-        ]);
-
+    
+        // Utiliser la fonction logPaiementAction pour enregistrer l'action de paiement
+        $this->logPaiementAction($infraction->id, $validatedData['utilisateur_id'], 'paiement effectué avec succès');
+    
         return response()->json(['message' => 'Paiement enregistré']);
     }
+    
 
     public function infractionsParPeriode(Request $request)
     {
@@ -157,5 +152,19 @@ class InfractionController extends Controller
         $infractions = Infraction::orderBy('created_at', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
         return response()->json(['data' => $infractions]);
+    }
+
+    private function logPaiementAction($infractionId, $utilisateurId, $action)
+    {
+        $date = Carbon::now()->format('d/m/Y');
+        $heure = Carbon::now()->format('H:i');
+
+        HistoriquePaiement::create([
+            'infraction_id' => $infractionId,
+            'utilisateur_id' => $utilisateurId, // Enregistrer l'ID de l'utilisateur
+            'action' => $action,
+            'date' => $date,
+            'heure' => $heure,
+        ]);
     }
 }

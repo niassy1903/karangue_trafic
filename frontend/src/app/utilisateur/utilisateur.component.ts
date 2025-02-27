@@ -98,7 +98,14 @@ export class UtilisateurComponent implements OnInit {
       if (result.isConfirmed) {
         this.utilisateurService.deleteUtilisateur(id).subscribe(
           (response) => {
-            Swal.fire('Supprimé!', 'L\'utilisateur a été supprimé.', 'success');
+            Swal.fire({
+              title: 'Supprimé!',
+              text: 'L\'utilisateur a été supprimé.',
+              icon: 'success',
+              timer: 2000,
+              timerProgressBar: true,
+              showConfirmButton: false
+            });
             this.getUtilisateurs();
           },
           (error) => {
@@ -135,7 +142,14 @@ export class UtilisateurComponent implements OnInit {
       if (result.isConfirmed) {
         this.utilisateurService.blockUtilisateur(id).subscribe(
           (response) => {
-            Swal.fire('Succès!', successMessage, 'success');
+            Swal.fire({
+              title: 'Succès!',
+              text: successMessage,
+              icon: 'success',
+              timer: 2000,
+              timerProgressBar: true,
+              showConfirmButton: false
+            });
             this.getUtilisateurs();
           },
           (error) => {
@@ -149,7 +163,13 @@ export class UtilisateurComponent implements OnInit {
   // Supprimer plusieurs utilisateurs
   deleteMultipleUtilisateurs(): void {
     if (this.selectedUsers.size === 0) {
-      Swal.fire('Aucun utilisateur sélectionné', '', 'warning');
+      Swal.fire({
+        title: 'Aucun utilisateur sélectionné',
+        icon: 'warning',
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: false
+      });
       return;
     }
 
@@ -165,7 +185,14 @@ export class UtilisateurComponent implements OnInit {
       if (result.isConfirmed) {
         this.utilisateurService.deleteMultipleUtilisateurs(Array.from(this.selectedUsers)).subscribe(
           (response) => {
-            Swal.fire('Supprimés!', 'Les utilisateurs ont été supprimés.', 'success');
+            Swal.fire({
+              title: 'Supprimés!',
+              text: 'Les utilisateurs ont été supprimés.',
+              icon: 'success',
+              timer: 2000,
+              timerProgressBar: true,
+              showConfirmButton: false
+            });
             this.getUtilisateurs();
             this.selectedUsers.clear();
           },
@@ -180,7 +207,13 @@ export class UtilisateurComponent implements OnInit {
   // Bloquer/Débloquer plusieurs utilisateurs
   blockMultipleUtilisateurs(): void {
     if (this.selectedUsers.size === 0) {
-      Swal.fire('Aucun utilisateur sélectionné', '', 'warning');
+      Swal.fire({
+        title: 'Aucun utilisateur sélectionné',
+        icon: 'warning',
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: false
+      });
       return;
     }
 
@@ -196,7 +229,14 @@ export class UtilisateurComponent implements OnInit {
       if (result.isConfirmed) {
         this.utilisateurService.blockMultipleUtilisateurs(Array.from(this.selectedUsers)).subscribe(
           (response) => {
-            Swal.fire('Succès!', 'Les utilisateurs ont été bloqués/débloqués.', 'success');
+            Swal.fire({
+              title: 'Succès!',
+              text: 'Les utilisateurs ont été bloqués/débloqués.',
+              icon: 'success',
+              timer: 2000,
+              timerProgressBar: true,
+              showConfirmButton: false
+            });
             this.getUtilisateurs();
             this.selectedUsers.clear();
           },
@@ -250,16 +290,37 @@ export class UtilisateurComponent implements OnInit {
 
       this.utilisateurService.importCsv(formData).subscribe(
         (response) => {
-          Swal.fire('Succès!', 'Importation réussie!', 'success');
+          Swal.fire({
+            title: 'Succès!',
+            text: 'Importation réussie!',
+            icon: 'success',
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: false
+          });
           this.getUtilisateurs();
         },
         (error) => {
-          Swal.fire('Erreur!', 'L\'importation a échoué.', 'error');
+          Swal.fire({
+            title: 'Erreur!',
+            text: 'L\'importation a échoué.',
+            icon: 'error',
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: false
+          });
           console.error('Erreur lors de l\'importation des utilisateurs', error);
         }
       );
     } else {
-      Swal.fire('Erreur!', 'Veuillez sélectionner un fichier CSV.', 'error');
+      Swal.fire({
+        title: 'Erreur!',
+        text: 'Veuillez sélectionner un fichier CSV.',
+        icon: 'error',
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: false
+      });
     }
   }
 
@@ -286,11 +347,25 @@ export class UtilisateurComponent implements OnInit {
         const cardId = result.value;
         this.utilisateurService.assignCard(id, cardId).subscribe(
           (response) => {
-            Swal.fire('Succès!', 'Carte assignée avec succès.', 'success');
+            Swal.fire({
+              title: 'Succès!',
+              text: 'Carte assignée avec succès.',
+              icon: 'success',
+              timer: 2000,
+              timerProgressBar: true,
+              showConfirmButton: false
+            });
             this.getUtilisateurs();
           },
           (error) => {
-            Swal.fire('Erreur!', 'L\'assignation de la carte a échoué.', 'error');
+            Swal.fire({
+              title: 'Erreur!',
+              text: 'L\'assignation de la carte a échoué.',
+              icon: 'error',
+              timer: 2000,
+              timerProgressBar: true,
+              showConfirmButton: false
+            });
             console.error('Erreur lors de l\'assignation de la carte', error);
           }
         );

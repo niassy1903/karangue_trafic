@@ -74,7 +74,14 @@ export class ModifierComponent implements OnInit {
 
     this.utilisateurService.updateUtilisateur(this.utilisateurId, this.modifierForm.value).subscribe(
       (response) => {
-        Swal.fire('Succès', 'Utilisateur mis à jour avec succès!', 'success').then(() => {
+        Swal.fire({
+          title: 'Succès',
+          text: 'Utilisateur mis à jour avec succès!',
+          icon: 'success',
+          timer: 2000,
+          timerProgressBar: true,
+          showConfirmButton: false
+        }).then(() => {
           this.router.navigate(['/utilisateur']);
         });
       },
@@ -82,7 +89,14 @@ export class ModifierComponent implements OnInit {
         if (error.error.errors) {
           this.errorMessages = error.error.errors;
         } else {
-          Swal.fire('Erreur', 'Une erreur est survenue. Veuillez réessayer.', 'error');
+          Swal.fire({
+            title: 'Erreur',
+            text: 'Une erreur est survenue. Veuillez réessayer.',
+            icon: 'error',
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: false
+          });
         }
       }
     );

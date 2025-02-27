@@ -52,9 +52,9 @@
           pattern="[0-9]*"
           autocomplete="off"
         >
-      </div>
+      </div><br>
 
-      <div class="error-message">{{errorMessage}}</div>
+      <div *ngIf="errorMessage" class="error-message">{{errorMessage}}</div>
       <div *ngIf="isLocked" class="lock-message">
         <div class="progress-container">
           <div class="progress-bar" [style.width.%]="progress"></div>
@@ -77,9 +77,12 @@
         class="form-control"
         placeholder="Email"
         [disabled]="isSending"
-        (click)="$event.stopPropagation()"
+        (keyup)="validateEmail()"
       >
-      
+      <div *ngIf="resetMessage" class="reset-message" [ngClass]="{'text-success': isSuccess, 'text-danger': !isSuccess}">
+        {{ resetMessage }}
+      </div>
+
       <div class="buttons-container">
         <button
           class="btn btn-primary"
@@ -87,14 +90,14 @@
           [disabled]="isSending || !resetEmail">
           Envoyer le Code
         </button>
-        
+
         <button
           class="btn btn-back"
           (click)="togglePasswordReset()">
           Retour à la Connexion
         </button>
       </div>
-      
+
       <span class="button-spacer"></span> <!-- Ajout d'un espace entre les boutons -->
       <button
         *ngIf="showResend"
@@ -104,13 +107,7 @@
       >
         Renvoyer le Code
       </button>
-      <div *ngIf="resetMessage" class="reset-message" [ngClass]="{'text-success': isSuccess, 'text-danger': !isSuccess}">
-        {{ resetMessage }}
-      </div>
-    
-     
     </div>
-    
   </div>
 
   <!-- Partie droite avec l'avatar agrandi -->

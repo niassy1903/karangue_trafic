@@ -7,7 +7,9 @@
       </button>
     </form>
     <div class="navbar-icons">
+      <!-- Icône de notification avec badge -->
       <i class="fas fa-bell notification-icon" (click)="showUnreadNotifications()"></i>
+      <!-- Badge de notifications non lues -->
       <span class="badge bg-danger" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
       <div class="user-profile">
         <img src="avatarUser.png" alt="Admin">

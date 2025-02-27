@@ -9,7 +9,7 @@ import { AuthService } from '../auth.service'; // Assurez-vous d'importer AuthSe
 
 interface Historique {
   id: string;
-  plaque_matriculation: string;
+  plaque_matriculation : string;
   prenom: string;
   nom: string;
   date: string;
@@ -50,21 +50,27 @@ export class HistoriqueAmendesComponent implements OnInit {
     this.nom = this.authService.getUserNom() || 'Inconnu';
   }
 
+  
   loadHistoriquePaiements() {
     this.historiquePaiementService.getHistoriquePaiements().subscribe(data => {
-      this.historiques = data.data.map((item: any) => ({
-        id: item._id,
-        plaque_matriculation: item.infraction.plaque_matriculation,
-        prenom: this.prenom, // Utiliser le prénom de l'utilisateur connecté
-        nom: this.nom, // Utiliser le nom de l'utilisateur connecté
-        date: item.date,
-        heure: item.heure,
-        action: item.action,
-        montant: item.montant || 0 // Utilisation du montant si disponible
-      }));
+      this.historiques = data.data.map((item: any) => {
+        // Vérifiez si l'infraction et plaque_matriculation existent
+        const plaqueMatriculation = item.infraction ? item.infraction.plaque_matriculation : 'Inconnu';
+        return {
+          id: item._id,
+          plaque_matriculation: plaqueMatriculation,
+          prenom: this.prenom, // Utiliser le prénom de l'utilisateur connecté
+          nom: this.nom, // Utiliser le nom de l'utilisateur connecté
+          date: item.date,
+          heure: item.heure,
+          action: item.action,
+          montant: item.montant || 0 // Utilisation du montant si disponible
+        };
+      });
       this.filterHistoriques();
     });
   }
+  
 
   filterHistoriques() {
     this.filteredHistoriques = this.historiques.filter(historique =>
