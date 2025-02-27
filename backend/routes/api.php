@@ -6,6 +6,7 @@ use App\Http\Controllers\UtilisateurController;
 use App\Http\Controllers\HistoriqueController;
 use App\Http\Controllers\InfractionController;
 use App\Http\Controllers\HistoriquePaiementController;
+use App\Http\Controllers\PoliceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -89,9 +90,16 @@ Route::middleware(['isAdmin'])->group(function (){
     //voir l'historique d'un utilisateur à partir de son id
     Route::get('/historiques/{id}', [HistoriqueController::class, 'show']);
 
+
+
+
+    Route::apiResource('polices', PoliceController::class);
+
  
 
 });
+
+
 
   
 
@@ -133,6 +141,7 @@ Route::post('/payer-amende/{id}', [InfractionController::class, 'payerAmende']);
 Route::get('/infractions-par-periode', [InfractionController::class, 'infractionsParPeriode']);
 Route::get('/toutes-infractions', [InfractionController::class, 'obtenirToutesInfractions']);
 Route::get('/infractions-avec-pagination', [InfractionController::class, 'obtenirInfractionsAvecPagination']);
+Route::post('/transferer-notification', [InfractionController::class, 'transfererNotification']);
 
 
 
@@ -141,3 +150,6 @@ Route::get('/infractions-avec-pagination', [InfractionController::class, 'obteni
 // Routes pour la gestion des historiques de paiement
 Route::get('/historique-paiements', [HistoriquePaiementController::class, 'index']);
 Route::get('/historique-paiements/{id}', [HistoriquePaiementController::class, 'show']);
+
+
+

@@ -79,13 +79,22 @@
         [disabled]="isSending"
         (click)="$event.stopPropagation()"
       >
-      <button
-        class="btn btn-primary"
-        (click)="sendResetCode()"
-        [disabled]="isSending || !resetEmail"
-      >
-        Envoyer le Code
-      </button>
+      
+      <div class="buttons-container">
+        <button
+          class="btn btn-primary"
+          (click)="sendResetCode()"
+          [disabled]="isSending || !resetEmail">
+          Envoyer le Code
+        </button>
+        
+        <button
+          class="btn btn-back"
+          (click)="togglePasswordReset()">
+          Retour à la Connexion
+        </button>
+      </div>
+      
       <span class="button-spacer"></span> <!-- Ajout d'un espace entre les boutons -->
       <button
         *ngIf="showResend"
@@ -99,12 +108,7 @@
         {{ resetMessage }}
       </div>
     
-      <button
-        class="btn btn-link"
-        (click)="togglePasswordReset()"
-      >
-        Retour à la Connexion
-      </button>
+     
     </div>
     
   </div>

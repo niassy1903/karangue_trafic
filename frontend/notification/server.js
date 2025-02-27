@@ -20,6 +20,11 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log('Un utilisateur s\'est déconnecté');
   });
+
+  // Joindre une salle spécifique pour chaque police
+  socket.on('joinPoliceRoom', (policeId) => {
+    socket.join(policeId);
+  });
 });
 
 // Endpoint pour envoyer une notification lors d'une nouvelle infraction
@@ -28,6 +33,18 @@ app.post('/send-notification', (req, res) => {
   io.emit('newNotification', notification); // Diffuser à tous les clients
   res.status(200).json({ message: 'Notification envoyée' });
 });
+
+// Endpoint pour envoyer une notification à une police spécifique
+app.post('/send-notification-to-police', (req, res) => {
+  const { police_id, message, conducteur, plaque, vitesse, date, heure } = req.body;
+  const notification = { message, conducteur, plaque, vitesse, date, heure };
+
+  // Envoyer la notification aux agents de la police spécifique
+  io.to(police_id).emit('newNotification', notification);
+
+  res.status(200).json({ message: 'Notification envoyée à la police' });
+});
+
 
 const PORT = 3000;
 server.listen(PORT, () => {

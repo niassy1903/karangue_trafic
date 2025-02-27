@@ -12,12 +12,10 @@ import { NgZone } from '@angular/core';
 })
 export class AuthService {
   private apiUrl = 'http://127.0.0.1:8000/api/utilisateurs/authenticate';
-
-   private inactivityTimeout: any;
-  private readonly TIMEOUT_DURATION = 10 * 60 * 1000; // 3 minutes
+  private inactivityTimeout: any;
+  private readonly TIMEOUT_DURATION = 10 * 60 * 1000; // 10 minutes
 
   constructor(private http: HttpClient, private router: Router, private ngZone: NgZone) {}
-
 
   // Ajoutez cette méthode
   initInactivityTimer() {
@@ -41,7 +39,9 @@ export class AuthService {
     localStorage.removeItem('role');
     localStorage.removeItem('nom');
     localStorage.removeItem('prenom');
-  
+    localStorage.removeItem('utilisateur_id'); // Supprimer l'ID de l'utilisateur
+    localStorage.removeItem('policeId'); // ✅ Supprimer l'ID de la police
+
     this.router.navigate(['/login']);
     clearTimeout(this.inactivityTimeout);
     window.removeEventListener('mousemove', this.resetInactivityTimer.bind(this));
@@ -49,66 +49,54 @@ export class AuthService {
     window.removeEventListener('click', this.resetInactivityTimer.bind(this));
   }
 
-
-
-
-  // auth.service.ts
   authenticate(codeSecret: string): Observable<any> {
-  const code = parseInt(codeSecret, 10);
+    const code = parseInt(codeSecret, 10);
 
-  if (isNaN(code)) {
-    return throwError(() => ({
-      success: false,
-      message: 'Code invalide',
-      errors: { code_secret: 'Doit contenir uniquement des chiffres' }
-    }));
-  }
-
-  return this.http.post<any>(this.apiUrl, { code_secret: code }).pipe(
-    tap(response => {
-      console.log("Réponse serveur :", response); // ✅ Ajoute ceci pour voir la réponse complète
-
-      if (response.token) {
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('role', response.user.role); // Stocke le rôle
-        localStorage.setItem('nom',response.user.nom); // Stocke l'expiration du verrou
-        localStorage.setItem('prenom',response.user.prenom); // Stocke l'expiration du verrou
-        
-
-        // ✅ Redirection en fonction du rôle
-        if (response.user.role === 'administrateur') {
-          this.router.navigate(['/admin-dashboard']).then(() => {
-            console.log("Redirection réussie vers /admin-dashboard");
-          });
-        } else if (response.user.role === 'agent de sécurité') {
-          this.router.navigate(['/dashboard']).then(() => {
-            console.log("Redirection réussie vers /dashboard");
-          });
-        } else {
-          console.log("Rôle inconnu, redirection par défaut vers /dashboard");
-          this.router.navigate(['/dashboard']);
-        }
-      }
-    }),
-    catchError(error => {
-      console.error('Erreur complète:', error);
+    if (isNaN(code)) {
       return throwError(() => ({
         success: false,
-        message: error.error?.message || 'Erreur inconnue',
-        errors: error.error?.errors || {},
-        status: error.status
+        message: 'Code invalide',
+        errors: { code_secret: 'Doit contenir uniquement des chiffres' }
       }));
-    })
-  );
-}
-
-  
-    // ✅ Méthode pour récupérer le prénom de l'utilisateur connecté
-    getUserPrenom(): string | null {
-      return localStorage.getItem('prenom');
     }
-  
-  // ✅ Ajoute cette méthode pour récupérer le rôle de l'utilisateur
+
+    return this.http.post<any>(this.apiUrl, { code_secret: code }).pipe(
+      tap(response => {
+        console.log("Réponse serveur :", response);
+
+        if (response.token) {
+          localStorage.setItem('token', response.token);
+          localStorage.setItem('role', response.user.role);
+          localStorage.setItem('nom', response.user.nom);
+          localStorage.setItem('prenom', response.user.prenom);
+          localStorage.setItem('utilisateur_id', response.user.id); // Stocker l'ID de l'utilisateur
+          localStorage.setItem('policeId', response.user.police_id); // ✅ Stocker l'ID de la police
+
+          if (response.user.role === 'administrateur') {
+            this.router.navigate(['/admin-dashboard']);
+          } else if (response.user.role === 'agent de sécurité') {
+            this.router.navigate(['/dashboard']);
+          } else {
+            this.router.navigate(['/dashboard']);
+          }
+        }
+      }),
+      catchError(error => {
+        console.error('Erreur complète:', error);
+        return throwError(() => ({
+          success: false,
+          message: error.error?.message || 'Erreur inconnue',
+          errors: error.error?.errors || {},
+          status: error.status
+        }));
+      })
+    );
+  }
+
+  getUserPrenom(): string | null {
+    return localStorage.getItem('prenom');
+  }
+
   getUserRole(): string | null {
     return localStorage.getItem('role');
   }
@@ -117,10 +105,9 @@ export class AuthService {
     return localStorage.getItem('nom');
   }
 
-  getUserId(): number | null {
-    return parseInt(localStorage.getItem('id') || '', 10);
+  getUserId(): string | null {
+    return localStorage.getItem('utilisateur_id'); // Méthode pour récupérer l'ID de l'utilisateur
   }
-
 
   getToken(): string | null {
     return localStorage.getItem('token');
@@ -140,7 +127,7 @@ export class AuthService {
 
   resetCodeSecret(email: string): Observable<any> {
     const url = 'http://127.0.0.1:8000/api/utilisateurs/reset-code';
-  
+
     return this.http.post<any>(url, { email }).pipe(
       tap(response => {
         console.log("Réponse du serveur :", response);
@@ -156,7 +143,4 @@ export class AuthService {
       })
     );
   }
-  
-  
-
 }

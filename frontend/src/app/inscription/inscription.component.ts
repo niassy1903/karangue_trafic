@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UtilisateurService } from '../utilisateur.service';
 import { Router } from '@angular/router';
@@ -17,11 +17,13 @@ import { NavbarComponent } from '../navbar/navbar.component';
   imports: [ReactiveFormsModule, CommonModule, HttpClientModule, SidebarComponent, NavbarComponent],
   providers: [UtilisateurService],
 })
-export class InscriptionComponent {
+export class InscriptionComponent implements OnInit {
   inscriptionForm: FormGroup;
   submitted = false;
   errorMessages: { email?: string; telephone?: string } = {};
-  isConducteur = false; // Variable pour afficher le champ "Plaque d'immatriculation"
+  isConducteur = false;
+  isAgent = false;
+  polices: any[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -35,19 +37,39 @@ export class InscriptionComponent {
       telephone: ['', [Validators.required, Validators.pattern('^(70|77|76|75|78)[0-9]{7}$')]],
       email: ['', [Validators.required, Validators.email]],
       role: ['', Validators.required],
-      plaque_immatriculation: ['']
+      plaque_immatriculation: [''],
+      police_id: ['']
     });
+  }
 
-    // Écoute les changements du rôle pour afficher le champ "Plaque d'immatriculation"
+  ngOnInit() {
+    this.utilisateurService.getPolices().subscribe(
+      (data) => {
+        this.polices = data;
+      },
+      (error) => {
+        console.error('Erreur lors de la récupération des postes de police', error);
+      }
+    );
+
     this.inscriptionForm.get('role')?.valueChanges.subscribe(value => {
       this.isConducteur = value === 'conducteur';
+      this.isAgent = value === 'agent de sécurité';
 
       if (this.isConducteur) {
         this.inscriptionForm.get('plaque_immatriculation')?.setValidators([Validators.required, Validators.maxLength(10)]);
       } else {
         this.inscriptionForm.get('plaque_immatriculation')?.clearValidators();
       }
+
+      if (this.isAgent) {
+        this.inscriptionForm.get('police_id')?.setValidators([Validators.required]);
+      } else {
+        this.inscriptionForm.get('police_id')?.clearValidators();
+      }
+
       this.inscriptionForm.get('plaque_immatriculation')?.updateValueAndValidity();
+      this.inscriptionForm.get('police_id')?.updateValueAndValidity();
     });
   }
 
@@ -77,5 +99,9 @@ export class InscriptionComponent {
         }
       }
     );
+  }
+
+  goBack() {
+    this.router.navigate(['/utilisateur']);
   }
 }

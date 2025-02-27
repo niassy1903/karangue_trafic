@@ -12,6 +12,7 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use App\Models\Police;
 
 class UtilisateurController extends Controller
 {
@@ -35,23 +36,24 @@ class UtilisateurController extends Controller
      */
     public function store(Request $request)
     {
-        // Validation des données de la requête
         $validator = Validator::make($request->all(), [
             'nom' => 'required|string',
             'prenom' => 'required|string',
-            'email' => 'required|email|unique:utilisateurs',
+            'email' => 'required|email|unique:utilisateurs,email',
             'adresse' => 'required|string',
-            'telephone' => 'required|string|unique:utilisateurs',
+            'telephone' => 'required|string|unique:utilisateurs,telephone',
             'role' => 'required|in:agent de sécurité,administrateur,conducteur',
-            'plaque_matriculation' => 'nullable|string|required_if:role,conducteur|unique:utilisateurs,plaque_matriculation'
+            'plaque_matriculation' => 'nullable|string|required_if:role,conducteur|unique:utilisateurs,plaque_matriculation',
+            'police_id' => 'nullable|exists:police,id', // Vérifie si le poste de police existe
         ], [
-            "email" => "L'adresse email existe déjà",
-            "telephone" => "Le numéro de téléphone existe déjà",
+            "email.unique" => "L'adresse email existe déjà",
+            "telephone.unique" => "Le numéro de téléphone existe déjà",
             'role.in' => 'Le rôle doit être soit "agent de sécurité", "administrateur" ou "conducteur".',
             "plaque_matriculation.required_if" => "La plaque d'immatriculation est requise pour le rôle de conducteur.",
-            "plaque_matriculation.unique" => "La plaque d'immatriculation existe déjà."
+            "plaque_matriculation.unique" => "La plaque d'immatriculation existe déjà.",
+            "police_id.exists" => "Le poste de police sélectionné est invalide.",
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
@@ -59,20 +61,32 @@ class UtilisateurController extends Controller
                 'errors' => $validator->errors()
             ], 422);
         }
-    
-        // Génération d'un code secret aléatoire
+
+        // Vérification si police_id est renseigné pour un agent de sécurité
+        if ($request->role === 'agent de sécurité' && $request->police_id) {
+            $police = Police::find($request->police_id);
+
+            if (!$police) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Le poste de police sélectionné est invalide.',
+                    'errors' => ['police_id' => ['Le poste de police sélectionné est invalide.']]
+                ], 422);
+            }
+        }
+
+        // Génération d'un code secret
         $codeSecret = rand(1000, 9999);
-    
-        // Génération du matricule en fonction du rôle
+
+        // Génération d'un matricule basé sur le rôle
         $prefixes = [
             'agent de sécurité' => 'AG',
             'administrateur' => 'AD',
             'conducteur' => 'CO'
         ];
-        
-        $prefix = $prefixes[$request->role] ?? 'XX'; // Valeur par défaut si le rôle est inconnu
-        $matricule = sprintf("%s-25-%03d", $prefix, rand(000, 999)); // Génération d'un numéro aléatoire à 3 chiffres
-    
+        $prefix = $prefixes[$request->role] ?? 'XX';
+        $matricule = sprintf("%s-25-%03d", $prefix, rand(000, 999));
+
         // Création de l'utilisateur
         $utilisateur = Utilisateur::create([
             'nom' => $request->nom,
@@ -86,15 +100,13 @@ class UtilisateurController extends Controller
             'plaque_matriculation' => $request->plaque_matriculation,
             'carte_id' => null,
             'status' => 'actif',
+            'police_id' => $request->police_id,
         ]);
-    
-        // Envoi du code secret par email
-        $this->sendCodeSecretEmail($utilisateur->email, $codeSecret);
-    
-        $this->logAction($utilisateur->id, 'Création d\'un utilisateur');
-    
+
         return response()->json($utilisateur, 201);
     }
+
+    
     
     /**
      * Envoie un email avec le code secret.
@@ -298,7 +310,8 @@ class UtilisateurController extends Controller
                         'id' => $utilisateur->id,
                         'prenom' => $utilisateur->prenom,
                         'nom' => $utilisateur->nom,
-                        'role' => $utilisateur->role
+                        'role' => $utilisateur->role,
+                        'police_id' => $utilisateur->police_id,
                     ]
                 ], 200);
             } catch (JWTException $e) {

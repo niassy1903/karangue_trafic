@@ -21,13 +21,15 @@ export class SidebarComponent implements OnInit {
   ngOnInit() {
     // Récupérer le rôle de l'utilisateur depuis le localStorage
     this.userRole = localStorage.getItem('role');
+  this.currentRoute = this.router.url; // Récupère l'URL actuelle
   }
 
   navigateTo(route: string) {
-    this.currentRoute = route; // Met à jour l'URL active
-    this.router.navigate([route]);
+    this.router.navigate([route]).then(() => {
+      this.currentRoute = this.router.url; // Met à jour après navigation
+    });
   }
-
+  
   logout() {
     this.authService.logout();
   }

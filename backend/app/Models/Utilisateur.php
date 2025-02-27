@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -26,7 +25,8 @@ class Utilisateur extends Eloquent implements JWTSubject, AuthenticatableContrac
         'role',
         'carte_id',
         'plaque_matriculation',
-        'status'
+        'status',
+        'police_id',
     ];
 
     public function getJWTIdentifier()
@@ -57,5 +57,13 @@ class Utilisateur extends Eloquent implements JWTSubject, AuthenticatableContrac
     public function getAuthPassword()
     {
         return $this->password; // Assurez-vous que cela correspond à votre champ de mot de passe
+    }
+
+    /**
+     * Relation avec le poste de police.
+     */
+    public function police()
+    {
+        return $this->belongsTo(Police::class, 'police_id', '_id');
     }
 }

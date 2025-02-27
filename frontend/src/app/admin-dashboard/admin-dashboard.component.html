@@ -30,8 +30,8 @@
                   <th>Prénom et Nom</th>
                   <th>Date</th>
                   <th>Heure</th>
-                  <th>Action</th>
-                  <th>Actions</th>
+                  
+                 
                 </tr>
               </thead>
               <tbody>
@@ -40,10 +40,7 @@
                   <td>{{ item.utilisateur.prenom }} {{ item.utilisateur.nom }}</td>
                   <td>{{ item.date }}</td>
                   <td>{{ item.heure }}</td>
-                  <td>{{ item.action }}</td>
-                  <td>
-                    <button (click)="deleteUtilisateur(item.utilisateur.id)">Supprimer</button>
-                  </td>
+                 
                 </tr>
               </tbody>
               

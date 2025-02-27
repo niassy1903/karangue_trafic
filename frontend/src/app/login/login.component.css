@@ -1,338 +1,368 @@
 /* Pour s'assurer que le conteneur prend toute la hauteur et s'adapte bien */
 body, html {
-    height: 100%;
-    margin: 0;
-    font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
+  height: 100%;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
 }
 
 
 /* Désactive les flèches pour les inputs number */
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+-webkit-appearance: none;
+margin: 0;
 }
 
 input[type="number"] {
-  -moz-appearance: textfield;
-  appearance: textfield;
+-moz-appearance: textfield;
+appearance: textfield;
 }
 
 /* Améliore l'apparence sur mobile */
 input[inputmode="numeric"] {
-  caret-color: transparent; /* Masque le curseur */
+caret-color: transparent; /* Masque le curseur */
 }
 
 .code-inputs input:focus {
-  caret-color: #FD7401; /* Réaffiche le curseur au focus */
+caret-color: #FD7401; /* Réaffiche le curseur au focus */
 } 
 
 /* Ajustement principal pour rendre le layout flexible */
 .login-container {
-    display: flex;
-    flex-direction: row;
-    height: calc(100vh - 40px); /* Ajustement pour laisser place au footer */
+  display: flex;
+  flex-direction: row;
+  height: calc(100vh - 40px); /* Ajustement pour laisser place au footer */
 }
 
 /* Ajustement du formulaire */
 .left-side {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 40px;
-    border-right: 5px solid #FD7401;
-    box-shadow: 5px 0 10px rgba(0, 0, 0, 0.1);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px;
+  border-right: 5px solid #FD7401;
+  box-shadow: 5px 0 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Assurer que le logo s'adapte */
 .logo {
-    width: 70%;
-    max-width: 400px;
-    margin-bottom: 20px;
+  width: 70%;
+  max-width: 400px;
+  margin-bottom: 20px;
 }
 /* Conteneur des champs de code */
 .code-inputs {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
 
 /* Ajustement des inputs */
 .code-inputs input {
-    width: 60px;
-    height: 60px;
-    font-size: 24px;
-    text-align: center;
-    border: 2px solid #FD7401;
-    border-radius: 10px;
-    transition: all 0.3s ease-in-out;
-    user-select: text;
-    -webkit-user-select: text;
-    caret-color: #FD7401;
+  width: 60px;
+  height: 60px;
+  font-size: 24px;
+  text-align: center;
+  border: 2px solid #FD7401;
+  border-radius: 10px;
+  transition: all 0.3s ease-in-out;
+  user-select: text;
+  -webkit-user-select: text;
+  caret-color: #FD7401;
 }
 
 code-inputs input {
-    transition: transform 0.2s ease;
+  transition: transform 0.2s ease;
 }
 /* Effet au focus */
 .code-inputs input:focus {
-    border-color: #413a31;
-    outline: none;
-    box-shadow: 0 0 5px rgba(255, 145, 0, 0.5);
-    transform: scale(1.05);
+  border-color: #413a31;
+  outline: none;
+  box-shadow: 0 0 5px rgba(255, 145, 0, 0.5);
+  transform: scale(1.05);
 
 }
 /* Partie droite (Avatar agrandi) */
 .right-side {
-    flex: 1.5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #f4f4f4;
+  flex: 1.5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f4f4f4;
 }
 
 /* Rendre l'avatar plus flexible */
 .avatar {
-    width: 100%;
-    max-width: 1000px;
-    border-radius: 50%;
+  width: 100%;
+  max-width: 1000px;
+  border-radius: 50%;
 }
 
 /* Footer ajusté */
 .footer {
-    background-color: #FD7401;
-    color: white;
-    text-align: center;
-    padding: 10px;
-    font-size: 16px;
-    width: 100%;
+  background-color: #FD7401;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  font-size: 16px;
+  width: 100%;
 }
 
 /* Message d'erreur en rouge */
 .error-message {
-    color: red;
-    margin: 15px 0;
-    min-height: 20px;
-    font-weight: regular;
-  }
-  
-  /* Conteneur de la barre de progression */
-  .progress-container {
-    width: 80%;
-    height: 10px;
-    background-color: #ffe0cc;
-    border-radius: 5px;
-    overflow: hidden;
-    margin: 10px auto;
-  }
-  
-  /* Barre de progression animée */
-  .progress-bar {
-    height: 100%;
-    background-color: #FD7401;
-    transition: width 0.5s linear;
-  }
-  
-  /* Message de blocage */
-  .lock-message {
-    text-align: center;
-    color: #FD7401;
-    margin-top: 15px;
-  }
-  
-  .lock-message p {
-    margin: 8px 0 0;
-  }
+  color: red;
+  margin: 15px 0;
+  min-height: 20px;
+  font-weight: regular;
+}
 
-  .forgot-link {
-    color: orange; /* Définit la couleur du texte en orange */
-    text-decoration: none; /* Retire le surlignage par défaut */
-  }
-  
-  .forgot-link:hover {
-    text-decoration: none; /* Assure qu'il n'y a pas de surlignage au survol */
-  }
+/* Conteneur de la barre de progression */
+.progress-container {
+  width: 80%;
+  height: 10px;
+  background-color: #ffe0cc;
+  border-radius: 5px;
+  overflow: hidden;
+  margin: 10px auto;
+}
+
+/* Barre de progression animée */
+.progress-bar {
+  height: 100%;
+  background-color: #FD7401;
+  transition: width 0.5s linear;
+}
+
+/* Message de blocage */
+.lock-message {
+  text-align: center;
+  color: #FD7401;
+  margin-top: 15px;
+}
+
+.lock-message p {
+  margin: 8px 0 0;
+}
+
+.forgot-link {
+  color: orange; /* Définit la couleur du texte en orange */
+  text-decoration: none; /* Retire le surlignage par défaut */
+}
+
+.forgot-link:hover {
+  text-decoration: none; /* Assure qu'il n'y a pas de surlignage au survol */
+}
 
 
-  /* Style pour la section de réinitialisation */
+/* Style pour la section de réinitialisation */
 .reset-form {
-    width: 80%;
-    max-width: 400px;
-    margin: 0 auto;
-  }
-  
-  .email-input input {
-    width: 100%;
-    padding: 12px;
-    margin: 15px 0;
-    border: 2px solid #FD7401;
-    border-radius: 8px;
-    font-size: 16px;
-  }
-  
-  .reset-actions {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    justify-content: center;
-    margin: 20px 0;
-  }
-  
-  .submit-button {
-    background-color: #FD7401;
-    color: white;
-    padding: 12px 25px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: opacity 0.3s;
-  }
-  
-  .submit-button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-  
-  .resend-link {
-    color: #FD7401;
-    text-decoration: none;
-  }
-  
-  .back-link {
-    display: block;
-    margin-top: 20px;
-    color: #666;
-  }
-  
-  .password-reset {
-  animation: fadeIn 0.3s ease-in;
+  width: 80%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.email-input input {
+  width: 100%;
+  padding: 12px;
+  margin: 15px 0;
+  border: 2px solid #FD7401;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.reset-actions {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.submit-button {
+  background-color: #FD7401;
+  color: white;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+
+.submit-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.resend-link {
+  color: #FD7401;
+  text-decoration: none;
+}
+
+
+/* Conteneur pour aligner les boutons sur la même ligne */
+.buttons-container {
+display: flex;
+justify-content: center;
+gap: 15px; /* Espace entre les boutons */
+margin-top: 20px;
+}
+
+/* Assurez-vous que les boutons ont une taille similaire */
+.buttons-container button {
+min-width: 150px; /* Largeur minimale pour l'uniformité */
+}
+/* Style pour le bouton de retour */
+.btn-back {
+background-color: #f4f4f4;
+color: #333;
+border: 1px solid #ddd;
+border-radius: 5px;
+margin: 15px 0;
+  margin-top: 15px;
+cursor: pointer;
+transition: all 0.3s ease;
+text-decoration: none;
+display: inline-block;
+}
+
+.btn-back:hover {
+background-color: #e4e4e4;
+}
+
+/* Pour s'assurer que le lien n'a pas de soulignement */
+.btn-link {
+text-decoration: none !important;
+}
+
+.password-reset {
+animation: fadeIn 0.3s ease-in;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+from { opacity: 0; transform: translateY(-10px); }
+to { opacity: 1; transform: translateY(0); }
 }
 
 .reset-message {
-  margin: 15px 0;
-  padding: 10px;
-  border-radius: 5px;
+margin: 15px 0;
+padding: 10px;
+border-radius: 5px;
 }
 
 .text-success {
-  color: #28a745;
-  background-color: #d4edda;
-  border: 1px solid #c3e6cb;
+color: #28a745;
+background-color: #d4edda;
+border: 1px solid #c3e6cb;
 }
 
 .text-danger {
-  color: #dc3545;
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
+color: #dc3545;
+background-color: #f8d7da;
+border: 1px solid #f5c6cb;
 }
 
 .btn-primary {
-  background-color: #FD7401;
-  border-color: #FD7401;
-  margin: 15px 0;
+background-color: #FD7401;
+border-color: #FD7401;
+margin: 15px 0;
 }
 
 .btn-primary:hover {
-  background-color: #e56700;
-  border-color: #e56700;
+background-color: #e56700;
+border-color: #e56700;
 }
 
 .btn-link {
-  color: #FD7401;
+color: #FD7401;
 }
 
-  /* Modal de succès */
-  .success-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  
-  .modal-content {
-    background: white;
-    padding: 30px;
-    border-radius: 10px;
-    text-align: center;
-    width: 90%;
-    max-width: 400px;
-  }
-  
-  .modal-content i {
-    color: #4CAF50;
-    font-size: 50px;
-    margin-bottom: 15px;
-  }
-  
+/* Modal de succès */
+.success-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  width: 90%;
+  max-width: 400px;
+}
+
+.modal-content i {
+  color: #4CAF50;
+  font-size: 50px;
+  margin-bottom: 15px;
+}
+
 
 /* ✅ Media Queries pour le Responsive */
 @media (max-width: 1024px) {
-    .login-container {
-        flex-direction: column;
-        height: auto;
-    }
+  .login-container {
+      flex-direction: column;
+      height: auto;
+  }
 
-    .left-side {
-        flex: none;
-        width: 100%;
-        border-right: none;
-        border-bottom: 5px solid #FD7401;
-        padding: 20px;
-    }
+  .left-side {
+      flex: none;
+      width: 100%;
+      border-right: none;
+      border-bottom: 5px solid #FD7401;
+      padding: 20px;
+  }
 
-    .right-side {
-        flex: none;
-        width: 100%;
-        padding: 20px;
-    }
+  .right-side {
+      flex: none;
+      width: 100%;
+      padding: 20px;
+  }
 
-    .avatar {
-        width: 60%;
-        max-width: 300px;
-    }
+  .avatar {
+      width: 60%;
+      max-width: 300px;
+  }
 
-    .footer {
-        position: relative;
-    }
-    
+  .footer {
+      position: relative;
+  }
+  
 }
 
 
 /* 📱 Responsiveness pour les petits écrans */
 @media (max-width: 600px) {
-    .code-inputs {
-        gap: 5px;
-    }
+  .code-inputs {
+      gap: 5px;
+  }
 
-    .code-inputs input {
-        width: 50px;
-        height: 50px;
-        font-size: 20px;
-    }
+  .code-inputs input {
+      width: 50px;
+      height: 50px;
+      font-size: 20px;
+  }
 
 
-    .avatar {
-        width: 70%;
-        max-width: 250px;
-    }
+  .avatar {
+      width: 70%;
+      max-width: 250px;
+  }
 }
 
 .button-spacer {
-  margin-left: 10px; /* Ajustez la valeur selon l'espacement souhaité */
+margin-left: 10px; /* Ajustez la valeur selon l'espacement souhaité */
 }

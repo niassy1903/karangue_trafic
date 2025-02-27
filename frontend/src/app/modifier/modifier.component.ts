@@ -14,7 +14,7 @@ import { NavbarComponent } from '../navbar/navbar.component';
   templateUrl: './modifier.component.html',
   styleUrls: ['./modifier.component.css'],
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, HttpClientModule,SidebarComponent,NavbarComponent],
+  imports: [ReactiveFormsModule, CommonModule, HttpClientModule, SidebarComponent, NavbarComponent],
   providers: [UtilisateurService],
 })
 export class ModifierComponent implements OnInit {
@@ -86,5 +86,9 @@ export class ModifierComponent implements OnInit {
         }
       }
     );
+  }
+
+  goBack() {
+    this.router.navigate(['/utilisateur']);
   }
 }

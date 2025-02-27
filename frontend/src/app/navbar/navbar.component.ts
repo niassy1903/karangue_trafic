@@ -11,8 +11,8 @@ import { HttpClientModule } from '@angular/common/http';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
   standalone: true,
-  imports: [CommonModule,HttpClientModule],
-  providers: [NotificationService,AuthService],
+  imports: [CommonModule, HttpClientModule],
+  providers: [NotificationService, AuthService],
 })
 export class NavbarComponent implements OnInit, OnDestroy {
   temporaryNotification: any = null;
@@ -25,22 +25,29 @@ export class NavbarComponent implements OnInit, OnDestroy {
   constructor(private notificationService: NotificationService, private authService: AuthService) {}
 
   ngOnInit() {
-    // ✅ Récupérer le prénom, nom et rôle de l'utilisateur connecté
     this.userPrenom = this.authService.getUserPrenom();
     this.userNom = this.authService.getUserNom();
     this.userRole = this.authService.getUserRole();
-
+  
+    const policeId = localStorage.getItem('policeId'); // ✅ Récupérer la police de l'agent connecté
+  
     // Gestion des notifications
     this.notificationSubscription = this.notificationService.getNotifications().subscribe((notification) => {
-      this.temporaryNotification = notification;
-      setTimeout(() => {
-        this.temporaryNotification = null;
-      }, 10000); // Disparaît après 10 secondes
-
-      this.unreadCount++;
+      if (notification.police_id === policeId) { // ✅ Vérifier si l'infraction concerne cette police
+        this.temporaryNotification = notification;
+        setTimeout(() => {
+          this.temporaryNotification = null;
+        }, 10000);
+        this.unreadCount++;
+      }
     });
+  
+    // Rejoindre la salle de la police spécifique
+    if (policeId) {
+      this.notificationService.joinPoliceRoom(policeId);
+    }
   }
-
+  
   ngOnDestroy() {
     if (this.notificationSubscription) {
       this.notificationSubscription.unsubscribe();

@@ -189,8 +189,9 @@ generateFacture(amende: any): void {
   doc.text(`Heure: ${amende.heure}`, 15, 75);
   
   // Récupérer le nom de l'agent depuis le localStorage ou un service d'authentification
-  const agentName = this.authService.getUserNom() || 'Agent de sécurité';
-  doc.text(`Agent enregistreur: ${agentName}`, 15, 85);
+  const agent_nom: string = `${this.authService.getUserNom()} ${this.authService.getUserPrenom()}`.trim() || 'Agent Inconnu';
+
+  doc.text(`Agent enregistreur: ${agent_nom}`, 15, 85);
 
   // Signature
   doc.setFontSize(10);

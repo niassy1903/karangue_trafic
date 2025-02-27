@@ -217,5 +217,14 @@ assignCard(id: number, cardId: string): Observable<any> {
   );
 }
 
+getPolices(): Observable<any> {
+  const headers = this.getAuthHeaders();
+  return this.http.get(`${this.apiUrl2}/polices`, { headers }).pipe(
+    catchError((error) => {
+      return throwError(error);
+    })
+  );
+}
+
 
 }

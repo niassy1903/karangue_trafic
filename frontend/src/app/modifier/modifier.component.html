@@ -43,25 +43,29 @@
               </div>
             </div>
 
-            <div class="mt-2">
-              <label class="form-label">Email</label>
-              <input formControlName="email" type="email" class="form-control" placeholder="Saisissez votre email">
-              <div *ngIf="submitted && f['email'].errors" class="text-danger">Email invalide</div>
-              <div *ngIf="errorMessages.email" class="text-danger">{{ errorMessages.email }}</div>
-            </div>
-
-            <div class="mt-2">
-              <label class="form-label">Rôle</label>
-              <select formControlName="role" class="form-select">
-                <option value="">Sélectionnez un rôle</option>
-                <option value="agent de sécurité">Agent de sécurité</option>
-                <option value="administrateur">Administrateur</option>
-              </select>
-              <div *ngIf="submitted && f['role'].errors" class="text-danger">Rôle requis</div>
+            <div class="row g-3 mt-2">
+              <div class="col-md-6">
+                <label class="form-label">Email</label>
+                <input formControlName="email" type="email" class="form-control" placeholder="Saisissez votre email">
+                <div *ngIf="submitted && f['email'].errors" class="text-danger">Email invalide</div>
+                <div *ngIf="errorMessages.email" class="text-danger">{{ errorMessages.email }}</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Rôle</label>
+                <select formControlName="role" class="form-select">
+                  <option value="">Sélectionnez un rôle</option>
+                  <option value="agent de sécurité">Agent de sécurité</option>
+                  <option value="administrateur">Administrateur</option>
+                </select>
+                <div *ngIf="submitted && f['role'].errors" class="text-danger">Rôle requis</div>
+              </div>
             </div>
 
             <div class="text-center mt-4">
-              <button type="submit" class="btn text-white w-100" style="background-color: #ff6600;">
+              <button type="button" class="btn btn-secondary w-48 me-2" (click)="goBack()">
+                Retour
+              </button>
+              <button type="submit" class="btn text-white w-48" style="background-color: #ff6600;">
                 Mettre à jour
               </button>
             </div>

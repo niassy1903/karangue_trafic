@@ -7,6 +7,7 @@ import { Observable, Subject } from 'rxjs';
 })
 export class NotificationService {
   private socket = io('http://localhost:3000');
+
   private temporaryNotifications = new Subject<any>();
   private permanentNotifications: any[] = [];
 
@@ -15,11 +16,14 @@ export class NotificationService {
   // Écouter les nouvelles notifications
   getNotifications(): Observable<any> {
     this.socket.on('newNotification', (data) => {
-      this.temporaryNotifications.next(data);
-      this.permanentNotifications.unshift(data);
+      if (data) {
+        this.temporaryNotifications.next(data);
+        this.permanentNotifications.unshift(data);
+      }
     });
     return this.temporaryNotifications.asObservable();
   }
+  
 
   getPermanentNotifications(): any[] {
     return this.permanentNotifications;
@@ -34,4 +38,10 @@ export class NotificationService {
       this.permanentNotifications[index].read = true;
     }
   }
+
+  joinPoliceRoom(policeId: string): void {
+    this.socket.emit('joinPoliceRoom', policeId);
+  }
+  
+
 }
