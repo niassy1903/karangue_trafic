@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { WebSocketService } from '../websocket.service'; // Importe le service WebSocket
 
 @Component({
   selector: 'app-login',
@@ -41,7 +42,9 @@ export class LoginComponent implements OnDestroy, AfterViewInit {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private http: HttpClient
+    private http: HttpClient,
+    private webSocketService: WebSocketService // Injecte le service WebSocket
+
   ) {
     this.checkLockStatus();
 
@@ -58,6 +61,16 @@ export class LoginComponent implements OnDestroy, AfterViewInit {
       }
     }
   }
+  ngOnInit(): void {
+    // Écouter les messages du serveur WebSocket
+    this.webSocketService.onMessage().subscribe((message) => {
+      const data = JSON.parse(message);
+
+      if (data.uid) {
+        this.handleRFIDLogin(data.uid); // Gérer la connexion via RFID
+      }
+    });
+  }
 
   private checkLockStatus() {
     const storedExpiration = localStorage.getItem('lockExpiration');
@@ -72,6 +85,20 @@ export class LoginComponent implements OnDestroy, AfterViewInit {
         localStorage.removeItem('lockExpiration');
       }
     }
+  }
+
+  // Gérer la connexion via RFID
+  private handleRFIDLogin(uid: string) {
+    this.authService.authenticateByRFID(uid).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.router.navigate([response.user.role === 'administrateur' ? '/admin-dashboard' : '/dashboard']);
+        } else {
+          this.handleLoginError(response);
+        }
+      },
+      error: (error) => this.handleLoginError(error),
+    });
   }
 
   ngAfterViewInit() {
@@ -216,6 +243,7 @@ export class LoginComponent implements OnDestroy, AfterViewInit {
     localStorage.setItem('lockExpiration', expirationTime.toString());
     this.activateLock(30 * 1000);
   }
+
 
   private activateLock(duration: number) {
     this.isLocked = true;

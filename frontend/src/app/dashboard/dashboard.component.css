@@ -140,9 +140,12 @@ app-sidebar {
 
 /* Ajoutez des styles personnalisés si nécessaire */
 .text-danger {
-  color: #FF3131 !important;
+  color: #fd7401 !important;
 }
 
+.btn-danger {
+  background-color: #fd7401;
+  border-color: #fd7401;
 .navbar {
   background-color: #fd7401;
   padding: 15px 20px;
@@ -203,4 +206,5 @@ app-sidebar {
 .card.mb-4 {
   height: auto; /* Ajuste automatiquement la hauteur */
   padding: -10px;
+}
 }

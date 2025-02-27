@@ -40,6 +40,7 @@ export class AuthService {
     localStorage.removeItem('nom');
     localStorage.removeItem('prenom');
     localStorage.removeItem('utilisateur_id'); // Supprimer l'ID de l'utilisateur
+    localStorage.removeItem('policeId'); // ✅ Supprimer l'ID de la police
 
     this.router.navigate(['/login']);
     clearTimeout(this.inactivityTimeout);
@@ -69,6 +70,7 @@ export class AuthService {
           localStorage.setItem('nom', response.user.nom);
           localStorage.setItem('prenom', response.user.prenom);
           localStorage.setItem('utilisateur_id', response.user.id); // Stocker l'ID de l'utilisateur
+          localStorage.setItem('policeId', response.user.police_id); // ✅ Stocker l'ID de la police
 
           if (response.user.role === 'administrateur') {
             this.router.navigate(['/admin-dashboard']);
@@ -121,6 +123,32 @@ export class AuthService {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
+  }
+
+  authenticateByRFID(uid: string): Observable<any> {
+    const url = 'http://127.0.0.1:8000/api/authenticate-rfid'; // Remplace par l'URL de ton backend Laravel
+  
+    return this.http.post<any>(url, { carte_id: uid }).pipe(
+      tap((response) => {
+        if (response.token) {
+          localStorage.setItem('token', response.token);
+          localStorage.setItem('role', response.user.role);
+          localStorage.setItem('nom', response.user.nom);
+          localStorage.setItem('prenom', response.user.prenom);
+          localStorage.setItem('utilisateur_id', response.user.id);
+          localStorage.setItem('policeId', response.user.police_id);
+        }
+      }),
+      catchError((error) => {
+        console.error('Erreur lors de la connexion via RFID :', error);
+        return throwError(() => ({
+          success: false,
+          message: error.error?.message || 'Erreur inconnue',
+          errors: error.error?.errors || {},
+          status: error.status,
+        }));
+      })
+    );
   }
 
   resetCodeSecret(email: string): Observable<any> {

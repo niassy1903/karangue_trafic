@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 namespace App\Http\Controllers;
 
@@ -7,17 +7,15 @@ use App\Models\Infraction;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use App\Models\HistoriquePaiement;
+use App\Models\Police;
 
 class InfractionController extends Controller
-
 {
-
     public function obtenirToutesInfractions()
     {
         $infractions = Infraction::all();
         return response()->json(['data' => $infractions]);
     }
-
 
     public function enregistrerInfraction(Request $request)
     {
@@ -30,62 +28,101 @@ class InfractionController extends Controller
             'heure' => 'required|date_format:H:i',
         ]);
 
+        // Par défaut, associer la police de Dakar
+        $policeDakar = Police::where('nom', 'Commissariat de Police de Dakar')->first();
+        $validatedData['police_id'] = $policeDakar->id;
+
+        // Création de l'infraction avec la police associée
         $infraction = Infraction::create($validatedData);
 
-        // Envoyer la notification au serveur Node.js
-        Http::post('http://localhost:3000/send-notification', [
+        // Envoyer une notification au serveur Node.js
+        Http::post('http://localhost:3000/send-notification-to-police', [
+            'police_id' => $policeDakar->id, // Identifiant unique de la police
             'message' => 'Nouvelle infraction détectée',
             'conducteur' => $validatedData['nom_conducteur'] . ' ' . $validatedData['prenom_conducteur'],
             'plaque' => $validatedData['plaque_matriculation'],
             'vitesse' => $validatedData['vitesse'],
             'date' => $validatedData['date'],
-            'heure' => $validatedData['heure'],
+            'heure' => $validatedData['heure']
         ]);
 
         return response()->json(['message' => 'Infraction enregistrée', 'data' => $infraction], 201);
     }
 
-    private function logPaiementAction($infractionId, $utilisateurId, $action)
+    public function transfererNotification(Request $request)
     {
-        $date = Carbon::now()->format('d/m/Y');
-        $heure = Carbon::now()->format('H:i');
-
-        HistoriquePaiement::create([
-            'infraction_id' => $infractionId,
-            'utilisateur_id' => $utilisateurId, // Enregistrer l'ID de l'utilisateur
-            'action' => $action,
-            'date' => $date,
-            'heure' => $heure,
+        $validatedData = $request->validate([
+            'infraction_id' => 'required|exists:infractions,_id',
+            'new_police_id' => 'required|exists:polices,_id',
         ]);
+
+        // Trouver l'infraction et la police source
+        $infraction = Infraction::findOrFail($validatedData['infraction_id']);
+
+        // Vérifier si l'infraction a une police associée
+        $currentPolice = $infraction->police;
+
+        if (!$currentPolice) {
+            return response()->json(['message' => 'Aucune police associée à cette infraction.'], 400);
+        }
+
+        // Vérifier si la police actuelle est la même que la nouvelle police
+        if ($currentPolice->id == $validatedData['new_police_id']) {
+            return response()->json(['message' => 'Cette infraction est déjà attribuée à cette police.'], 400);
+        }
+
+        // Trouver la nouvelle police
+        $newPolice = Police::findOrFail($validatedData['new_police_id']);
+
+        // Transférer l'infraction à la nouvelle police
+        $infraction->police_id = $newPolice->id;
+        $infraction->save();
+
+        // Optionnel : Enregistrer le transfert dans un historique
+        // HistoriqueTransfert::create([
+        //     'infraction_id' => $infraction->id,
+        //     'ancien_police_id' => $currentPolice->id,
+        //     'nouveau_police_id' => $newPolice->id,
+        //     'date_transfert' => now(),
+        // ]);
+
+        // Envoyer la notification au serveur Node.js
+      // Envoyer la notification au serveur Node.js pour informer la nouvelle police
+     Http::post('http://localhost:3000/send-notification-to-police', [
+    'police_id' => $newPolice->id, // Identifiant unique de la nouvelle police
+    'message' => 'Infraction transférée à votre unité',
+    'conducteur' => $infraction->nom_conducteur . ' ' . $infraction->prenom_conducteur,
+    'plaque' => $infraction->plaque_matriculation,
+    'vitesse' => $infraction->vitesse,
+    'date' => $infraction->date,
+    'heure' => $infraction->heure
+]);
+
+
+        return response()->json(['message' => 'Infraction transférée avec succès', 'data' => $infraction], 200);
     }
 
+  
     public function payerAmende(Request $request, $id) {
         $validatedData = $request->validate([
             'montant' => 'required|numeric',
-            'utilisateur_id' => 'required|string',
-            'agent_nom' => 'nullable|string',
-            'agent_prenom' => 'nullable|string'
+            'utilisateur_id' => 'required|exists:utilisateurs,id', // Ajoutez cette validation
         ]);
         
         $infraction = Infraction::findOrFail($id);
         $infraction->montant = $validatedData['montant'];
         $infraction->status = 'payé';
         $infraction->save();
-        
-        // Créez directement l'historique avec les informations de l'agent
-        $date = Carbon::now()->format('d/m/Y');
-        $heure = Carbon::now()->format('H:i');
-        
+
+        // Enregistrer l'action de paiement dans HistoriquePaiement
         HistoriquePaiement::create([
-            'infraction_id' => $id,
+            'infraction_id' => $infraction->id,
             'utilisateur_id' => $validatedData['utilisateur_id'],
-            'action' => 'Paiement enregistré',
-            'date' => $date,
-            'heure' => $heure,
-            'agent_prenom' => $validatedData['agent_prenom'] ?? 'Agent',
-            'agent_nom' => $validatedData['agent_nom'] ?? 'Sécurité'
+            'action' => 'paiement effectué avec succès',
+            'date' => now()->format('Y-m-d'),
+            'heure' => now()->format('H:i:s'),
         ]);
-        
+
         return response()->json(['message' => 'Paiement enregistré']);
     }
 
@@ -123,6 +160,4 @@ class InfractionController extends Controller
 
         return response()->json(['data' => $infractions]);
     }
-
-
 }

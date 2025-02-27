@@ -24,7 +24,8 @@ export class InfractionService {
 // Payer une amende
 
  // Payer une amende
- payAmende(id: number, montant: number): Observable<any> {
+
+payAmende(id: number, montant: number): Observable<any> {
   const utilisateurId = this.authService.getUserId(); // Utilisez getUserId pour récupérer l'ID de l'utilisateur
 
   // Vérifiez que l'ID de l'utilisateur est bien défini

@@ -57,6 +57,21 @@
                   </div>
                 </div>
               </div>
+              <div>
+                <nav aria-label="Page navigation">
+                  <ul class="pagination justify-content-center">
+                    <li class="page-item" [class.disabled]="currentPage === 1">
+                      <a class="page-link" (click)="goToPage(currentPage - 1)">Précédent</a>
+                    </li>
+                    <li class="page-item" *ngFor="let page of pages" [class.active]="page === currentPage">
+                      <a class="page-link" (click)="goToPage(page)">{{ page }}</a>
+                    </li>
+                    <li class="page-item" [class.disabled]="currentPage === totalPages">
+                      <a class="page-link" (click)="goToPage(currentPage + 1)">Suivant</a>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
             </div>
           
           
@@ -65,21 +80,7 @@
           
 
             <!-- Pagination -->
-            <div>
-              <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center">
-                  <li class="page-item" [class.disabled]="currentPage === 1">
-                    <a class="page-link" (click)="goToPage(currentPage - 1)">Précédent</a>
-                  </li>
-                  <li class="page-item" *ngFor="let page of pages" [class.active]="page === currentPage">
-                    <a class="page-link" (click)="goToPage(page)">{{ page }}</a>
-                  </li>
-                  <li class="page-item" [class.disabled]="currentPage === totalPages">
-                    <a class="page-link" (click)="goToPage(currentPage + 1)">Suivant</a>
-                  </li>
-                </ul>
-              </nav>
-            </div>
+            
           </div>
         </div>
       </div>

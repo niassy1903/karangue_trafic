@@ -5,6 +5,7 @@ import { NavbarComponent } from '../navbar/navbar.component';
 import { CommonModule } from '@angular/common';
 import { HistoriquePaiementService } from '../historique-paiement.service';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { AuthService } from '../auth.service'; // Assurez-vous d'importer AuthService
 
 interface Historique {
   id: string;
@@ -29,22 +30,33 @@ export class HistoriqueAmendesComponent implements OnInit {
   historiques: Historique[] = [];
   filteredHistoriques: Historique[] = [];
   currentPage: number = 1;
-  totalPages: number = 1; 
+  totalPages: number = 1;
   searchQuery: string = '';
+  prenom: string = '';
+  nom: string = '';
 
-  constructor(private historiquePaiementService: HistoriquePaiementService) {}
+  constructor(
+    private historiquePaiementService: HistoriquePaiementService,
+    private authService: AuthService // Injecter AuthService
+  ) {}
 
   ngOnInit() {
+    this.loadUserInfo();
     this.loadHistoriquePaiements();
+  }
+
+  loadUserInfo() {
+    this.prenom = this.authService.getUserPrenom() || 'Inconnu';
+    this.nom = this.authService.getUserNom() || 'Inconnu';
   }
 
   loadHistoriquePaiements() {
     this.historiquePaiementService.getHistoriquePaiements().subscribe(data => {
       this.historiques = data.data.map((item: any) => ({
         id: item._id,
-        plaque_matriculation: item.infraction.plaque_matriculation, 
-        prenom: item.utilisateur ? item.utilisateur.prenom : 'Agent', 
-        nom: item.utilisateur ? item.utilisateur.nom : 'sécurité', 
+        plaque_matriculation: item.infraction.plaque_matriculation,
+        prenom: this.prenom, // Utiliser le prénom de l'utilisateur connecté
+        nom: this.nom, // Utiliser le nom de l'utilisateur connecté
         date: item.date,
         heure: item.heure,
         action: item.action,
@@ -55,7 +67,7 @@ export class HistoriqueAmendesComponent implements OnInit {
   }
 
   filterHistoriques() {
-    this.filteredHistoriques = this.historiques.filter(historique => 
+    this.filteredHistoriques = this.historiques.filter(historique =>
       historique.plaque_matriculation.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
       historique.prenom.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
       historique.nom.toLowerCase().includes(this.searchQuery.toLowerCase())

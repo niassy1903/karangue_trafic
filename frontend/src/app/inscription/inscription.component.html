@@ -17,12 +17,12 @@
           <form [formGroup]="inscriptionForm" (ngSubmit)="onSubmit()">
             <div class="row g-3">
               <div class="col-md-6">
-                <label class="form-label">Prénom</label>
+                <label class="form-label">Prénom <span class="required-field">*</span></label>
                 <input formControlName="prenom" type="text" class="form-control" placeholder="Saisissez votre prénom">
                 <div *ngIf="submitted && f['prenom'].errors" class="text-danger">Prénom requis (min 2 lettres)</div>
               </div>
               <div class="col-md-6">
-                <label class="form-label">Nom</label>
+                <label class="form-label">Nom <span class="required-field">*</span></label>
                 <input formControlName="nom" type="text" class="form-control" placeholder="Saisissez votre nom">
                 <div *ngIf="submitted && f['nom'].errors" class="text-danger">Nom requis (min 2 lettres)</div>
               </div>
@@ -30,45 +30,58 @@
 
             <div class="row g-3 mt-2">
               <div class="col-md-6">
-                <label class="form-label">Adresse</label>
+                <label class="form-label">Adresse <span class="required-field">*</span></label>
                 <input formControlName="adresse" type="text" class="form-control" placeholder="Saisissez votre adresse">
                 <div *ngIf="submitted && f['adresse'].errors" class="text-danger">Adresse requise</div>
               </div>
               <div class="col-md-6">
-                <label class="form-label">Téléphone</label>
+                <label class="form-label">Téléphone <span class="required-field">*</span></label>
                 <input formControlName="telephone" type="text" class="form-control" placeholder="Saisissez votre téléphone">
                 <div *ngIf="submitted && f['telephone'].errors" class="text-danger">Téléphone invalide</div>
                 <div *ngIf="errorMessages.telephone" class="text-danger">{{ errorMessages.telephone }}</div>
               </div>
             </div>
 
-            <div class="mt-2">
-              <label class="form-label">Email</label>
-              <input formControlName="email" type="email" class="form-control" placeholder="Saisissez votre email">
-              <div *ngIf="submitted && f['email'].errors" class="text-danger">Email invalide</div>
-              <div *ngIf="errorMessages.email" class="text-danger">{{ errorMessages.email }}</div>
-            </div>
-
-            <div class="mt-2">
-              <label class="form-label">Rôle</label>
-              <select formControlName="role" class="form-select">
-                <option value="">Sélectionnez un rôle</option>
-                <option value="agent de sécurité">Agent de sécurité</option>
-                <option value="administrateur">Administrateur</option>
-                <option value="conducteur">Conducteur</option>
-              </select>
-              <div *ngIf="submitted && f['role'].errors" class="text-danger">Rôle requis</div>
+            <div class="row g-3 mt-2">
+              <div class="col-md-6">
+                <label class="form-label">Email <span class="required-field">*</span></label>
+                <input formControlName="email" type="email" class="form-control" placeholder="Saisissez votre email">
+                <div *ngIf="submitted && f['email'].errors" class="text-danger">Email invalide</div>
+                <div *ngIf="errorMessages.email" class="text-danger">{{ errorMessages.email }}</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Rôle <span class="required-field">*</span></label>
+                <select formControlName="role" class="form-select">
+                  <option value="">Sélectionnez un rôle</option>
+                  <option value="agent de sécurité">Agent de sécurité</option>
+                  <option value="administrateur">Administrateur</option>
+                  <option value="conducteur">Conducteur</option>
+                </select>
+                <div *ngIf="submitted && f['role'].errors" class="text-danger">Rôle requis</div>
+              </div>
             </div>
 
             <!-- Champ de Plaque d'immatriculation, affiché seulement si le rôle est "conducteur" -->
             <div class="mt-2" *ngIf="isConducteur">
-              <label class="form-label">Plaque d'immatriculation</label>
+              <label class="form-label">Plaque d'immatriculation <span class="required-field">*</span></label>
               <input formControlName="plaque_immatriculation" type="text" class="form-control" placeholder="Ex: AA-123-BB">
               <div *ngIf="submitted && f['plaque_immatriculation'].errors" class="text-danger">Plaque requise (max 10 caractères)</div>
             </div>
 
+            <div class="mt-2" *ngIf="isAgent">
+              <label class="form-label">Poste de Police <span class="required-field">*</span></label>
+              <select formControlName="police_id" class="form-select">
+                <option value="">Sélectionnez un poste de police</option>
+                <option *ngFor="let police of polices" [value]="police.id">{{ police.nom }}</option>
+              </select>
+              <div *ngIf="submitted && f['police_id'].errors" class="text-danger">Poste de police requis</div>
+            </div>
+
             <div class="text-center mt-4">
-              <button type="submit" class="btn text-white w-100" style="background-color: #ff6600;">
+              <button type="button" class="btn btn-secondary w-48 me-2" (click)="goBack()">
+                Retour
+              </button>
+              <button type="submit" class="btn text-white w-48" style="background-color: #ff6600;">
                 Enregistrer
               </button>
             </div>

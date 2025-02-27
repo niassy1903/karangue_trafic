@@ -29,18 +29,29 @@
 .user-profile {
   display: flex;
   align-items: center;
+  gap: 10px;
 }
 
 .user-profile img {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  margin-right: 10px;
 }
 
-.user-profile span {
-  color: white;
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
   font-weight: bold;
+  font-size: 16px;
+}
+
+.user-role {
+  font-size: 14px;
+  color: gray;
+  text-align: center;
 }
 
 .temporary-notification {

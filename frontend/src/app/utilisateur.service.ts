@@ -194,4 +194,48 @@ getHistoriqueById(id: string): Observable<any> {
     })
   );
 }
+
+// Méthode pour importer des utilisateurs à partir d'un fichier CSV
+importCsv(formData: FormData): Observable<any> {
+  const headers = this.getAuthHeaders();
+  return this.http.post(`${this.apiUrl}/import`, formData, { headers }).pipe(
+    catchError((error) => {
+      return throwError(error);
+    })
+  );
+}
+
+
+
+// Méthode pour assigner une carte à un utilisateur
+assignCard(id: number, cardId: string): Observable<any> {
+  const headers = this.getAuthHeaders();
+  return this.http.put(`${this.apiUrl}/${id}/assigner-carte`, { carte_id: cardId }, { headers }).pipe(
+    catchError((error) => {
+      return throwError(error);
+    })
+  );
+}
+
+getRFIDUID(): Observable<{ uid: string }> {
+  const headers = this.getAuthHeaders();
+  return this.http.get<{ uid: string }>('http://localhost:3000/rfid', { headers }).pipe(
+    catchError((error) => {
+      return throwError(error);
+    })
+  );
+}
+
+
+
+getPolices(): Observable<any> {
+  const headers = this.getAuthHeaders();
+  return this.http.get(`${this.apiUrl2}/polices`, { headers }).pipe(
+    catchError((error) => {
+      return throwError(error);
+    })
+  );
+}
+
+
 }

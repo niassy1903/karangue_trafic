@@ -1,5 +1,5 @@
+import { Component, OnInit } from '@angular/core';
 import { UtilisateurService } from '../utilisateur.service';
-import { Component } from '@angular/core';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { CommonModule } from '@angular/common';
@@ -14,7 +14,7 @@ import { HttpClientModule } from '@angular/common/http';
   styleUrls: ['./admin-dashboard.component.css'],
   providers: [UtilisateurService],
 })
-export class AdminDashboardComponent {
+export class AdminDashboardComponent implements OnInit {
   statsCards = [
     { title: 'Total Conducteurs', count: 0, icon: 'fa-car' },
     { title: 'Administrateurs', count: 0, icon: 'fa-user-cog' },
@@ -30,7 +30,9 @@ export class AdminDashboardComponent {
   pages: number[] = [];
   Math = Math;
 
-  constructor(private utilisateurService: UtilisateurService) {
+  constructor(private utilisateurService: UtilisateurService) {}
+
+  ngOnInit() {
     this.loadStats();
     this.loadHistoriques();
   }

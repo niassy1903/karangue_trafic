@@ -12,6 +12,7 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use App\Models\Police;
 
 class UtilisateurController extends Controller
 {
@@ -23,7 +24,7 @@ class UtilisateurController extends Controller
     public function index()
     {
         $utilisateurs = Utilisateur::all();
-        $this->logAction(auth()->id(), 'Liste des utilisateurs');
+      
         return response()->json($utilisateurs);
     }
 
@@ -35,21 +36,22 @@ class UtilisateurController extends Controller
      */
     public function store(Request $request)
     {
-        // Validation des données de la requête
         $validator = Validator::make($request->all(), [
             'nom' => 'required|string',
             'prenom' => 'required|string',
-            'email' => 'required|email|unique:utilisateurs',
+            'email' => 'required|email|unique:utilisateurs,email',
             'adresse' => 'required|string',
-            'telephone' => 'required|string|unique:utilisateurs',
+            'telephone' => 'required|string|unique:utilisateurs,telephone',
             'role' => 'required|in:agent de sécurité,administrateur,conducteur',
-            'plaque_matriculation' => 'nullable|string|required_if:role,conducteur|unique:utilisateurs,plaque_matriculation'
+            'plaque_matriculation' => 'nullable|string|required_if:role,conducteur|unique:utilisateurs,plaque_matriculation',
+            'police_id' => 'nullable|exists:police,id', // Vérifie si le poste de police existe
         ], [
-            "email" => "l'adresse email existe déjà",
-            "telephone" => "le numéro de téléphone existe déjà",
+            "email.unique" => "L'adresse email existe déjà",
+            "telephone.unique" => "Le numéro de téléphone existe déjà",
             'role.in' => 'Le rôle doit être soit "agent de sécurité", "administrateur" ou "conducteur".',
             "plaque_matriculation.required_if" => "La plaque d'immatriculation est requise pour le rôle de conducteur.",
-            "plaque_matriculation.unique" => "La plaque d'immatriculation existe déjà."
+            "plaque_matriculation.unique" => "La plaque d'immatriculation existe déjà.",
+            "police_id.exists" => "Le poste de police sélectionné est invalide.",
         ]);
 
         if ($validator->fails()) {
@@ -60,8 +62,30 @@ class UtilisateurController extends Controller
             ], 422);
         }
 
-        // Génération d'un code secret aléatoire
+        // Vérification si police_id est renseigné pour un agent de sécurité
+        if ($request->role === 'agent de sécurité' && $request->police_id) {
+            $police = Police::find($request->police_id);
+
+            if (!$police) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Le poste de police sélectionné est invalide.',
+                    'errors' => ['police_id' => ['Le poste de police sélectionné est invalide.']]
+                ], 422);
+            }
+        }
+
+        // Génération d'un code secret
         $codeSecret = rand(1000, 9999);
+
+        // Génération d'un matricule basé sur le rôle
+        $prefixes = [
+            'agent de sécurité' => 'AG',
+            'administrateur' => 'AD',
+            'conducteur' => 'CO'
+        ];
+        $prefix = $prefixes[$request->role] ?? 'XX';
+        $matricule = sprintf("%s-25-%03d", $prefix, rand(000, 999));
 
         // Création de l'utilisateur
         $utilisateur = Utilisateur::create([
@@ -71,21 +95,19 @@ class UtilisateurController extends Controller
             'adresse' => $request->adresse,
             'telephone' => $request->telephone,
             'code_secret' => $codeSecret,
-            'matricule' => strtoupper(Str::random(10)),
+            'matricule' => $matricule,
             'role' => $request->role,
             'plaque_matriculation' => $request->plaque_matriculation,
             'carte_id' => null,
             'status' => 'actif',
+            'police_id' => $request->police_id,
         ]);
-
-        // Envoi du code secret par email
-        $this->sendCodeSecretEmail($utilisateur->email, $codeSecret);
-
-        $this->logAction($utilisateur->id, 'Création d\'un utilisateur');
 
         return response()->json($utilisateur, 201);
     }
 
+    
+    
     /**
      * Envoie un email avec le code secret.
      *
@@ -94,11 +116,20 @@ class UtilisateurController extends Controller
      */
     protected function sendCodeSecretEmail($email, $codeSecret)
     {
-        Mail::raw("Votre code secret est : $codeSecret", function ($message) use ($email) {
+        $loginUrl = config('app.app_url'); // Récupérer l'URL de connexion
+    
+        $messageContent = "Bienvenue sur KARANGUE TRAFIC !\n\n";
+        $messageContent .= "Votre code secret pour vous connecter est : $codeSecret\n\n";
+        $frontendUrl = config('app.frontend_url'); // Define the frontend URL
+        $messageContent .= "Cliquez sur le lien suivant pour accéder à votre compte : $frontendUrl\n\n";
+        $messageContent .= "Cordialement,\nL'équipe KARANGUE TRAFIC.";
+    
+        Mail::raw($messageContent, function ($message) use ($email) {
             $message->to($email)
-                    ->subject('Votre Code Secret');
+                    ->subject('Votre Code Secret - KARANGUE TRAFIC');
         });
     }
+    
 
     /**
      * Récupère un utilisateur par son ID.
@@ -110,7 +141,7 @@ class UtilisateurController extends Controller
     {
         try {
             $utilisateur = Utilisateur::findOrFail($id);
-            $this->logAction(auth()->id(), 'Affichage d\'un utilisateur');
+          
             return response()->json($utilisateur);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Utilisateur non trouvé.'], 404);
@@ -269,7 +300,7 @@ class UtilisateurController extends Controller
                 // Ajouter le rôle dans le token
                 $token = JWTAuth::claims(['role' => $utilisateur->role])->fromUser($utilisateur);
 
-                $this->logAction($utilisateur->id, 'Connexion réussie');
+              
 
                 return response()->json([
                     'success' => true,
@@ -277,8 +308,10 @@ class UtilisateurController extends Controller
                     'token' => $token,
                     'user' => [
                         'id' => $utilisateur->id,
+                        'prenom' => $utilisateur->prenom,
                         'nom' => $utilisateur->nom,
-                        'role' => $utilisateur->role
+                        'role' => $utilisateur->role,
+                        'police_id' => $utilisateur->police_id,
                     ]
                 ], 200);
             } catch (JWTException $e) {
@@ -303,6 +336,47 @@ class UtilisateurController extends Controller
         }
     }
 
+
+    public function authenticateByRFID(Request $request)
+{
+    $request->validate([
+        'carte_id' => 'required|string',
+    ]);
+
+    // Trouver l'utilisateur par l'UID de la carte
+    $utilisateur = Utilisateur::where('carte_id', $request->carte_id)->first();
+
+    if (!$utilisateur) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Carte non reconnue.',
+        ], 404);
+    }
+
+    // Vérifier si l'utilisateur est bloqué
+    if ($utilisateur->status === 'bloqué') {
+        return response()->json([
+            'success' => false,
+            'message' => 'Votre compte est bloqué.',
+        ], 403);
+    }
+
+    // Générer un token JWT
+    $token = JWTAuth::fromUser($utilisateur);
+
+    return response()->json([
+        'success' => true,
+        'token' => $token,
+        'user' => [
+            'id' => $utilisateur->id,
+            'prenom' => $utilisateur->prenom,
+            'nom' => $utilisateur->nom,
+            'role' => $utilisateur->role,
+            'police_id' => $utilisateur->police_id,
+        ],
+    ]);
+}
+
     /**
      * Déconnecte un utilisateur.
      *
@@ -312,7 +386,7 @@ class UtilisateurController extends Controller
     public function logout(Request $request)
     {
         try {
-            $this->logAction(auth()->id(), 'Déconnexion');
+           
             // Invalider le token actuel
             JWTAuth::invalidate(JWTAuth::getToken());
             return response()->json(['message' => 'Déconnexion réussie'], 200);
@@ -328,37 +402,36 @@ class UtilisateurController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function resetCodeSecret(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email',
-        ], [
-            'email.required' => 'L\'email est obligatoire.',
-            'email.email' => 'L\'email doit être valide.',
-        ]);
+{
+    $request->validate([
+        'email' => 'required|email',
+    ], [
+        'email.required' => 'L\'email est obligatoire.',
+        'email.email' => 'L\'email doit être valide.',
+    ]);
 
-        $utilisateur = Utilisateur::where('email', $request->email)->first();
+    $utilisateur = Utilisateur::where('email', $request->email)->first();
 
-        if (!$utilisateur) {
-            return response()->json(['message' => 'Email invalide ou inexistant.'], 404);
-        }
-
-        if ($utilisateur->status === 'bloqué') {
-            return response()->json(['message' => 'Votre compte est bloqué. Vous ne pouvez pas réinitialiser votre code secret.'], 403);
-        }
-
-        $newCode = rand(1000, 9999);
-        $utilisateur->code_secret = $newCode;
-        $utilisateur->save();
-
-        Mail::raw("Votre nouveau code secret est : $newCode", function ($message) use ($utilisateur) {
-            $message->to($utilisateur->email)
-                     ->subject('Votre nouveau code secret');
-        });
-
-        $this->logAction($utilisateur->id, 'Réinitialisation du code secret');
-
-        return response()->json(['message' => 'Veuillez vérifier votre email pour obtenir votre nouveau code secret.']);
+    if (!$utilisateur) {
+        return response()->json(['message' => 'Email invalide ou inexistant.'], 404);
     }
+
+    if ($utilisateur->status === 'bloqué') {
+        return response()->json(['message' => 'Votre compte est bloqué. Vous ne pouvez pas réinitialiser votre code secret.'], 403);
+    }
+
+    $newCode = rand(1000, 9999);
+    $utilisateur->code_secret = $newCode;
+    $utilisateur->save();
+
+    Mail::raw("Votre nouveau code secret est : $newCode", function ($message) use ($utilisateur) {
+        $message->to($utilisateur->email)
+                 ->subject('Votre nouveau code secret');
+    });
+
+    return response()->json(['message' => 'Veuillez vérifier votre email pour obtenir votre nouveau code secret.']);
+}
+
 
     /**
      * Assigne une carte à un utilisateur.
@@ -410,7 +483,7 @@ class UtilisateurController extends Controller
     public function countUtilisateurs()
     {
         $count = Utilisateur::whereIn('role', ['administrateur', 'agent de sécurité', 'conducteur'])->count();
-        $this->logAction(auth()->id(), 'Comptage des utilisateurs');
+       
         return response()->json(['count' => $count]);
     }
 
@@ -422,7 +495,7 @@ class UtilisateurController extends Controller
     public function countAdministrateurs()
     {
         $count = Utilisateur::where('role', 'administrateur')->count();
-        $this->logAction(auth()->id(), 'Comptage des administrateurs');
+      
         return response()->json(['count' => $count]);
     }
 
@@ -436,7 +509,7 @@ class UtilisateurController extends Controller
 public function countAgentsSecurite()
 {
     $count = Utilisateur::where('role', 'agent de sécurité')->count();
-    $this->logAction(auth()->id(), 'Comptage des agents de sécurité');
+  
     return response()->json(['count' => $count]);
 }
 
@@ -448,7 +521,7 @@ public function countAgentsSecurite()
 public function countConducteurs()
 {
     $count = Utilisateur::where('role', 'conducteur')->count();
-    $this->logAction(auth()->id(), 'Comptage des conducteurs');
+    
     return response()->json(['count' => $count]);
 }
 
@@ -499,7 +572,7 @@ public function countConducteurs()
                 'email' => 'required|email|unique:utilisateurs',
                 'adresse' => 'required|string',
                 'telephone' => 'required|string|unique:utilisateurs',
-                'role' => 'required|in:agent de sécurité,administrateur',
+                'role' => 'required|in:agent de sécurité,administrateur,conducteur',
             ]);
 
             // Si la validation échoue, ajouter les erreurs au tableau
@@ -551,18 +624,47 @@ public function countConducteurs()
      */
     private function logAction($utilisateurId, $action)
     {
-        $date = Carbon::now()->format('d/m/Y');
-        $heure = Carbon::now()->format('H:i');
-
+        $utilisateur = auth()->user(); // Récupère l'utilisateur connecté
+    
         Historique::create([
-            'utilisateur_id' => $utilisateurId,
+            'utilisateur_id' => $utilisateur->id,
             'action' => $action,
-            'date' => $date,
-            'heure' => $heure,
+            'date' => Carbon::now()->format('d/m/Y'),
+            'heure' => Carbon::now()->format('H:i'),
         ]);
     }
 
-    //pour se connecter avec code secret 
+    /**
+ * Vérifie si une plaque d'immatriculation existe dans la base de données.
+ *
+ * @param \Illuminate\Http\Request $request
+ * @return \Illuminate\Http\JsonResponse
+ */
+public function checkPlate(Request $request)
+{
+    $request->validate([
+        'plaque_matriculation' => 'required|string',
+    ], [
+        'plaque_matriculation.required' => 'La plaque d\'immatriculation est obligatoire.',
+    ]);
+
+    $plaque = $request->input('plaque_matriculation');
+    $utilisateur = Utilisateur::where('plaque_matriculation', $plaque)->first();
+
+    if ($utilisateur) {
+        // Si la plaque existe, retourner les informations de l'utilisateur
+        return response()->json([
+            'exists' => true,
+            'utilisateur' => $utilisateur,
+        ], 200);
+    } else {
+        // Si la plaque n'existe pas
+        return response()->json([
+            'exists' => false,
+            'message' => 'Plaque d\'immatriculation non trouvée.',
+        ], 404);
+    }
+}
 
     
 }

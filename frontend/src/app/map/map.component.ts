@@ -14,6 +14,8 @@ export class MapComponent implements AfterViewInit {
   private userMarker: any;
   private routeLine: any;
   private routingService: any;
+  private closestPoliceMarker: any = null;
+  private minDistance: number = Infinity;
 
   constructor() {
     this.platform = new H.service.Platform({
@@ -37,14 +39,46 @@ export class MapComponent implements AfterViewInit {
   }
 
   private addMarker(lat: number, lng: number, name: string): void {
+    const userPos = this.userMarker.getGeometry();
+    const distance = this.calculateDistance(userPos.lat, userPos.lng, lat, lng);
+
+    let color = 'green';
+    if (distance < this.minDistance) {
+      this.minDistance = distance;
+      color = 'yellow';
+      if (this.closestPoliceMarker) {
+        this.map.removeObject(this.closestPoliceMarker);
+      }
+      this.closestPoliceMarker = new H.map.Marker({ lat, lng }, { icon: new H.map.Icon(`<svg width="30" height="30" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="15" cy="15" r="10" stroke="${color}" stroke-width="3" fill="none"/>
+        </svg>`, { size: { w: 30, h: 30 } }) });
+      this.map.addObject(this.closestPoliceMarker);
+    }
+
     const svgCircle = `<svg width="30" height="30" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="15" cy="15" r="10" stroke="green" stroke-width="3" fill="none"/>
+        <circle cx="15" cy="15" r="10" stroke="${color}" stroke-width="3" fill="none"/>
       </svg>`;
     const icon = new H.map.Icon(svgCircle, { size: { w: 30, h: 30 } });
     const marker = new H.map.Marker({ lat, lng }, { icon });
 
     marker.addEventListener('tap', () => this.calculateRoute(lat, lng, name));
     this.map.addObject(marker);
+  }
+
+  private calculateDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
+    const R = 6371; // Radius of the Earth in kilometers
+    const dLat = this.degreesToRadians(lat2 - lat1);
+    const dLng = this.degreesToRadians(lng2 - lng1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(this.degreesToRadians(lat1)) * Math.cos(this.degreesToRadians(lat2)) *
+      Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
+
+  private degreesToRadians(degrees: number): number {
+    return degrees * (Math.PI / 180);
   }
 
   private fetchPoliceStations(lat: number, lng: number): void {
@@ -131,7 +165,7 @@ export class MapComponent implements AfterViewInit {
   private showRouteInfo(name: string, distance: number, timeByCar: number): void {
     // Sélectionne la div qui affichera les informations
     const routeInfoDiv = document.getElementById('routeInfo');
-    
+
     if (routeInfoDiv) {
       routeInfoDiv.innerHTML = `
         <strong>Itinéraire vers ${name}</strong><br>
@@ -139,12 +173,11 @@ export class MapComponent implements AfterViewInit {
         🚶‍♂️ <strong>À pied :</strong> ${Math.round(timeByCar * 3)} min (${distance.toFixed(1)} km)
       `;
       routeInfoDiv.style.display = 'block';
-  
+
       // Masque les informations après 10 secondes
       setTimeout(() => {
         routeInfoDiv.style.display = 'none';
       }, 10000); // 10000 ms = 10 secondes
     }
   }
-  
 }

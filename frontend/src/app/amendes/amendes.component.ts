@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { NavbarComponent } from '../navbar/navbar.component';
 import jsPDF from 'jspdf';
+import { AuthService } from '../auth.service'; // Importez le service AuthService
 
 @Component({
   selector: 'app-amendes',
@@ -13,7 +14,7 @@ import jsPDF from 'jspdf';
   styleUrls: ['./amendes.component.css'],
   standalone: true,
   imports: [CommonModule, HttpClientModule, SidebarComponent, NavbarComponent],
-  providers: [InfractionService]
+  providers: [InfractionService,AuthService]
 })
 export class AmendesComponent implements OnInit {
   amendes: any[] = [];
@@ -26,7 +27,7 @@ export class AmendesComponent implements OnInit {
   montant: string = '--';
   pages: number[] = []; // Tableau des numéros de pages
 
-  constructor(public infractionService: InfractionService) {}
+  constructor(public infractionService: InfractionService, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.loadInfractionsForPage(this.currentPage);
@@ -188,8 +189,9 @@ generateFacture(amende: any): void {
   doc.text(`Heure: ${amende.heure}`, 15, 75);
   
   // Récupérer le nom de l'agent depuis le localStorage ou un service d'authentification
-  const agentName = localStorage.getItem('agentName') || 'Agent de sécurité';
-  doc.text(`Agent enregistreur: ${agentName}`, 15, 85);
+  const agent_nom: string = `${this.authService.getUserNom()} ${this.authService.getUserPrenom()}`.trim() || 'Agent Inconnu';
+
+  doc.text(`Agent enregistreur: ${agent_nom}`, 15, 85);
 
   // Signature
   doc.setFontSize(10);
