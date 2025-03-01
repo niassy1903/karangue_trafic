@@ -2,12 +2,12 @@ import {
   Component, ElementRef, QueryList, ViewChildren,
   HostListener, OnDestroy, ViewChild, AfterViewInit
 } from '@angular/core';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { WebSocketService } from '../websocket.service'; // Importe le service WebSocket
+import { WebSocketService } from '../../services/websocket.service'; // Importe le service WebSocket
 
 @Component({
   selector: 'app-login',

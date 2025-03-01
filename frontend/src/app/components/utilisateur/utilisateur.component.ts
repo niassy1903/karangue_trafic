@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UtilisateurService } from '../utilisateur.service';
+import { UtilisateurService } from '../../services/utilisateur.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
@@ -26,6 +26,8 @@ export class UtilisateurComponent implements OnInit {
   searchTerm: string = ''; // Terme de recherche
   noResults: boolean = false; // Aucun résultat trouvé
   selectedRole: string = ''; // Rôle sélectionné pour le filtrage
+  filteredUtilisateurs: any[] = [];
+
 
   constructor(private utilisateurService: UtilisateurService, private router: Router) {}
 
@@ -38,8 +40,7 @@ export class UtilisateurComponent implements OnInit {
     this.utilisateurService.getUtilisateurs().subscribe(
       (data) => {
         this.allUtilisateurs = data;
-        this.totalPages = Math.ceil(this.allUtilisateurs.length / this.itemsPerPage);
-        this.updatePaginatedList();
+        this.applyFilters(); // Appliquer les filtres après le chargement
       },
       (error) => {
         console.error('Erreur lors de la récupération des utilisateurs', error);
@@ -47,11 +48,6 @@ export class UtilisateurComponent implements OnInit {
     );
   }
 
-  // Mettre à jour la liste paginée
-  updatePaginatedList(): void {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    this.utilisateurs = this.allUtilisateurs.slice(startIndex, startIndex + this.itemsPerPage);
-  }
 
   // Changer de page
   changePage(page: number): void {
@@ -62,27 +58,39 @@ export class UtilisateurComponent implements OnInit {
   }
 
   // Filtrer les utilisateurs par matricule et rôle
-  filterUsers(): void {
-    let filteredUsers = this.allUtilisateurs;
+  // Remplacer la méthode filterUsers() par :
+applyFilters(): void {
+  let filteredUsers = this.allUtilisateurs;
 
-    // Filtrage par matricule
-    if (this.searchTerm) {
-      filteredUsers = filteredUsers.filter((user) =>
-        user.matricule.toLowerCase().includes(this.searchTerm.toLowerCase())
-      );
-    }
-
-    // Filtrage par rôle
-    if (this.selectedRole) {
-      filteredUsers = filteredUsers.filter(
-        (user) => user.role.toLowerCase() === this.selectedRole.toLowerCase()
-      );
-    }
-
-    this.utilisateurs = filteredUsers;
-    this.noResults = this.utilisateurs.length === 0;
-    this.updatePaginatedList();
+  // Filtrage par terme de recherche
+  if (this.searchTerm) {
+    const term = this.searchTerm.toLowerCase();
+    filteredUsers = filteredUsers.filter(user => 
+      user.matricule.toLowerCase().includes(term) ||
+      user.prenom.toLowerCase().includes(term) ||
+      user.nom.toLowerCase().includes(term)
+    );
   }
+
+  // Filtrage par rôle
+  if (this.selectedRole) {
+    filteredUsers = filteredUsers.filter(user => 
+      user.role.toLowerCase() === this.selectedRole.toLowerCase()
+    );
+  }
+
+  this.filteredUtilisateurs = filteredUsers;
+  this.totalPages = Math.ceil(this.filteredUtilisateurs.length / this.itemsPerPage);
+  this.currentPage = 1; // Réinitialiser à la première page
+  this.updatePaginatedList();
+  this.noResults = this.filteredUtilisateurs.length === 0;
+}
+
+// Modifier updatePaginatedList()
+updatePaginatedList(): void {
+  const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+  this.utilisateurs = this.filteredUtilisateurs.slice(startIndex, startIndex + this.itemsPerPage);
+}
 
   // Supprimer un utilisateur
   deleteUtilisateur(id: number): void {

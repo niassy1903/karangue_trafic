@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { InfractionService } from '../infraction.service';
+import { InfractionService } from '../../services/infraction.service';
 import { HttpClientModule } from '@angular/common/http';
 import Swal from 'sweetalert2';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { NavbarComponent } from '../navbar/navbar.component';
 import jsPDF from 'jspdf';
-import { AuthService } from '../auth.service'; // Importez le service AuthService
+import { AuthService } from '../../services/auth.service'; // Importez le service AuthService
 
 @Component({
   selector: 'app-amendes',

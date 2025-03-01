@@ -1,18 +1,18 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LoginComponent } from './login/login.component';
-import { UtilisateurComponent } from './utilisateur/utilisateur.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { InscriptionComponent } from './inscription/inscription.component';
-import { ModifierComponent } from './modifier/modifier.component';
-import { SidebarComponent } from './sidebar/sidebar.component';
-import { NavbarComponent } from './navbar/navbar.component';
-import { AmendesComponent } from './amendes/amendes.component';
-import { HistoriqueAmendesComponent } from './historique-amendes/historique-amendes.component';
-import { MapComponent } from './map/map.component';
-import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
-import { AuthGuard } from './auth.guard';
-import { AgentGuard } from './agent.guard';
+import { LoginComponent } from './components/login/login.component';
+import { UtilisateurComponent } from './components/utilisateur/utilisateur.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { InscriptionComponent } from './components/inscription/inscription.component';
+import { ModifierComponent } from './components/modifier/modifier.component';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
+import { AmendesComponent } from './components/amendes/amendes.component';
+import { HistoriqueAmendesComponent } from './components/historique-amendes/historique-amendes.component';
+import { MapComponent } from './components/map/map.component';
+import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
+import { AuthGuard } from './guard/auth.guard';
+import { AgentGuard } from './guard/agent.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' }, // Page par défaut

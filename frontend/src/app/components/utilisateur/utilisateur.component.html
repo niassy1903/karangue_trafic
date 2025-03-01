@@ -37,16 +37,26 @@
 
 
               <!-- Barre de recherche et filtre -->
-        <div class="d-flex gap-2 mb-3">
-          <input type="text" class="form-control small-search" placeholder="Rechercher par Matricule..." [(ngModel)]="searchTerm" (input)="filterUsers()" />
-          <select class="form-control small-search" [(ngModel)]="selectedRole" (change)="filterUsers()">
-            <option value="">Tous</option>
-            <option value="administrateur">Administrateur</option>
-            <option value="agent de sécurité">Agent de Sécurité</option>
-            <option value="conducteur">Conducteur</option>
-          </select>
-          <button class="btn btn-primary small-button">✔ Filtre</button>
-        </div>
+        <!-- Barre de recherche et filtre -->
+<div class="d-flex gap-2 mb-3">
+  <input 
+    type="text" 
+    class="form-control small-search" 
+    placeholder="Rechercher par Matricule, Nom ou Prénom..." 
+    [(ngModel)]="searchTerm" 
+    (input)="applyFilters()"
+  />
+  <select 
+    class="form-control small-search" 
+    [(ngModel)]="selectedRole" 
+    (change)="applyFilters()"
+  >
+    <option value="">Tous</option>
+    <option value="administrateur">Administrateur</option>
+    <option value="agent de sécurité">Agent de Sécurité</option>
+    <option value="conducteur">Conducteur</option>
+  </select>
+</div>
 
         <!-- Message d'erreur si aucun résultat n'est trouvé -->
         <div *ngIf="noResults" class="alert alert-success" role="alert">

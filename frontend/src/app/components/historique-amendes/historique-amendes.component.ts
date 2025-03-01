@@ -3,9 +3,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { CommonModule } from '@angular/common';
-import { HistoriquePaiementService } from '../historique-paiement.service';
+import { HistoriquePaiementService } from '../../services/historique-paiement.service';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { AuthService } from '../auth.service'; // Assurez-vous d'importer AuthService
+import { AuthService } from '../../services/auth.service'; // Assurez-vous d'importer AuthService
 
 interface Historique {
   id: string;
@@ -34,6 +34,7 @@ export class HistoriqueAmendesComponent implements OnInit {
   searchQuery: string = '';
   prenom: string = '';
   nom: string = '';
+  noResultsMessage: string = ''; // Nouvelle propriété pour le message d'erreur
 
   constructor(
     private historiquePaiementService: HistoriquePaiementService,
@@ -78,7 +79,20 @@ export class HistoriqueAmendesComponent implements OnInit {
       historique.prenom.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
       historique.nom.toLowerCase().includes(this.searchQuery.toLowerCase())
     );
+  
+    // Vérifier si aucun résultat n'est trouvé
+    if (this.filteredHistoriques.length === 0 && this.searchQuery.trim() !== '') {
+      this.noResultsMessage = `Aucun résultat trouvé pour "${this.searchQuery}".`;
+    } else {
+      this.noResultsMessage = ''; // Réinitialiser le message si des résultats sont trouvés
+    }
+  
     this.totalPages = Math.ceil(this.filteredHistoriques.length / 10);
+  }
+
+  clearSearch() {
+    this.searchQuery = '';
+    this.filterHistoriques();
   }
 
   onSearchChange(event: Event) {

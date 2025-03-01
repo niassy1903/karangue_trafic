@@ -1,4 +1,4 @@
-import { InfractionService } from './../infraction.service';
+import { InfractionService } from '../../services/infraction.service';
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { Chart } from 'chart.js/auto';
 import { SidebarComponent } from '../sidebar/sidebar.component';
