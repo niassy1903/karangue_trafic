@@ -226,5 +226,13 @@ getPolices(): Observable<any> {
   );
 }
 
+transfererNotification(data: any): Observable<any> {
+  const headers = this.getAuthHeaders();
+  return this.http.post(`${this.apiUrl2}/transferer-notification`, data, { headers }).pipe(
+    catchError((error) => {
+      return throwError(error);
+    })
+  );
+}
 
 }

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { io } from 'socket.io-client';
 import { Observable, Subject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -11,35 +12,17 @@ export class NotificationService {
   private temporaryNotifications = new Subject<any>();
   private permanentNotifications: any[] = [];
 
-  constructor() {
+  constructor(private http: HttpClient) {
     this.listenForNotifications();
   }
 
-  // Écouter les nouvelles notifications sans doublon
-  private listenForNotifications(): void {
-    this.socket.off('newNotification'); // Évite d'ajouter plusieurs écouteurs
-    this.socket.on('newNotification', (data) => {
-      if (data) {
-        this.temporaryNotifications.next(data);
-        this.permanentNotifications.unshift({ ...data, read: false }); // Ajouter avec statut "non lu"
-      }
-    });
-  }
 
   // Observable pour écouter les notifications temporaires
   getNotifications(): Observable<any> {
     return this.temporaryNotifications.asObservable();
   }
 
-  // Retourner une copie des notifications permanentes
-  getPermanentNotifications(): any[] {
-    return [...this.permanentNotifications]; // Évite la modification directe
-  }
 
-  // Filtrer les notifications non lues
-  getUnreadNotifications(): any[] {
-    return this.permanentNotifications.filter(notif => !notif.read);
-  }
 
   // Marquer une notification spécifique comme lue
   markAsRead(index: number): void {
@@ -58,10 +41,43 @@ export class NotificationService {
     this.socket.emit('joinPoliceRoom', policeId);
   }
 
-
-// Retourner le nombre de notifications non lues
+  // Retourner le nombre de notifications non lues
   getUnreadCount(): number {
     return this.getUnreadNotifications().length;
+  }
+  // Écouter les nouvelles notifications sans doublon
+  private listenForNotifications(): void {
+    this.socket.off('newNotification'); // Évite d'ajouter plusieurs écouteurs
+    this.socket.on('newNotification', (data) => {
+      if (data) {
+        console.log('Notification reçue:', data); // Vérifiez les données reçues
+        this.temporaryNotifications.next(data);
+        this.permanentNotifications.unshift({ ...data, read: false }); // Ajouter avec statut "non lu"
+        this.temporaryNotifications.next({ type: 'updateUnreadCount' }); // Trigger unread count update
+      }
+    });
+  }
+
+  // Retourner une copie des notifications permanentes
+  getPermanentNotifications(): any[] {
+    return [...this.permanentNotifications]; // Évite la modification directe
+  }
+
+  // Filtrer les notifications non lues
+  getUnreadNotifications(): any[] {
+    return this.permanentNotifications.filter(notif => !notif.read);
+  }
+
+  // Transférer une notification à une autre police
+  transferNotification(notificationId: string, newPoliceId: string): Observable<any> {
+    return this.http.post('http://localhost:8000/api/transferer-notification', {
+      infraction_id: notificationId,
+      new_police_id: newPoliceId
+    });
+  }
+
+  getInfractionById(id: string): Observable<any> {
+    return this.http.get(`http://localhost:8000/api/infractions/${id}`);
   }
 
   

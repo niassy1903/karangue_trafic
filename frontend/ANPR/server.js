@@ -1,70 +1,85 @@
-const io = require("socket.io-client");
-const axios = require("axios");
+const express = require('express');
+const bodyParser = require('body-parser');
+const axios = require('axios');
 
-// Connexion au serveur Flask
-const socket = io("http://127.0.0.1:5000");
+const app = express();
+const port = 3001;
 
-let highConfidencePlate = null;
+app.use(bodyParser.json());
 
-socket.on("connect", () => {
-    console.log("✅ Connecté au serveur Flask.");
-});
+// Tableau pour stocker les plaques récemment détectées avec un timestamp
+let detectedPlates = [];
 
-socket.on("plate_detected", async (data) => {
-    console.log(`🚗 Plaque détectée : ${data.plate}, Confiance : ${data.confidence}`);
+function isPlateDetectedRecently(plate) {
+    const currentTime = Date.now();
+    
+    // Filtrer les plaques détectées dans les 5 dernières minutes
+    detectedPlates = detectedPlates.filter(plateData => currentTime - plateData.timestamp < 5 * 60 * 1000); 
+    
+    // Vérifier si la plaque existe dans la liste filtrée
+    return detectedPlates.some(plateData => plateData.plate === plate);
+}
 
-    // Vérifier si la confiance est de 99% ou plus
-    if (parseFloat(data.confidence) >= 99) {
-        console.log(`🚨 Plaque détectée avec 99% de précision !`);
+app.post('/receive-plate', async (req, res) => {
+    const { plate, speed } = req.body;
+    console.log(`Plaque reçue : ${plate}, Vitesse : ${speed} km/h`);
 
-        // Stocker la plaque avec une haute confiance
-        highConfidencePlate = data.plate;
-
-        try {
-            // Appeler l'API Laravel pour vérifier la plaque
-            const response = await axios.post('http://127.0.0.1:8000/api/check-plate', {
-                plaque_matriculation: highConfidencePlate
-            });
-
-            if (response.data.exists) {
-                // Si la plaque existe, enregistrer l'infraction
-                console.log('Plaque trouvée :', response.data.utilisateur);
-                // Appeler la méthode enregistrerInfraction ici
-                enregistrerInfraction(response.data.utilisateur);
-            } else {
-                console.log('Plaque non trouvée.');
-            }
-        } catch (error) {
-            console.error('Erreur lors de la vérification de la plaque :', error);
-        }
+    // Vérifier si la plaque a été détectée récemment
+    if (isPlateDetectedRecently(plate)) {
+        console.log(`Plaque ${plate} déjà enregistrée récemment.`);
+        return res.status(200).send({ message: "Plaque déjà enregistrée récemment." });
     }
-});
 
-socket.on("disconnect", () => {
-    console.log("❌ Déconnecté du serveur Flask.");
-});
-
-async function enregistrerInfraction(utilisateur) {
-    // Obtenir la date et l'heure actuelles
-    const now = new Date();
-    const date = now.toLocaleDateString('fr-FR'); // Format dd/mm/yyyy
-    const heure = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }); // Format hh:mm
-
-    // Données nécessaires pour enregistrer l'infraction
-    const infractionData = {
-        nom_conducteur: utilisateur.nom,
-        prenom_conducteur: utilisateur.prenom,
-        plaque_matriculation: utilisateur.plaque_matriculation,
-        vitesse: 120, // Exemple de vitesse, à ajuster selon vos besoins
-        date: date,
-        heure: heure,
-    };
+    // Vérification de la vitesse
+    if (speed <= 30) {
+        console.log(`Vitesse de ${plate} est inférieure ou égale à 30 km/h, aucune infraction enregistrée.`);
+        return res.status(200).send({ message: "Vitesse insuffisante pour enregistrer une infraction." });
+    }
 
     try {
-        // Appeler l'API Laravel pour enregistrer l'infraction
-        const response = await axios.post('http://127.0.0.1:8000/api/enregistrer-infraction', infractionData);
-        console.log('Infraction enregistrée :', response.data);
+        // Vérification de la plaque dans la base de données via l'API
+        const response = await axios.post('http://127.0.0.1:8000/api/check-plate', { plaque_matriculation: plate });
+        console.log('Réponse de l\'API check-plate:', response.data);
+
+        if (response.data.exists) {
+            console.log(`Plaque ${plate} trouvée :`, response.data.utilisateur);
+            const utilisateur = response.data.utilisateur;
+
+            // Création des données pour l'infraction
+            const now = new Date();
+            const date = now.toLocaleDateString('fr-FR');
+            const heure = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+
+            const infractionData = {
+                nom_conducteur: utilisateur.nom,
+                prenom_conducteur: utilisateur.prenom,
+                plaque_matriculation: utilisateur.plaque_matriculation,
+                telephone: utilisateur.telephone,
+                vitesse: speed,  // Vitesse réelle détectée
+                date: date,
+                heure: heure
+            };
+
+            console.log('Données d\'infraction à enregistrer :', infractionData);
+
+            // Enregistrer l'infraction via l'API
+            const infractionResponse = await axios.post('http://127.0.0.1:8000/api/enregistrer-infraction', infractionData);
+            console.log('Réponse après enregistrement de l\'infraction:', infractionResponse.data);
+
+            // Ajout de la plaque aux plaques récemment détectées
+            detectedPlates.push({ plate, timestamp: Date.now() });
+
+            res.status(200).send({ message: "Infraction enregistrée", utilisateur });
+        } else {
+            console.log('Plaque non trouvée');
+            res.status(404).send({ message: "Plaque non trouvée" });
+        }
     } catch (error) {
-        console.error('Erreur lors de l\'enregistrement de l\'infraction :', error);
+        console.error('Erreur:', error.message);
+        res.status(500).send({ message: 'Erreur serveur' });
     }
-}
+});
+
+app.listen(port, () => {
+    console.log(`Serveur Node.js en écoute sur le port ${port}`);
+});

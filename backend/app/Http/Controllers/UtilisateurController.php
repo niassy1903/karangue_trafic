@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Models\Police;
+use Illuminate\Support\Facades\Response;
 
 class UtilisateurController extends Controller
 {
@@ -24,7 +25,7 @@ class UtilisateurController extends Controller
     public function index()
     {
         $utilisateurs = Utilisateur::all();
-      
+       
         return response()->json($utilisateurs);
     }
 
