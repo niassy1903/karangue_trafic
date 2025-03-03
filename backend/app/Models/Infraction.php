@@ -35,4 +35,6 @@ class Infraction extends Eloquent
     {
         return $this->belongsTo(Police::class, 'police_id', '_id');
     }
+
+    
 }

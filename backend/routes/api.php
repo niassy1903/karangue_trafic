@@ -93,14 +93,14 @@ Route::middleware(['isAdmin'])->group(function (){
 
 
 
-    Route::apiResource('polices', PoliceController::class);
-
- 
+   
 
 });
 
 
+Route::apiResource('polices', PoliceController::class);
 
+ 
   
 
 // Authentifie un utilisateur (cette route ne nécessite pas d'être protégée par le middleware IsAdmin)

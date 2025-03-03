@@ -34,15 +34,24 @@ app.post('/send-notification', (req, res) => {
   res.status(200).json({ message: 'Notification envoyée' });
 });
 
-// Endpoint pour envoyer une notification à une police spécifique
 app.post('/send-notification-to-police', (req, res) => {
-  const { police_id, message, conducteur, plaque, vitesse, date, heure } = req.body;
-  const notification = { message, conducteur, plaque, vitesse, date, heure };
+  const { police_id, infraction_id, message, conducteur, plaque, vitesse, date, heure } = req.body;
 
-  // Envoyer la notification aux agents de la police spécifique
-  io.to(police_id).emit('newNotification', notification);
+  // Logique pour traiter les données reçues
+  console.log('Notification reçue:', { police_id, infraction_id, message, conducteur, plaque, vitesse, date, heure });
 
-  res.status(200).json({ message: 'Notification envoyée à la police' });
+  // Envoyer la notification à la salle de la police spécifique
+  io.to(police_id).emit('newNotification', {
+    infraction_id,
+    message,
+    conducteur,
+    plaque,
+    vitesse,
+    date,
+    heure
+  });
+
+  res.json({ success: true, message: 'Notification envoyée à la police' });
 });
 
 
