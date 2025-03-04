@@ -195,16 +195,6 @@ getHistoriqueById(id: string): Observable<any> {
   );
 }
 
-// Méthode pour importer des utilisateurs à partir d'un fichier CSV
-importCsv(formData: FormData): Observable<any> {
-  const headers = this.getAuthHeaders();
-  return this.http.post(`${this.apiUrl}/import`, formData, { headers }).pipe(
-    catchError((error) => {
-      return throwError(error);
-    })
-  );
-}
-
 
 
 // Méthode pour assigner une carte à un utilisateur

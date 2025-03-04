@@ -3,10 +3,13 @@ import { UtilisateurService } from '../utilisateur.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { FormsModule } from '@angular/forms';
+import * as Papa from 'papaparse';
+
+
 
 @Component({
   selector: 'app-utilisateur',
@@ -14,7 +17,7 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./utilisateur.component.css'],
   standalone: true,
   imports: [CommonModule, HttpClientModule, SidebarComponent, NavbarComponent, FormsModule],
-  providers: [UtilisateurService],
+  providers: [UtilisateurService, HttpClientModule,HttpClient],
 })
 export class UtilisateurComponent implements OnInit {
   allUtilisateurs: any[] = []; // Tous les utilisateurs
@@ -26,6 +29,8 @@ export class UtilisateurComponent implements OnInit {
   searchTerm: string = ''; // Terme de recherche
   noResults: boolean = false; // Aucun résultat trouvé
   selectedRole: string = ''; // Rôle sélectionné pour le filtrage
+  filteredUtilisateurs: any[] = [];
+
 
   constructor(private utilisateurService: UtilisateurService, private router: Router) {}
 
@@ -38,8 +43,7 @@ export class UtilisateurComponent implements OnInit {
     this.utilisateurService.getUtilisateurs().subscribe(
       (data) => {
         this.allUtilisateurs = data;
-        this.totalPages = Math.ceil(this.allUtilisateurs.length / this.itemsPerPage);
-        this.updatePaginatedList();
+        this.applyFilters(); // Appliquer les filtres après le chargement
       },
       (error) => {
         console.error('Erreur lors de la récupération des utilisateurs', error);
@@ -47,11 +51,6 @@ export class UtilisateurComponent implements OnInit {
     );
   }
 
-  // Mettre à jour la liste paginée
-  updatePaginatedList(): void {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    this.utilisateurs = this.allUtilisateurs.slice(startIndex, startIndex + this.itemsPerPage);
-  }
 
   // Changer de page
   changePage(page: number): void {
@@ -62,27 +61,39 @@ export class UtilisateurComponent implements OnInit {
   }
 
   // Filtrer les utilisateurs par matricule et rôle
-  filterUsers(): void {
-    let filteredUsers = this.allUtilisateurs;
+  // Remplacer la méthode filterUsers() par :
+applyFilters(): void {
+  let filteredUsers = this.allUtilisateurs;
 
-    // Filtrage par matricule
-    if (this.searchTerm) {
-      filteredUsers = filteredUsers.filter((user) =>
-        user.matricule.toLowerCase().includes(this.searchTerm.toLowerCase())
-      );
-    }
-
-    // Filtrage par rôle
-    if (this.selectedRole) {
-      filteredUsers = filteredUsers.filter(
-        (user) => user.role.toLowerCase() === this.selectedRole.toLowerCase()
-      );
-    }
-
-    this.utilisateurs = filteredUsers;
-    this.noResults = this.utilisateurs.length === 0;
-    this.updatePaginatedList();
+  // Filtrage par terme de recherche
+  if (this.searchTerm) {
+    const term = this.searchTerm.toLowerCase();
+    filteredUsers = filteredUsers.filter(user => 
+      user.matricule.toLowerCase().includes(term) ||
+      user.prenom.toLowerCase().includes(term) ||
+      user.nom.toLowerCase().includes(term)
+    );
   }
+
+  // Filtrage par rôle
+  if (this.selectedRole) {
+    filteredUsers = filteredUsers.filter(user => 
+      user.role.toLowerCase() === this.selectedRole.toLowerCase()
+    );
+  }
+
+  this.filteredUtilisateurs = filteredUsers;
+  this.totalPages = Math.ceil(this.filteredUtilisateurs.length / this.itemsPerPage);
+  this.currentPage = 1; // Réinitialiser à la première page
+  this.updatePaginatedList();
+  this.noResults = this.filteredUtilisateurs.length === 0;
+}
+
+// Modifier updatePaginatedList()
+updatePaginatedList(): void {
+  const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+  this.utilisateurs = this.filteredUtilisateurs.slice(startIndex, startIndex + this.itemsPerPage);
+}
 
   // Supprimer un utilisateur
   deleteUtilisateur(id: number): void {
@@ -281,70 +292,199 @@ export class UtilisateurComponent implements OnInit {
     this.router.navigate(['/modifier', id]);
   }
 
-  // Importer des utilisateurs via CSV
-  importCsv(event: any): void {
-    const file = event.target.files[0];
-    if (file) {
-      const formData = new FormData();
-      formData.append('csv_file', file);
+  
+// Importer des utilisateurs via CSV
+importCsv(event: any): void {
+  const file = event.target.files[0];
+  if (file) {
+    Papa.parse(file, {
+      header: true, // Utiliser la première ligne comme en-têtes
+      skipEmptyLines: true, // Ignorer les lignes vides
+      complete: (results: Papa.ParseResult<any>) => {
+        const usersFromCSV = results.data as any[]; // Les données du CSV
+        let successCount = 0;
+        let errorCount = 0;
+        const allErrors: string[] = []; // Pour collecter toutes les erreurs
 
-      this.utilisateurService.importCsv(formData).subscribe(
-        (response) => {
-          Swal.fire({
-            title: 'Succès!',
-            text: 'Importation réussie!',
-            icon: 'success',
-            timer: 2000,
-            timerProgressBar: true,
-            showConfirmButton: false
-          });
-          this.getUtilisateurs();
-        },
-        (error) => {
-          Swal.fire({
-            title: 'Erreur!',
-            text: 'L\'importation a échoué.',
-            icon: 'error',
-            timer: 2000,
-            timerProgressBar: true,
-            showConfirmButton: false
-          });
-          console.error('Erreur lors de l\'importation des utilisateurs', error);
-        }
-      );
-    } else {
-      Swal.fire({
-        title: 'Erreur!',
-        text: 'Veuillez sélectionner un fichier CSV.',
-        icon: 'error',
-        timer: 2000,
-        timerProgressBar: true,
-        showConfirmButton: false
-      });
+        // Parcourir chaque utilisateur du CSV
+        usersFromCSV.forEach((user, index) => {
+          // Valider les données avant de les envoyer
+          const validationErrors = this.validateUserData(user);
+          if (validationErrors.length > 0) {
+            errorCount++;
+            // Ajouter les erreurs de validation au tableau
+            allErrors.push(`Ligne ${index + 2} : ${validationErrors.join(', ')}`);
+            return; // Passer à l'utilisateur suivant
+          }
+
+          // Envoyer les données au backend
+          this.utilisateurService.createUtilisateur(user).subscribe(
+            (response) => {
+              successCount++;
+              console.log('Utilisateur créé avec succès:', response);
+              this.getUtilisateurs(); // Rafraîchir la liste des utilisateurs
+            },
+            (error) => {
+              errorCount++;
+              // Extraire les erreurs de validation MongoDB
+              if (error.error && error.error.errors) {
+                const errorMessages = this.extractMongoValidationErrors(error.error.errors);
+                allErrors.push(`Ligne ${index + 2} : ${errorMessages.join(', ')}`);
+              } else {
+                allErrors.push(`Ligne ${index + 2} : ${error.error?.message || 'Erreur inconnue'}`);
+              }
+              console.error('Erreur lors de la création de l\'utilisateur :', error);
+            },
+            () => {
+              // À la fin de l'importation, afficher un résumé
+              if (successCount + errorCount === usersFromCSV.length) {
+                let message = `${successCount} utilisateur(s) créé(s) avec succès, ${errorCount} erreur(s).`;
+
+                // Afficher les erreurs dans une alerte SweetAlert
+                if (allErrors.length > 0) {
+                  message += '\n\nErreurs :\n' + allErrors.join('\n');
+                }
+
+                Swal.fire({
+                  title: 'Importation terminée',
+                  text: message,
+                  icon: 'info',
+                  timer: 5000, // Afficher pendant 5 secondes
+                  timerProgressBar: true,
+                  showConfirmButton: true,
+                });
+              }
+            }
+          );
+        });
+      },
+      error: (error: any) => {
+        console.error('Erreur lors de la lecture du fichier CSV:', error);
+        Swal.fire({
+          title: 'Erreur!',
+          text: 'Une erreur est survenue lors de la lecture du fichier CSV.',
+          icon: 'error',
+          timer: 2000,
+          timerProgressBar: true,
+          showConfirmButton: false,
+        });
+      },
+    });
+  } else {
+    Swal.fire({
+      title: 'Erreur!',
+      text: 'Veuillez sélectionner un fichier CSV.',
+      icon: 'error',
+      timer: 2000,
+      timerProgressBar: true,
+      showConfirmButton: false,
+    });
+  }
+}
+
+// Méthode pour extraire les erreurs de validation MongoDB
+extractMongoValidationErrors(errors: any): string[] {
+  const errorMessages: string[] = [];
+  for (const field in errors) {
+    if (errors.hasOwnProperty(field)) {
+      errorMessages.push(`${field} : ${errors[field].message}`);
     }
   }
+  return errorMessages;
+}
+
+// Méthode pour valider les données d'un utilisateur
+validateUserData(user: any): string[] {
+  const errors: string[] = [];
+
+  // Vérifier les champs obligatoires
+  if (!user.nom) errors.push('Le champ "nom" est obligatoire.');
+  if (!user.prenom) errors.push('Le champ "prenom" est obligatoire.');
+  if (!user.email) errors.push('Le champ "email" est obligatoire.');
+  if (!user.adresse) errors.push('Le champ "adresse" est obligatoire.');
+  if (!user.telephone) errors.push('Le champ "telephone" est obligatoire.');
+  if (!user.role) errors.push('Le champ "role" est obligatoire.');
+
+  // Vérifier le format de l'email
+  if (user.email && !this.isValidEmail(user.email)) {
+    errors.push('L\'email n\'est pas valide.');
+  }
+
+  // Vérifier le rôle
+  if (user.role && !['agent de sécurité', 'administrateur', 'conducteur'].includes(user.role)) {
+    errors.push('Le rôle doit être "agent de sécurité", "administrateur" ou "conducteur".');
+  }
+
+  // Vérifier la plaque d'immatriculation pour les conducteurs
+  if (user.role === 'conducteur' && !user.plaque_matriculation) {
+    errors.push('La plaque d\'immatriculation est obligatoire pour les conducteurs.');
+  }
+
+  // Vérifier police_id pour les agents de sécurité
+  if (user.role === 'agent de sécurité' && user.police_id) {
+    // Vous pouvez ajouter une vérification supplémentaire ici si nécessaire
+  }
+
+  return errors;
+}
+
+// Méthode pour valider le format de l'email
+isValidEmail(email: string): boolean {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
 
   // Assigner une carte à un utilisateur
   assignCard(id: number): void {
+    // Afficher le modal avec l'input désactivé
     Swal.fire({
       title: 'Assigner une carte',
       html: `
         <img src="scanne.png" alt="Scan Image" style="width: 100px; height: 100px;">
-        <input type="text" id="cardId" class="swal2-input" placeholder="Entrez l'ID de la carte">
+        <input type="text" id="cardId" class="swal2-input" placeholder="Scan en cours..." disabled>
       `,
       showCancelButton: true,
       confirmButtonText: 'Assigner',
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
       showLoaderOnConfirm: true,
+      allowOutsideClick: false, // Empêcher la fermeture du modal en cliquant à l'extérieur
+      didOpen: () => {
+        // Établir une connexion SSE avec le serveur
+        const eventSource = new EventSource('http://localhost:3000/sse');
+  
+        // Écouter les événements du serveur
+        eventSource.onmessage = (event) => {
+          const data = JSON.parse(event.data);
+  
+          if (data.uid) {
+            const cardIdInput = document.getElementById('cardId') as HTMLInputElement;
+            if (cardIdInput) {
+              cardIdInput.value = data.uid; // Pré-remplir l'input avec l'UID
+              cardIdInput.disabled = false; // Activer l'input
+              cardIdInput.placeholder = 'UID scanné'; // Changer le placeholder
+            }
+          }
+        };
+  
+        // Fermer la connexion SSE lorsque le modal est fermé
+        Swal.getPopup()?.addEventListener('close', () => {
+          eventSource.close();
+        });
+      },
       preConfirm: () => {
         const cardId = (document.getElementById('cardId') as HTMLInputElement).value;
         if (!cardId) {
-          Swal.showValidationMessage('Veuillez entrer l\'ID de la carte');
+          Swal.showValidationMessage('Veuillez scanner une carte RFID.');
         }
         return cardId;
       },
     }).then((result) => {
       if (result.isConfirmed) {
         const cardId = result.value;
+  
+        // Appeler la méthode du service pour assigner la carte
         this.utilisateurService.assignCard(id, cardId).subscribe(
           (response) => {
             Swal.fire({

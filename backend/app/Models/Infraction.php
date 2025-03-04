@@ -23,6 +23,7 @@ class Infraction extends Eloquent
         'status',
         'montant',
         'police_id', // Ajout de la relation avec la police
+        'image_path',
     ];
 
     protected $attributes = [

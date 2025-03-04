@@ -24,8 +24,10 @@
         </button>
         <button class="btn btn-secondary" title="Ajouter des utilisateurs par CSV" (click)="csvInput.click()">
           <i class="fas fa-file-csv"></i> Ajouter par CSV
-        </button>
-        <input #csvInput type="file" (change)="importCsv($event)" style="display: none;">
+      </button>
+      <input #csvInput type="file" (change)="importCsv($event)" accept=".csv" style="display: none;">
+      
+        
         <button class="btn btn-warning" (click)="blockMultipleUtilisateurs()" title="Bloquer/Débloquer les utilisateurs sélectionnés">
           <i class="fas fa-ban"></i> Bloquer/Débloquer
         </button>
@@ -37,16 +39,26 @@
 
 
               <!-- Barre de recherche et filtre -->
-        <div class="d-flex gap-2 mb-3">
-          <input type="text" class="form-control small-search" placeholder="Rechercher par Matricule..." [(ngModel)]="searchTerm" (input)="filterUsers()" />
-          <select class="form-control small-search" [(ngModel)]="selectedRole" (change)="filterUsers()">
-            <option value="">Tous</option>
-            <option value="administrateur">Administrateur</option>
-            <option value="agent de sécurité">Agent de Sécurité</option>
-            <option value="conducteur">Conducteur</option>
-          </select>
-          <button class="btn btn-primary small-button">✔ Filtre</button>
-        </div>
+        <!-- Barre de recherche et filtre -->
+<div class="d-flex gap-2 mb-3">
+  <input 
+    type="text" 
+    class="form-control small-search" 
+    placeholder="Rechercher par Matricule, Nom ou Prénom..." 
+    [(ngModel)]="searchTerm" 
+    (input)="applyFilters()"
+  />
+  <select 
+    class="form-control small-search" 
+    [(ngModel)]="selectedRole" 
+    (change)="applyFilters()"
+  >
+    <option value="">Tous</option>
+    <option value="administrateur">Administrateur</option>
+    <option value="agent de sécurité">Agent de Sécurité</option>
+    <option value="conducteur">Conducteur</option>
+  </select>
+</div>
 
         <!-- Message d'erreur si aucun résultat n'est trouvé -->
         <div *ngIf="noResults" class="alert alert-success" role="alert">
@@ -65,6 +77,7 @@
                 <th>Prenom et Nom</th>
                 <th>Email</th>
                 <th>Role</th>
+                <th>Carte</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
@@ -78,6 +91,7 @@
                 <td>{{ utilisateur.prenom }} {{ utilisateur.nom }}</td>
                 <td>{{ utilisateur.email }}</td>
                 <td>{{ utilisateur.role }}</td>
+                <td>{{utilisateur.carte_id}}</td>
                 <td>
                   <span [ngClass]="{'text-success': utilisateur.status === 'Actif', 'text-danger': utilisateur.status === 'Inactif'}">
                     {{ utilisateur.status }}

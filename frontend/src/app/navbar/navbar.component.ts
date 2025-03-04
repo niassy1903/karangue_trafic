@@ -5,7 +5,7 @@ import { AuthService } from '../auth.service';
 import { UtilisateurService } from '../utilisateur.service'; // Importez le service UtilisateurService
 import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 interface Notification {
   police_id: string;
@@ -27,7 +27,7 @@ interface Police {
   styleUrls: ['./navbar.component.css'],
   standalone: true,
   imports: [CommonModule, HttpClientModule],
-  providers: [NotificationService, AuthService],
+  providers: [NotificationService, AuthService, UtilisateurService, HttpClientModule,HttpClient],
 })
 export class NavbarComponent implements OnInit, OnDestroy {
   temporaryNotification: Notification | null = null;

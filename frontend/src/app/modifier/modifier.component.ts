@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { NavbarComponent } from '../navbar/navbar.component';
 
@@ -15,7 +15,7 @@ import { NavbarComponent } from '../navbar/navbar.component';
   styleUrls: ['./modifier.component.css'],
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule, HttpClientModule, SidebarComponent, NavbarComponent],
-  providers: [UtilisateurService],
+  providers: [UtilisateurService, HttpClientModule,HttpClient],
 })
 export class ModifierComponent implements OnInit {
   modifierForm: FormGroup;

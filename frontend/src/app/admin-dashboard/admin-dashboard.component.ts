@@ -4,7 +4,8 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { CommonModule } from '@angular/common';
 import { PieChartComponent } from './pie-chart.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule,HttpClient } from '@angular/common/http';
+
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -12,7 +13,7 @@ import { HttpClientModule } from '@angular/common/http';
   imports: [SidebarComponent, NavbarComponent, CommonModule, PieChartComponent, HttpClientModule],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.css'],
-  providers: [UtilisateurService],
+  providers: [UtilisateurService, HttpClientModule,HttpClient],
 })
 export class AdminDashboardComponent implements OnInit {
   statsCards = [

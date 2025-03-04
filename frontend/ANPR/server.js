@@ -1,11 +1,21 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const axios = require('axios');
+const fs = require('fs');
+const path = require('path');
 
 const app = express();
 const port = 3001;
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50mb' })); // Augmenter la limite de taille pour les images
+
+// Chemin du dossier images
+const imagesDir = path.join(__dirname, 'images');
+
+// Créer le dossier 'images' s'il n'existe pas
+if (!fs.existsSync(imagesDir)) {
+    fs.mkdirSync(imagesDir, { recursive: true });
+}
 
 // Tableau pour stocker les plaques récemment détectées avec un timestamp
 let detectedPlates = [];
@@ -21,7 +31,7 @@ function isPlateDetectedRecently(plate) {
 }
 
 app.post('/receive-plate', async (req, res) => {
-    const { plate, speed } = req.body;
+    const { plate, speed, image } = req.body;
     console.log(`Plaque reçue : ${plate}, Vitesse : ${speed} km/h`);
 
     // Vérifier si la plaque a été détectée récemment
@@ -31,12 +41,17 @@ app.post('/receive-plate', async (req, res) => {
     }
 
     // Vérification de la vitesse
-    if (speed <= 30) {
+    if (speed <= 8.0) {
         console.log(`Vitesse de ${plate} est inférieure ou égale à 30 km/h, aucune infraction enregistrée.`);
         return res.status(200).send({ message: "Vitesse insuffisante pour enregistrer une infraction." });
     }
 
     try {
+        // Sauvegarder l'image
+        const imageBuffer = Buffer.from(image, 'base64');
+        const imagePath = path.join(imagesDir, `${plate}_${Date.now()}.jpg`);
+        fs.writeFileSync(imagePath, imageBuffer);
+
         // Vérification de la plaque dans la base de données via l'API
         const response = await axios.post('http://127.0.0.1:8000/api/check-plate', { plaque_matriculation: plate });
         console.log('Réponse de l\'API check-plate:', response.data);
@@ -57,7 +72,8 @@ app.post('/receive-plate', async (req, res) => {
                 telephone: utilisateur.telephone,
                 vitesse: speed,  // Vitesse réelle détectée
                 date: date,
-                heure: heure
+                heure: heure,
+                image_path: imagePath  // Chemin de l'image enregistrée
             };
 
             console.log('Données d\'infraction à enregistrer :', infractionData);

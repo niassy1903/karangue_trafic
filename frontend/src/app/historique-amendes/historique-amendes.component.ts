@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { CommonModule } from '@angular/common';
@@ -24,7 +24,7 @@ interface Historique {
   styleUrls: ['./historique-amendes.component.css'],
   standalone: true,
   imports: [HttpClientModule, SidebarComponent, NavbarComponent, CommonModule, NgxPaginationModule],
-  providers: [HistoriquePaiementService]
+  providers: [HistoriquePaiementService,HttpClientModule,HttpClient]
 })
 export class HistoriqueAmendesComponent implements OnInit {
   historiques: Historique[] = [];

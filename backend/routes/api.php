@@ -81,9 +81,7 @@ Route::middleware(['isAdmin'])->group(function (){
     |--------------------------------------------------------------------------
     */
 
-    // Importe des utilisateurs depuis un fichier CSV
-    Route::post('/utilisateurs/import', [UtilisateurController::class, 'importCsv']);
-
+  
     // Voir les logs de l'application
     Route::get('/historiques', [HistoriqueController::class, 'index']);
 

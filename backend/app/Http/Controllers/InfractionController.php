@@ -31,40 +31,41 @@ class InfractionController extends Controller
     }
 
     public function enregistrerInfraction(Request $request)
-{
-    $validatedData = $request->validate([
-        'nom_conducteur' => 'required|string',
-        'prenom_conducteur' => 'required|string',
-        'plaque_matriculation' => 'required|string',
-        'telephone' => 'required|string',
-        'vitesse' => 'required|numeric',
-        'date' => 'required|date_format:d/m/Y',
-        'heure' => 'required|date_format:H:i',
-    ]);
-
-    // Par défaut, associer la police de Dakar
-    $policeDakar = Police::where('nom', 'Commissariat de Police de Dakar')->first();
-    $validatedData['police_id'] = $policeDakar->id;
-
-    // Création de l'infraction avec la police associée
-    $infraction = Infraction::create($validatedData);
-
-    // Envoyer une notification au serveur Node.js
-    Http::post('http://localhost:3000/send-notification-to-police', [
-        'police_id' => $policeDakar->id, // Identifiant unique de la police
-        'infraction_id' => $infraction->id, // Ajoutez l'ID de l'infraction ici
-        'message' => 'Nouvelle infraction détectée',
-        'conducteur' => $validatedData['nom_conducteur'] . ' ' . $validatedData['prenom_conducteur'],
-        'telephone' => $validatedData['telephone'],
-        'plaque' => $validatedData['plaque_matriculation'],
-        'vitesse' => $validatedData['vitesse'],
-        'date' => $validatedData['date'],
-        'heure' => $validatedData['heure']
-    ]);
-
-    return response()->json(['message' => 'Infraction enregistrée', 'data' => $infraction], 201);
-}
-
+    {
+        $validatedData = $request->validate([
+            'nom_conducteur' => 'required|string',
+            'prenom_conducteur' => 'required|string',
+            'plaque_matriculation' => 'required|string',
+            'telephone' => 'required|string',
+            'vitesse' => 'required|numeric',
+            'date' => 'required|date_format:d/m/Y',
+            'heure' => 'required|date_format:H:i',
+            'image_path' => 'required|string',  // Ajouter le chemin de l'image
+        ]);
+    
+        // Par défaut, associer la police de Dakar
+        $policeDakar = Police::where('nom', 'Commissariat de Police de Dakar')->first();
+        $validatedData['police_id'] = $policeDakar->id;
+    
+        // Création de l'infraction avec la police associée
+        $infraction = Infraction::create($validatedData);
+    
+        // Envoyer une notification au serveur Node.js
+        Http::post('http://localhost:3000/send-notification-to-police', [
+            'police_id' => $policeDakar->id, // Identifiant unique de la police
+            'infraction_id' => $infraction->id, // Ajoutez l'ID de l'infraction ici
+            'message' => 'Nouvelle infraction détectée',
+            'conducteur' => $validatedData['nom_conducteur'] . ' ' . $validatedData['prenom_conducteur'],
+            'telephone' => $validatedData['telephone'],
+            'plaque' => $validatedData['plaque_matriculation'],
+            'vitesse' => $validatedData['vitesse'],
+            'date' => $validatedData['date'],
+            'heure' => $validatedData['heure'],
+            'image_path' => $validatedData['image_path']  // Ajouter le chemin de l'image
+        ]);
+    
+        return response()->json(['message' => 'Infraction enregistrée', 'data' => $infraction], 201);
+    }
 public function transfererNotification(Request $request)
 {
     // Vérifier les données reçues

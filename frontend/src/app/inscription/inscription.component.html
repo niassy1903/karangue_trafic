@@ -64,8 +64,8 @@
             <!-- Champ de Plaque d'immatriculation, affiché seulement si le rôle est "conducteur" -->
             <div class="mt-2" *ngIf="isConducteur">
               <label class="form-label">Plaque d'immatriculation <span class="required-field">*</span></label>
-              <input formControlName="plaque_immatriculation" type="text" class="form-control" placeholder="Ex: AA-123-BB">
-              <div *ngIf="submitted && f['plaque_immatriculation'].errors" class="text-danger">Plaque requise (max 10 caractères)</div>
+              <input formControlName="plaque_matriculation" type="text" class="form-control" placeholder="Ex: AA-123-BB">
+              <div *ngIf="submitted && f['plaque_matriculation'].errors" class="text-danger">Plaque requise (max 10 caractères)</div>
             </div>
 
             <div class="mt-2" *ngIf="isAgent">

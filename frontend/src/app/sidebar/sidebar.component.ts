@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-sidebar',
@@ -10,7 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
   styleUrls: ['./sidebar.component.css'],
   standalone: true,
   imports: [CommonModule, HttpClientModule],
-  providers: [AuthService]
+  providers: [AuthService, HttpClientModule,HttpClient],
 })
 export class SidebarComponent implements OnInit {
   currentRoute: string = '';

@@ -1,11 +1,13 @@
 // pie-chart.component.ts
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Chart } from 'chart.js/auto';
 
 @Component({
   selector: 'app-pie-chart',
   template: '<canvas id="pieChart"></canvas>',
-  standalone: true
+  standalone: true,
+  providers : [HttpClient,HttpClientModule]
 })
 export class PieChartComponent implements OnInit {
   ngOnInit() {

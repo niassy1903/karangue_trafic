@@ -6,6 +6,7 @@ import { NavbarComponent } from '../navbar/navbar.component';
 import { FormsModule } from '@angular/forms';
 import { InfractionService } from '../infraction.service';
 import { MapComponent } from '../map/map.component';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 
 @Component({
@@ -14,7 +15,7 @@ import { MapComponent } from '../map/map.component';
   imports: [SidebarComponent, CommonModule, NavbarComponent, FormsModule,MapComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
-  providers : [InfractionService]
+  providers : [InfractionService,HttpClientModule,HttpClient]
 })
 
 export class DashboardComponent implements OnInit {

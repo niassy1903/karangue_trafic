@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { InfractionService } from '../infraction.service';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import Swal from 'sweetalert2';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { NavbarComponent } from '../navbar/navbar.component';
@@ -14,7 +14,7 @@ import { AuthService } from '../auth.service'; // Importez le service AuthServic
   styleUrls: ['./amendes.component.css'],
   standalone: true,
   imports: [CommonModule, HttpClientModule, SidebarComponent, NavbarComponent],
-  providers: [InfractionService,AuthService]
+  providers: [InfractionService,AuthService, HttpClientModule,HttpClient],
 })
 export class AmendesComponent implements OnInit {
   amendes: any[] = [];

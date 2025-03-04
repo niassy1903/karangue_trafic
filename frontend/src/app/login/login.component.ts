@@ -5,16 +5,16 @@ import {
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpHandler } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, HttpClientModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  providers: [AuthService]
+  providers: [AuthService, HttpClientModule,HttpClient]
 })
 export class LoginComponent implements OnDestroy, AfterViewInit {
   @ViewChildren('input1, input2, input3, input4') inputs!: QueryList<ElementRef>;

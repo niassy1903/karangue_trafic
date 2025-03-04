@@ -1,3 +1,4 @@
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Component, AfterViewInit } from '@angular/core';
 
 declare var H: any;
@@ -7,6 +8,7 @@ declare var H: any;
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css'],
   standalone: true,
+  providers : [HttpClientModule,HttpClient]
 })
 export class MapComponent implements AfterViewInit {
   private platform: any;
