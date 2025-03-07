@@ -35,6 +35,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
   userPrenom: string | null = '';
   userNom: string | null = '';
   userRole: string | null = '';
+  navbarOpen = false;
+
   private notificationSubscription!: Subscription;
 
   constructor(
@@ -156,6 +158,10 @@ async transferNotification(notificationId: string) {
       }
     );
   }
+}
+
+toggleNavbar() {
+  this.navbarOpen = !this.navbarOpen;
 }
 
   

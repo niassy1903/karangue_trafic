@@ -1,32 +1,29 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-orange">
   <div class="container-fluid">
-    <form class="d-flex search-bar">
+    <!-- Barre de recherche (visible uniquement sur écrans ≥ md) -->
+    <form class="d-flex search-bar d-none d-md-flex">
       <input class="form-control me-2" type="search" placeholder="Recherche..." aria-label="Search">
       <button class="btn btn-light" type="submit">
         <i class="fas fa-search"></i>
       </button>
     </form>
+
+    <!-- Icônes de notification et profil utilisateur -->
     <div class="navbar-icons">
       <!-- Icône de notification avec badge -->
       <div class="notification-icon-container">
         <i class="fas fa-bell notification-icon" (click)="showUnreadNotifications()"></i>
-        <!-- Badge de notifications non lues -->
         <span class="badge bg-danger" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
       </div>
 
+      <!-- Profil utilisateur -->
       <div class="user-profile">
         <img src="avatarUser.png" alt="Admin">
         <div class="user-info">
-          <span class="user-name">{{ userPrenom }} {{ userNom }}</span> <!-- ✅ Prénom Nom en haut -->
-          <small class="user-role text-muted">{{ userRole }}</small> <!-- ✅ Rôle en dessous -->
+          <span class="user-name">{{ userPrenom }} {{ userNom }}</span>
+          <small class="user-role text-muted">{{ userRole }}</small>
         </div>
       </div>
     </div>
   </div>
 </nav>
-
-<!-- Notification temporaire -->
-<div *ngIf="temporaryNotification" class="temporary-notification">
-  🚨 {{ temporaryNotification.message }} ({{ temporaryNotification.plaque }}) à {{ temporaryNotification.heure }}
-  <button class="btn btn-transfer" (click)="transferNotification(temporaryNotification._id)">Transférer</button>
-</div>

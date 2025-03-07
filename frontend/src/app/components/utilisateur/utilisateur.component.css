@@ -161,3 +161,62 @@ h2 {
   color: white;
   cursor: pointer;
 }
+
+@media (max-width: 992px) {
+  .dashboard-layout {
+    flex-direction: column; /* Permettre un affichage en colonne */
+  }
+
+  .main-content {
+    padding: 10px;
+  }
+
+  .content-box {
+    padding: 10px;
+    max-width: 100%;
+  }
+
+  .d-flex {
+    flex-direction: column;
+  }
+
+  .d-flex > * {
+    width: 100%; /* Rendre les éléments flexibles sur toute la largeur */
+    margin-bottom: 10px;
+  }
+
+  .table-responsive {
+    overflow-x: auto; /* Permettre le défilement horizontal */
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .small-search {
+    width: 100%; /* Ajuster la barre de recherche */
+  }
+
+  .btn {
+    width: 100%; /* Rendre les boutons pleine largeur */
+  }
+
+  .pagination-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .table th, .table td {
+    font-size: 12px; /* Réduire la taille du texte */
+    padding: 6px;
+  }
+
+  .btn-sm {
+    font-size: 12px;
+    padding: 5px;
+  }
+}

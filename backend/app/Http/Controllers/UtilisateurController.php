@@ -86,7 +86,7 @@ class UtilisateurController extends Controller
             'conducteur' => 'CO'
         ];
         $prefix = $prefixes[$request->role] ?? 'XX';
-        $matricule = sprintf("%s-25-%03d", $prefix, rand(000, 999));
+        $matricule = sprintf("%s-25-%03d", $prefix, mt_rand(0, 999));
     
         // Création de l'utilisateur
         $utilisateur = Utilisateur::create([
@@ -104,6 +104,10 @@ class UtilisateurController extends Controller
             'police_id' => $request->police_id,
         ]);
     
+
+        // Envoi du code secret par email
+        $this->sendCodeSecretEmail($utilisateur->email, $codeSecret);
+        
         // Log action
         $this->logAction($utilisateur->id, 'Création d\'un utilisateur');
     

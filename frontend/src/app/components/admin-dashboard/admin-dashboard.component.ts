@@ -29,6 +29,8 @@ export class AdminDashboardComponent implements OnInit {
   totalPages = 0;
   pages: number[] = [];
   Math = Math;
+  isSidebarCollapsed = false; // Gère l'état de la sidebar
+
 
   constructor(private utilisateurService: UtilisateurService) {}
 
@@ -86,4 +88,9 @@ export class AdminDashboardComponent implements OnInit {
       this.loadHistoriques();
     });
   }
+
+  toggleSidebar() {
+    this.isSidebarCollapsed = !this.isSidebarCollapsed;
+  }
+
 }

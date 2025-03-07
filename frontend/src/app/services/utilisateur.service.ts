@@ -143,9 +143,8 @@ export class UtilisateurService {
 
 
 
-  //Methode pour compter le nombre d'utilisateurs, d'administrateurs, d'agents de sécurité et de conducteurs
 
- // Méthodes pour compter les utilisateurs, administrateurs, agents de sécurité et conducteurs
+ // Méthodes pour compter les utilisateurs
  getTotalUsers(): Observable<any> {
   const headers = this.getAuthHeaders();
   return this.http.get(`${this.apiUrl}/users/count`, { headers }).pipe(
@@ -155,6 +154,7 @@ export class UtilisateurService {
   );
 }
 
+// Méthodes pour compter les administrateurs
 getAdminCount(): Observable<any> {
   const headers = this.getAuthHeaders();
   return this.http.get(`${this.apiUrl}/administrateurs/count`, { headers }).pipe(
@@ -164,6 +164,7 @@ getAdminCount(): Observable<any> {
   );
 }
 
+// Méthodes pour compter les agents de sécurité
 getSecurityAgentsCount(): Observable<any> {
   const headers = this.getAuthHeaders();
   return this.http.get(`${this.apiUrl}/agents-securite/count`, { headers }).pipe(
@@ -173,6 +174,8 @@ getSecurityAgentsCount(): Observable<any> {
   );
 }
 
+
+// Méthodes pour compter les conducteurs
 getDriversCount(): Observable<any> {
   const headers = this.getAuthHeaders();
   return this.http.get(`${this.apiUrl}/conducteurs/count`, { headers }).pipe(

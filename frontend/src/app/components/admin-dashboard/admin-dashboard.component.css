@@ -1,7 +1,12 @@
 .dashboard-layout {
   display: flex;
   min-height: 100vh;
-  overflow-x: hidden; /* Empêche le défilement horizontal */
+  overflow-x: hidden; /* Évite le défilement horizontal */
+}
+
+/* ✅ Sidebar rétractable */
+.sidebar-collapsed {
+  width: 80px;
 }
 
 .main-content {
@@ -9,8 +14,23 @@
   display: flex;
   flex-direction: column;
   padding: 20px;
-  transition: margin-left 0.3s;
-  box-sizing: border-box; /* Inclut les marges et les bordures dans la largeur totale */
+  transition: margin-left 0.3s ease-in-out;
+  box-sizing: border-box;
+}
+
+/* ✅ Bouton pour afficher la sidebar sur mobile */
+.toggle-sidebar-btn {
+  display: none;
+  background: orange;
+  border: none;
+  color: white;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  z-index: 10;
 }
 
 .content-box {
@@ -167,10 +187,42 @@ th {
   margin-bottom: 20px;
 }
 
+#pieChart {
+  width: 400px !important;
+  height: 400px !important;
+}
+
+#pieChart {
+  z-index: 10;
+  position: relative;
+}
+
 .total-value {
   font-size: 24px;
   font-weight: bold;
   color: #333;
+}
+
+/* ✅ Cartes statistiques responsives */
+@media (max-width: 768px) {
+  .stats-cards {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .stat-card {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+
+  .history-section {
+    grid-template-columns: 1fr; /* Change de 2 colonnes à 1 colonne */
+  }
+
+  .pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 }
 
 /* Responsive Styles */

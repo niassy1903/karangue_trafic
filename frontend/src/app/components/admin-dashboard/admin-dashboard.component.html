@@ -1,12 +1,16 @@
 <div class="dashboard-layout">
-  <app-sidebar></app-sidebar>
+  <!-- Bouton pour afficher/cacher la sidebar -->
+  <button class="toggle-sidebar-btn" (click)="toggleSidebar()">☰</button>
+  
+  <app-sidebar [class.sidebar-collapsed]="isSidebarCollapsed"></app-sidebar>
+  
   <div class="main-content">
     <app-navbar></app-navbar>
     
     <div class="dashboard-container">
-     <br>
-      
-      <!-- Stats Cards -->
+      <br>
+
+      <!-- ✅ Cartes Statistiques -->
       <div class="stats-cards">
         <div class="stat-card" *ngFor="let card of statsCards">
           <div class="stat-content">
@@ -19,7 +23,7 @@
         </div>
       </div>
 
-      <!-- History Section -->
+      <!-- ✅ Historique et Graphique en colonne sur mobile -->
       <div class="history-section">
         <div class="history-table">
           <h2>Historique</h2>
@@ -31,8 +35,6 @@
                 <th>Date</th>
                 <th>Heure</th>
                 <th>Action</th>
-                
-               
               </tr>
             </thead>
             <tbody>
@@ -42,17 +44,15 @@
                 <td>{{ item.date }}</td>
                 <td>{{ item.heure }}</td>
                 <td>{{ item.action }}</td>
-               
               </tr>
             </tbody>
-            
-          </table><br>
+          </table>
+          <br>
           
           <div class="pagination">
             <button class="pagination-btn" (click)="prevPage()" [disabled]="currentPage === 1">
               &lt;&lt;
             </button>
-          
             <button
               *ngFor="let page of pages"
               [class.active]="page === currentPage"
@@ -61,26 +61,16 @@
             >
               {{ page }}
             </button>
-          
             <button class="pagination-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">
               &gt;&gt;
             </button>
           </div>
-          
-          
         </div>
-        
-        
-      <div class="chart-section">
-        <!-- Nous utiliserons Chart.js ou NgxCharts ici -->
-         <app-pie-chart></app-pie-chart>
-      <!--  <div class="pie-chart">
-           Le composant de graphique sera inséré ici 
-          <p class="total-value">2065.01</p>
-        </div> -->
-        
+      
+        <div class="chart-section">
+          <app-pie-chart></app-pie-chart>
+        </div>
       </div>
     </div>
   </div>
-</div>
 </div>

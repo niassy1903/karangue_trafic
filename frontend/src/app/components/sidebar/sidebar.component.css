@@ -1,27 +1,75 @@
 .sidebar {
-  width: 300px;
   height: 100vh;
   background-color: #fff;
-  padding: 20px;
   border-right: 4px solid #ff6600;
   display: flex;
   flex-direction: column;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.sidebar-expanded {
+  width: 300px;
+  padding: 20px;
+}
+
+.sidebar-collapsed {
+  width: 80px;
+  padding: 20px 10px;
   align-items: center;
 }
 
+.logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
 .logo img {
-  width: 200px; /* Augmentez la taille du logo */
-  transition: transform 0.3s; /* Ajoutez un effet de transition */
-  cursor: default; /* Change le curseur en flèche */
+  transition: transform 0.3s;
+  cursor: default;
+}
+
+.sidebar-expanded .logo img {
+  width: 200px;
+}
+
+.sidebar-collapsed .logo img {
+  width: 60px;
 }
 
 .logo img:hover {
-  transform: scale(1.1); /* Agrandit légèrement le logo au survol */
+  transform: scale(1.1);
+}
+
+.sidebar-toggle {
+  position: absolute;
+  top: 20px;
+  right: -12px;
+  width: 24px;
+  height: 24px;
+  background-color: #ff6600;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 10;
+  font-size: 12px;
 }
 
 h3 {
   font-weight: bold;
   margin-top: 10px;
+  text-align: center;
+}
+
+.sidebar-content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow-y: auto;
 }
 
 .nav-link {
@@ -30,29 +78,95 @@ h3 {
   padding: 10px;
   display: flex;
   align-items: center;
-  width: 100%;
-  text-align: left;
-  cursor: default; /* Change le curseur en flèche */
+  cursor: default;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+
+.sidebar-collapsed .nav-link {
+  justify-content: center;
+  padding: 15px 0;
 }
 
 .nav-link i {
-  margin-right: 10px;
   color: #ff6600;
+  font-size: 18px;
+}
+
+.sidebar-expanded .nav-link i {
+  margin-right: 10px;
 }
 
 .nav-item.active .nav-link {
-  background-color: #ffbb88 !important; /* Couleur de fond du hover */
-  border-radius: 5px;
+  background-color: #ffbb88 !important;
 }
-
-.nav-item.active .nav-link:hover {
-  background-color: #ffbb88 !important; /* Empêche le hover de modifier la couleur */
-}
-
 
 .logout-btn {
   margin-top: auto;
-  width: 100%;
   background-color: #ff6600;
   color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.sidebar-expanded .logout-btn {
+  justify-content: center;
+}
+
+.sidebar-collapsed .logout-btn {
+  padding: 10px;
+  margin: 10px 0;
+}
+
+/* Tooltip pour afficher le texte au survol en mode collapsed */
+.sidebar-collapsed .nav-item {
+  position: relative;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    z-index: 1000;
+    border-right: none;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  }
+  
+  .sidebar-expanded {
+    width: 250px;
+  }
+  
+  /* Overlay pour quand la sidebar est ouverte sur mobile */
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 999;
+    display: none;
+  }
+  
+  .sidebar-overlay.show {
+    display: block;
+  }
+  
+  /* Ajustement spécifique pour l'intégration avec NavBar */
+  .sidebar-collapsed {
+    left: 0;
+  }
+  
+  .sidebar-expanded {
+    left: 0;
+  }
+}
+
+/* Pour les très petits écrans */
+@media (max-width: 480px) {
+  .sidebar-collapsed {
+    width: 60px;
+  }
 }
