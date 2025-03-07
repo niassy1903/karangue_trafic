@@ -90,6 +90,14 @@
           [disabled]="isSending || !resetEmail">
           Envoyer le Code
         </button>
+        <button
+        *ngIf="showResend"
+        class="btn btn-secondary"
+        (click)="resendCode()"
+        [disabled]="isResendDisabled"
+      >
+        Renvoyer le Code
+      </button>
 
         <button
           class="btn btn-back"
@@ -99,14 +107,7 @@
       </div>
 
       <span class="button-spacer"></span> <!-- Ajout d'un espace entre les boutons -->
-      <button
-        *ngIf="showResend"
-        class="btn btn-secondary"
-        (click)="resendCode()"
-        [disabled]="isResendDisabled"
-      >
-        Renvoyer le Code
-      </button>
+     
     </div>
   </div>
 

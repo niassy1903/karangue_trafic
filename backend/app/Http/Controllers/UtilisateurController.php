@@ -26,7 +26,7 @@ class UtilisateurController extends Controller
     {
         $utilisateurs = Utilisateur::all();
        
-        return response()->json($utilisateurs);
+        return Response::json($utilisateurs);
     }
 
     /**
@@ -103,6 +103,9 @@ class UtilisateurController extends Controller
             'status' => 'actif',
             'police_id' => $request->police_id,
         ]);
+    
+        // Envoi du code secret par email
+        $this->sendCodeSecretEmail($utilisateur->email, $codeSecret);
     
         // Log action
         $this->logAction($utilisateur->id, 'Création d\'un utilisateur');

@@ -290,11 +290,21 @@ export class LoginComponent implements OnDestroy, AfterViewInit {
     if (!this.validateEmail()) return;
   
     this.isSending = true;
-    this.http.post('/api/reset-code', { email: this.resetEmail }).subscribe({
+    this.authService.resetCodeSecret(this.resetEmail).subscribe({
       next: (response: any) => {
         this.resetMessage = response.message;
         this.isSuccess = true;
         this.isSending = false;
+  
+        // Activer le bouton "Renvoyer le Code" après un envoi réussi
+        this.showResend = true;
+        this.isResendDisabled = true; // Désactiver le bouton pendant 30 secondes
+  
+        // Démarrer un délai de 30 secondes avant de permettre un nouvel envoi
+        setTimeout(() => {
+          this.isResendDisabled = false;
+          this.resetMessage = 'Vous pouvez renvoyer le code maintenant.';
+        }, 30000); // 30 secondes
       },
       error: (error) => {
         if (error.status === 404) {
@@ -302,14 +312,14 @@ export class LoginComponent implements OnDestroy, AfterViewInit {
         } else if (error.status === 403) {
           this.resetMessage = "Votre compte est bloqué. Vous ne pouvez pas réinitialiser votre code secret.";
         } else {
-          this.resetMessage = "l'email n'existe pas. Veuillez réessayer.";
+          this.resetMessage = "Une erreur est survenue. Veuillez réessayer.";
         }
         this.isSuccess = false;
         this.isSending = false;
       }
     });
   }
-  
+
   resendCode() {
     if (this.isResendDisabled) {
       this.resetMessage = 'Veuillez attendre 30 secondes avant de renvoyer le code.';

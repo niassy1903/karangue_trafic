@@ -221,3 +221,45 @@
 .custom-swal-popup .btn-transfer:hover {
   background-color: #0056b3; /* Couleur du bouton au survol */
 }
+
+/* Style pour le bouton de la flèche */
+.btn-link {
+  color: white; /* Couleur de la flèche */
+  text-decoration: none;
+  padding: 0;
+  margin-left: 10px;
+}
+
+/* Style pour le menu déroulant */
+.dropdown-menu {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-item {
+  padding: 8px 16px;
+  color: #333;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+}
+
+.dropdown-menu {
+  display: block;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.2s linear;
+}
+
+.show.dropdown-menu {
+  visibility: visible;
+  opacity: 1;
+}
+
+
+
+
