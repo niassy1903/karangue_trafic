@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+  angular-app:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: angular_app
+    ports:
+      - "8080:8080"
+    networks:
+      - frontend_network
+    restart: unless-stopped
+
+  anpr-api:
+    build:
+      context: ./frontend/ANPR
+      dockerfile: Dockerfile
+    container_name: anpr_api
+    ports:
+      - "3001:3001"
+    networks:
+      - frontend_network
+    restart: unless-stopped
+
+  notification-api:
+    build:
+      context: ./frontend/notification
+      dockerfile: Dockerfile
+    container_name: notification_api
+    ports:
+      - "3000:3000"
+    networks:
+      - frontend_network
+    restart: unless-stopped
+
+networks:
+  frontend_network:
+    driver: bridge

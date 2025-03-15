@@ -30,12 +30,14 @@ Route::middleware('auth:utilisateur')->get('/user', function (Request $request) 
 |--------------------------------------------------------------------------
 */
 
+ // Crée un nouvel utilisateur
+ Route::post('/utilisateurs', [UtilisateurController::class, 'store']);
+
 Route::middleware(['isAdmin'])->group(function (){
     // Liste tous les utilisateurs
     Route::get('/utilisateurs', [UtilisateurController::class, 'index']);
 
-    // Crée un nouvel utilisateur
-    Route::post('/utilisateurs', [UtilisateurController::class, 'store']);
+   
 
     // Affiche les détails d'un utilisateur spécifique
     Route::get('/utilisateurs/{id}', [UtilisateurController::class, 'show']);

@@ -21,7 +21,7 @@ export class LoginComponent implements OnDestroy, AfterViewInit {
   @ViewChild('emailInput') emailInput!: ElementRef<HTMLInputElement>;
 
   // Propriétés existantes
-  failedAttempts = 0;
+  failedAttempts = 0;g
   isLocked = false;
   lockTime = 30;
   errorMessage = '';

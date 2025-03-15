@@ -482,7 +482,7 @@ isValidEmail(email: string): boolean {
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        const cardId = result.value;
+        const cardId = result.value as string;
   
         // Appeler la méthode du service pour assigner la carte
         this.utilisateurService.assignCard(id, cardId).subscribe(

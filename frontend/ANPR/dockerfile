@@ -1,0 +1,20 @@
+# Étape 1 : Utiliser une image de Node.js pour le backend
+FROM node:18
+
+# Définir le répertoire de travail
+WORKDIR /app
+
+# Copier package.json et package-lock.json
+COPY package*.json ./
+
+# Installer les dépendances
+RUN npm install
+
+# Copier le reste des fichiers de l'application ANPR
+COPY . .
+
+# Exposer le port utilisé par l'API ANPR
+EXPOSE 3001
+
+# Lancer l'API ANPR
+CMD ["node", "server.js"]

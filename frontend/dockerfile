@@ -1,0 +1,37 @@
+# Étape 1: Construction de l'application Angular
+FROM node:18 AS build
+
+# Définir le répertoire de travail
+WORKDIR /app
+
+# Copier package.json et package-lock.json
+COPY package*.json ./
+
+# Installer les dépendances sans modifier package-lock.json
+RUN npm install --frozen-lockfile
+
+# Copier le reste des fichiers
+COPY . .
+
+# Construire l'application Angular
+RUN npm run build
+
+# Étape 2: Utiliser une image Node.js pour servir l'application Angular avec Express
+FROM node:18
+
+# Définir le répertoire de travail
+WORKDIR /app
+
+# Copier les fichiers construits et le serveur Express
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/server.js ./server.js
+COPY --from=build /app/package*.json ./
+
+# Installer les dépendances de production
+RUN npm install --only=production
+
+# Exposer le port 8080
+EXPOSE 8080
+
+# Lancer le serveur Express
+CMD ["node", "server.js"]

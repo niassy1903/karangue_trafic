@@ -114,7 +114,7 @@ export class AmendesComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         // Appeler le service pour payer l'amende
-        this.payAmende(id, parseFloat(result.value));
+        this.payAmende(id, parseFloat(result.value as string));
       }
     });
   
@@ -157,7 +157,7 @@ export class AmendesComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         // Appeler le service pour payer l'amende
-        this.payAmende(id, parseFloat(result.value));
+        this.payAmende(id, parseFloat(result.value as string));
       }
     });
   
@@ -199,7 +199,7 @@ export class AmendesComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         // Appeler le service pour payer l'amende
-        this.payAmende(id, parseFloat(result.value));
+        this.payAmende(id, parseFloat(result.value as string));
       }
     });
   
