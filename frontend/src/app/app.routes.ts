@@ -15,10 +15,10 @@ import { AuthGuard } from './auth.guard';
 import { AgentGuard } from './agent.guard';
 
 export const routes: Routes = [
-  { path: 'login', component: LoginComponent },
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
-  { path: '**', redirectTo: '/login' }, // Redirige les routes inconnues vers /login
+  { path: '', redirectTo: 'login', pathMatch: 'full' }, // Page par défaut
 
+  { path: 'login', component: LoginComponent }, // Page de connexion
+  
   // Routes accessibles uniquement aux administrateurs
   { path: 'utilisateur', component: UtilisateurComponent, canActivate: [AuthGuard] },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AgentGuard] },
@@ -31,7 +31,7 @@ export const routes: Routes = [
 
   // Routes accessibles uniquement aux agents de sécurité
   { path: 'amendes', component: AmendesComponent, canActivate: [AgentGuard] },
-  { path: 'historiques-amendes', component: HistoriqueAmendesComponent, canActivate: [AgentGuard] },
+  { path: 'historique-amendes', component: HistoriqueAmendesComponent, canActivate: [AgentGuard] },
 
   { path: 'accueil', component: DashboardComponent,canActivate:[AgentGuard] }
 ];

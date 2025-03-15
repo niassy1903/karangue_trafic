@@ -1,7 +1,4 @@
-import {
-  Component, ElementRef, QueryList, ViewChildren,
-  HostListener, OnDestroy, ViewChild, AfterViewInit
-} from '@angular/core';
+import {Component, ElementRef, QueryList, ViewChildren,HostListener, OnDestroy, ViewChild, AfterViewInit} from '@angular/core';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -21,7 +18,7 @@ export class LoginComponent implements OnDestroy, AfterViewInit {
   @ViewChild('emailInput') emailInput!: ElementRef<HTMLInputElement>;
 
   // Propriétés existantes
-  failedAttempts = 0;g
+  failedAttempts = 0;
   isLocked = false;
   lockTime = 30;
   errorMessage = '';
@@ -182,7 +179,7 @@ export class LoginComponent implements OnDestroy, AfterViewInit {
       this.resetInputs();
       return;
     }
-
+    
     this.authService.authenticate(enteredCode).subscribe({
       next: (user) => {
         // Vérification du rôle avant redirection
