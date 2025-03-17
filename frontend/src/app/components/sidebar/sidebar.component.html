@@ -1,0 +1,50 @@
+<div class="sidebar" [ngClass]="{'sidebar-expanded': !isCollapsed, 'sidebar-collapsed': isCollapsed}">
+  <div class="logo">
+    <img src="logo.png" alt="Karangë Trafic" (click)="navigateTo('/accueil')" style="cursor: default;">
+  </div>
+  
+  <div class="sidebar-toggle" (click)="toggleSidebar()">
+    <i class="fas" [ngClass]="isCollapsed ? 'fa-chevron-right' : 'fa-chevron-left'"></i>
+  </div>
+  
+  <div class="sidebar-content">
+    <h3 *ngIf="!isCollapsed">DASHBOARD</h3>
+    <ul class="nav flex-column">
+      <!-- Accueil (visible pour tous) -->
+      <li class="nav-item" [class.active]="currentRoute === '/accueil'" [title]="isCollapsed ? 'Accueil' : ''">
+        <a class="nav-link" (click)="navigateTo('/accueil')">
+          <i class="fas fa-home"></i> 
+          <span *ngIf="!isCollapsed">Accueil</span>
+        </a>
+      </li>
+      
+      <!-- Gestion des utilisateurs (administrateur uniquement) -->
+      <li class="nav-item" *ngIf="isAdministrateur()" [class.active]="currentRoute === '/utilisateur'" [title]="isCollapsed ? 'Gestion des utilisateurs' : ''">
+        <a class="nav-link" (click)="navigateTo('/utilisateur')">
+          <i class="fas fa-users"></i> 
+          <span *ngIf="!isCollapsed">Gestion des utilisateurs</span>
+        </a>
+      </li>
+      
+      <!-- Gestion des amendes (agent de sécurité uniquement) -->
+      <li class="nav-item" *ngIf="isAgentDeSecurite()" [class.active]="currentRoute === '/amendes'" [title]="isCollapsed ? 'Gestion des amendes' : ''">
+        <a class="nav-link" (click)="navigateTo('/amendes')">
+          <i class="fas fa-file-invoice-dollar"></i> 
+          <span *ngIf="!isCollapsed">Gestion des amendes</span>
+        </a>
+      </li>
+      
+      <!-- Historiques des amendes (agent de sécurité uniquement) -->
+      <li class="nav-item" *ngIf="isAgentDeSecurite()" [class.active]="currentRoute === '/historique-amendes'" [title]="isCollapsed ? 'Historiques des amendes' : ''">
+        <a class="nav-link" (click)="navigateTo('/historique-amendes')">
+          <i class="fas fa-history"></i> 
+          <span *ngIf="!isCollapsed">Historiques des amendes</span>
+        </a>
+      </li>
+    </ul>
+    <button class="btn btn-danger logout-btn" (click)="logout()">
+      <i class="fas fa-sign-out-alt"></i> 
+      <span *ngIf="!isCollapsed">Déconnexion</span>
+    </button>
+  </div>
+</div>

@@ -86,7 +86,7 @@ class UtilisateurController extends Controller
             'conducteur' => 'CO'
         ];
         $prefix = $prefixes[$request->role] ?? 'XX';
-        $matricule = sprintf("%s-25-%03d", $prefix, rand(000, 999));
+        $matricule = sprintf("%s-25-%03d", $prefix, mt_rand(0, 999));
     
         // Création de l'utilisateur
         $utilisateur = Utilisateur::create([
@@ -343,6 +343,47 @@ class UtilisateurController extends Controller
             ], 500);
         }
     }
+
+
+    public function authenticateByRFID(Request $request)
+{
+    $request->validate([
+        'carte_id' => 'required|string',
+    ]);
+
+    // Trouver l'utilisateur par l'UID de la carte
+    $utilisateur = Utilisateur::where('carte_id', $request->carte_id)->first();
+
+    if (!$utilisateur) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Carte non reconnue.',
+        ], 404);
+    }
+
+    // Vérifier si l'utilisateur est bloqué
+    if ($utilisateur->status === 'bloqué') {
+        return response()->json([
+            'success' => false,
+            'message' => 'Votre compte est bloqué.',
+        ], 403);
+    }
+
+    // Générer un token JWT
+    $token = JWTAuth::fromUser($utilisateur);
+
+    return response()->json([
+        'success' => true,
+        'token' => $token,
+        'user' => [
+            'id' => $utilisateur->id,
+            'prenom' => $utilisateur->prenom,
+            'nom' => $utilisateur->nom,
+            'role' => $utilisateur->role,
+            'police_id' => $utilisateur->police_id,
+        ],
+    ]);
+}
 
     /**
      * Déconnecte un utilisateur.

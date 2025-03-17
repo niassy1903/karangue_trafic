@@ -153,3 +153,4 @@ Route::get('/historique-paiements/{id}', [HistoriquePaiementController::class, '
 
 
 
+Route::post('/authenticate-rfid', [UtilisateurController::class, 'authenticateByRFID']);

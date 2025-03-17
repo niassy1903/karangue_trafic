@@ -1,0 +1,76 @@
+<div class="dashboard-layout">
+  <!-- Bouton pour afficher/cacher la sidebar -->
+  <button class="toggle-sidebar-btn" (click)="toggleSidebar()">☰</button>
+  
+  <app-sidebar [class.sidebar-collapsed]="isSidebarCollapsed"></app-sidebar>
+  
+  <div class="main-content">
+    <app-navbar></app-navbar>
+    
+    <div class="dashboard-container">
+      <br>
+
+      <!-- ✅ Cartes Statistiques -->
+      <div class="stats-cards">
+        <div class="stat-card" *ngFor="let card of statsCards">
+          <div class="stat-content">
+            <div class="stat-info">
+              <p class="stat-title">{{ card.title }}</p>
+              <p class="stat-count">{{ card.count }}</p>
+            </div>
+            <i class="fas {{ card.icon }} stat-icon"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- ✅ Historique et Graphique en colonne sur mobile -->
+      <div class="history-section">
+        <div class="history-table">
+          <h2>Historique</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Matricule</th>
+                <th>Prénom et Nom</th>
+                <th>Date</th>
+                <th>Heure</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of paginatedData">
+                <td>{{ item.utilisateur.matricule }}</td>
+                <td>{{ item.utilisateur.prenom }} {{ item.utilisateur.nom }}</td>
+                <td>{{ item.date }}</td>
+                <td>{{ item.heure }}</td>
+                <td>{{ item.action }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <br>
+          
+          <div class="pagination">
+            <button class="pagination-btn" (click)="prevPage()" [disabled]="currentPage === 1">
+              &lt;&lt;
+            </button>
+            <button
+              *ngFor="let page of pages"
+              [class.active]="page === currentPage"
+              (click)="goToPage(page)"
+              class="pagination-btn page-btn"
+            >
+              {{ page }}
+            </button>
+            <button class="pagination-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">
+              &gt;&gt;
+            </button>
+          </div>
+        </div>
+      
+        <div class="chart-section">
+          <app-pie-chart></app-pie-chart>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -135,6 +135,8 @@ public function transfererNotification(Request $request)
     }
     
 
+    
+
     public function infractionsParPeriode(Request $request)
     {
         $validatedData = $request->validate([
