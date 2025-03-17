@@ -26,8 +26,8 @@
     </li>
 
     <!-- Historiques des amendes (agent de sécurité uniquement) -->
-    <li class="nav-item" *ngIf="isAgentDeSecurite()" [class.active]="currentRoute === '/historiques-amendes'">
-      <a class="nav-link" (click)="navigateTo('/historiques-amendes')">
+    <li class="nav-item" *ngIf="isAgentDeSecurite()" [class.active]="currentRoute === '/historique-amendes'">
+      <a class="nav-link" (click)="navigateTo('/historique-amendes')">
         <i class="fas fa-history"></i> Historiques des amendes
       </a>
     </li>
