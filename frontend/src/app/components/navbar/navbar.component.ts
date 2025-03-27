@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { NotificationService } from '../../services/notification.service';
 import { AuthService } from '../../services/auth.service';
@@ -39,9 +39,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
   userNom: string | null = '';
   userRole: string | null = '';
   userEmail: string | null = '';
-  userAdresse: string | null = '';
   userTelephone: string | null = '';
+  userAdresse: string | null = '';
+  userAvatar: string | null = '';
   editProfileForm: FormGroup;
+  generateCodeForm: FormGroup;
+  roles: string[] = ['Rôle 1', 'Rôle 2', 'Rôle 3']; // Exemple de rôles
   private notificationSubscription!: Subscription;
 
   constructor(
@@ -58,25 +61,16 @@ export class NavbarComponent implements OnInit, OnDestroy {
       telephone: [''],
       adresse: ['']
     });
+
+    this.generateCodeForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]]
+    });
   }
 
   ngOnInit() {
-    this.userPrenom = this.authService.getUserPrenom();
-    this.userNom = this.authService.getUserNom();
-    this.userRole = this.authService.getUserRole();
-
-    const userId = localStorage.getItem('utilisateur_id');
+    const userId = this.authService.getUserId();
     if (userId) {
-      this.utilisateurService.getUtilisateur(userId).subscribe((user) => {
-        this.editProfileForm.patchValue({
-          prenom: user.prenom,
-          nom: user.nom,
-          role: user.role,
-          email: user.email,
-          telephone: user.telephone,
-          adresse: user.adresse
-        });
-      });
+      this.loadUserDetails(userId);
     }
 
     const policeId = localStorage.getItem('policeId');
@@ -98,6 +92,14 @@ export class NavbarComponent implements OnInit, OnDestroy {
     }
 
     this.updateUnreadCount();
+
+    // Initialiser les dropdowns Bootstrap
+    setTimeout(() => {
+      const dropdownElement = document.getElementById('dropdownMenuButton');
+      if (dropdownElement) {
+        new bootstrap.Dropdown(dropdownElement);
+      }
+    }, 500);
   }
 
   ngOnDestroy() {
@@ -127,8 +129,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
               </div>
             `).join('')}
           </div>
+          <div class="swal2-progress-bar">
+            <div class="swal2-progress-bar-inner" style="width: 100%;"></div>
+          </div>
         `,
         showConfirmButton: false,
+        timerProgressBar: true,
+        timer: 1000, // 1 seconde
         didOpen: () => {
           document.querySelectorAll('.btn-transfer').forEach((button: any) => {
             button.onclick = (event: any) => {
@@ -147,7 +154,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
       Swal.fire({
         title: 'Aucune notification non lue',
         icon: 'info',
-        confirmButtonText: 'Fermer'
+        html: '<div class="swal2-progress-bar"><div class="swal2-progress-bar-inner" style="width: 100%;"></div></div>',
+        timerProgressBar: true,
+        timer: 1000, // 1 seconde
       });
     }
   }
@@ -173,63 +182,171 @@ export class NavbarComponent implements OnInit, OnDestroy {
             title: 'Succès',
             text: 'L\'infraction a été transférée.',
             icon: 'success',
-            timer: 2000,
+            html: '<div class="swal2-progress-bar"><div class="swal2-progress-bar-inner" style="width: 100%;"></div></div>',
+            timerProgressBar: true,
+            timer: 1000, // 1 seconde
             showConfirmButton: false
           });
           this.updateUnreadCount();
         },
         () => {
-          Swal.fire('Erreur', 'Échec du transfert.', 'error');
+          Swal.fire({
+            title: 'Erreur',
+            text: 'Échec du transfert.',
+            icon: 'error',
+            html: '<div class="swal2-progress-bar"><div class="swal2-progress-bar-inner" style="width: 100%;"></div></div>',
+            timerProgressBar: true,
+            timer: 1000, // 1 seconde
+          });
         }
       );
     }
   }
 
-  onEditProfile() {
-    const modal = document.getElementById('editProfileModal');
-    if (modal) {
-      const modalInstance = new bootstrap.Modal(modal);
-      modalInstance.show();
-    }
-  }
+  onEditProfile(event: Event) {
+    event.preventDefault(); // Empêche le comportement par défaut du lien ou du bouton
 
-  onSubmit() {
-    if (this.editProfileForm.valid) {
-      const userId = localStorage.getItem('utilisateur_id');
-      if (userId) {
-        this.utilisateurService.updateUtilisateur(userId, this.editProfileForm.value).subscribe(
-          () => {
-            this.userPrenom = this.editProfileForm.value.prenom;
-            this.userNom = this.editProfileForm.value.nom;
-            this.userRole = this.editProfileForm.value.role;
-            this.userEmail = this.editProfileForm.value.email;
-            this.userAdresse = this.editProfileForm.value.adresse;
-            this.userTelephone = this.editProfileForm.value.telephone;
+    const userId = localStorage.getItem('utilisateur_id');
+    if (userId) {
+      this.loadUserDetails(userId);
 
-            // Fermer le modal
-            const modal = document.getElementById('editProfileModal');
-            if (modal) {
-              const modalInstance = bootstrap.Modal.getInstance(modal);
-              modalInstance.hide();
-            }
-          },
-          error => {
-            console.error('Erreur lors de la mise à jour du profil', error);
-          }
-        );
+      const modalElement = document.getElementById('editProfileModal');
+      if (modalElement) {
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
       }
     }
   }
 
-  onViewProfile() {
-    const modal = document.getElementById('viewProfileModal');
-    if (modal) {
-      const modalInstance = new bootstrap.Modal(modal);
-      modalInstance.show();
+  onViewProfile(event: Event) {
+    event.preventDefault(); // Empêche le comportement par défaut du lien ou du bouton
+
+    const userId = localStorage.getItem('utilisateur_id');
+    if (userId) {
+      this.loadUserDetails(userId);
+
+      const modalElement = document.getElementById('viewProfileModal');
+      if (modalElement) {
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
+      }
     }
   }
 
-  onGenerateSecretCode() {
-    console.log('Générer un code secret');
+  onGenerateSecretCode(event: Event) {
+    event.preventDefault(); // Empêche le comportement par défaut du lien ou du bouton
+
+    const modalElement = document.getElementById('generateCodeModal');
+    if (modalElement) {
+      const modal = new bootstrap.Modal(modalElement);
+      modal.show();
+    }
+  }
+
+  generateSecretCode() {
+    if (this.generateCodeForm.valid) {
+      const email = this.generateCodeForm.get('email')?.value;
+      this.authService.resetCodeSecret(email).subscribe(
+        () => {
+          Swal.fire({
+            title: 'Succès',
+            text: 'Un nouveau code secret a été généré et envoyé à votre email.',
+            icon: 'success',
+            html: '<div class="swal2-progress-bar"><div class="swal2-progress-bar-inner" style="width: 100%;"></div></div>',
+            timerProgressBar: true,
+            timer: 500, // 1 seconde
+          });
+          this.authService.logout(); // Déconnecte l'utilisateur
+          const modalElement = document.getElementById('generateCodeModal');
+          if (modalElement) {
+            const modal = bootstrap.Modal.getInstance(modalElement);
+            modal?.hide();
+          }
+        },
+        (error) => {
+          Swal.fire({
+            title: 'Erreur',
+            text: 'Échec de la génération du code secret.',
+            icon: 'error',
+            html: '<div class="swal2-progress-bar"><div class="swal2-progress-bar-inner" style="width: 100%;"></div></div>',
+            timerProgressBar: true,
+            timer: 500, // 1 seconde
+          });
+        }
+      );
+    } else {
+      Swal.fire({
+        title: 'Erreur',
+        text: 'Veuillez entrer un email valide.',
+        icon: 'error',
+        html: '<div class="swal2-progress-bar"><div class="swal2-progress-bar-inner" style="width: 100%;"></div></div>',
+        timerProgressBar: true,
+        timer: 500, // 1 seconde
+      });
+    }
+  }
+
+  loadUserDetails(userId: string) {
+    this.utilisateurService.getUtilisateur(userId).subscribe((user) => {
+      this.userPrenom = user.prenom;
+      this.userNom = user.nom;
+      this.userRole = user.role;
+      this.userEmail = user.email;
+      this.userTelephone = user.telephone;
+      this.userAdresse = user.adresse;
+      this.userAvatar = user.avatar || 'avatarUser.png';
+
+      this.editProfileForm.patchValue({
+        prenom: user.prenom,
+        nom: user.nom,
+        role: user.role,
+        email: user.email,
+        telephone: user.telephone,
+        adresse: user.adresse
+      });
+    });
+  }
+
+  updateProfile() {
+    const userId = localStorage.getItem('utilisateur_id');
+    if (userId) {
+      this.utilisateurService.updateUtilisateur(userId, this.editProfileForm.value).subscribe(
+        () => {
+          Swal.fire({
+            title: 'Succès',
+            text: 'Profil mis à jour avec succès.',
+            icon: 'success',
+            html: '<div class="swal2-progress-bar"><div class="swal2-progress-bar-inner" style="width: 100%;"></div></div>',
+            timerProgressBar: true,
+            timer: 5000, // 1 seconde
+          });
+          const modalElement = document.getElementById('editProfileModal');
+          if (modalElement) {
+            const modal = bootstrap.Modal.getInstance(modalElement);
+            modal?.hide();
+          }
+        },
+        (error) => {
+          Swal.fire({
+            title: 'Erreur',
+            text: 'Échec de la mise à jour du profil.',
+            icon: 'error',
+            html: '<div class="swal2-progress-bar"><div class="swal2-progress-bar-inner" style="width: 100%;"></div></div>',
+            timerProgressBar: true,
+            timer: 5000, // 1 seconde
+          });
+        }
+      );
+    }
+  }
+
+  isDropdownOpen = false;
+
+  toggleDropdown() {
+    this.isDropdownOpen = !this.isDropdownOpen;
+  }
+
+  closeDropdown() {
+    this.isDropdownOpen = false;
   }
 }

@@ -33,6 +33,17 @@ services:
       - frontend_network
     restart: unless-stopped
 
+  connexion-rfid:
+    build:
+      context: ./frontend/connexion-rfid
+      dockerfile: Dockerfile
+    container_name: connexion_rfid
+    ports:
+      - "3002:3002"
+    networks:
+      - frontend_network
+    restart: unless-stopped
+
 networks:
   frontend_network:
     driver: bridge

@@ -7,8 +7,9 @@ WORKDIR /app
 # Copier package.json et package-lock.json
 COPY package*.json ./
 
-# Installer les dépendances
-RUN npm install
+# Installer production deps avec peer legacy
+RUN npm install 
+
 
 # Copier le reste des fichiers de l'application ANPR
 COPY . .

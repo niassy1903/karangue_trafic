@@ -8,7 +8,7 @@ declare var H: any;
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css'],
   standalone: true,
-  providers : [HttpClientModule,HttpClient]
+  providers: [HttpClientModule, HttpClient]
 })
 export class MapComponent implements AfterViewInit {
   private platform: any;
@@ -43,29 +43,24 @@ export class MapComponent implements AfterViewInit {
   private addMarker(lat: number, lng: number, name: string): void {
     const userPos = this.userMarker.getGeometry();
     const distance = this.calculateDistance(userPos.lat, userPos.lng, lat, lng);
-
-    let color = 'green';
+  
+    let iconUrl = '/station.png'; // Chemin vers l'icône téléchargée
     if (distance < this.minDistance) {
       this.minDistance = distance;
-      color = 'yellow';
       if (this.closestPoliceMarker) {
         this.map.removeObject(this.closestPoliceMarker);
       }
-      this.closestPoliceMarker = new H.map.Marker({ lat, lng }, { icon: new H.map.Icon(`<svg width="30" height="30" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="15" cy="15" r="10" stroke="${color}" stroke-width="3" fill="none"/>
-        </svg>`, { size: { w: 30, h: 30 } }) });
+      this.closestPoliceMarker = new H.map.Marker({ lat, lng }, { icon: new H.map.Icon(iconUrl, { size: { w: 30, h: 30 } }) });
       this.map.addObject(this.closestPoliceMarker);
     }
-
-    const svgCircle = `<svg width="30" height="30" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="15" cy="15" r="10" stroke="${color}" stroke-width="3" fill="none"/>
-      </svg>`;
-    const icon = new H.map.Icon(svgCircle, { size: { w: 30, h: 30 } });
+  
+    const icon = new H.map.Icon(iconUrl, { size: { w: 30, h: 30 } });
     const marker = new H.map.Marker({ lat, lng }, { icon });
-
+  
     marker.addEventListener('tap', () => this.calculateRoute(lat, lng, name));
     this.map.addObject(marker);
   }
+  
 
   private calculateDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
     const R = 6371; // Radius of the Earth in kilometers

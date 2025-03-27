@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { io } from 'socket.io-client';
+import io from 'socket.io-client';
 import { Observable, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
@@ -35,7 +35,7 @@ export class NotificationService {
   clearUnreadNotifications(): void {
     this.permanentNotifications.forEach(notif => notif.read = true);
   }
-
+  
   // Rejoindre une salle spécifique pour recevoir ses notifications
   joinPoliceRoom(policeId: string): void {
     this.socket.emit('joinPoliceRoom', policeId);
@@ -48,7 +48,7 @@ export class NotificationService {
   // Écouter les nouvelles notifications sans doublon
   private listenForNotifications(): void {
     this.socket.off('newNotification'); // Évite d'ajouter plusieurs écouteurs
-    this.socket.on('newNotification', (data) => {
+    this.socket.on('newNotification', (data: any) => {
       if (data) {
         console.log('Notification reçue:', data); // Vérifiez les données reçues
         this.temporaryNotifications.next(data);

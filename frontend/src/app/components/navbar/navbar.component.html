@@ -1,22 +1,19 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-orange">
   <div class="container-fluid">
-    <!-- Barre de recherche (visible uniquement sur écrans ≥ md) -->
-    <form class="d-flex search-bar d-none d-md-flex">
+    <form class="d-flex search-bar">
       <input class="form-control me-2" type="search" placeholder="Recherche..." aria-label="Search">
       <button class="btn btn-light" type="submit">
         <i class="fas fa-search"></i>
       </button>
     </form>
-
-    <!-- Icônes de notification et profil utilisateur -->
     <div class="navbar-icons">
       <!-- Icône de notification avec badge -->
       <div class="notification-icon-container">
         <i class="fas fa-bell notification-icon" (click)="showUnreadNotifications()"></i>
+        <!-- Badge de notifications non lues -->
         <span class="badge bg-danger" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
       </div>
 
-      <!-- Profil utilisateur -->
       <div class="user-profile">
         <img src="avatarUser.png" alt="Admin">
         <div class="user-info">
@@ -24,17 +21,18 @@
           <small class="user-role text-muted">{{ userRole }}</small>
         </div>
         <!-- Menu déroulant Bootstrap -->
-        <div class="dropdown">
-          <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+        <div class="dropdown" [ngClass]="{ 'show': isDropdownOpen }">
+          <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton"
+            data-bs-toggle="dropdown" aria-expanded="false" (click)="toggleDropdown()">
             <i class="fas fa-chevron-down"></i>
           </button>
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-            <li><a class="dropdown-item" (click)="onEditProfile()">Éditer le profil</a></li>
-            <li><a class="dropdown-item" (click)="onViewProfile()">Voir le profil</a></li>
-            <li><a class="dropdown-item" (click)="onGenerateSecretCode()">Générer un code secret</a></li>
+            <li><a class="dropdown-item" href="#" (click)="onEditProfile($event)">Éditer le profil</a></li>
+            <li><a class="dropdown-item" href="#" (click)="onViewProfile($event)">Voir le profil</a></li>
+            <li><a class="dropdown-item" href="#" (click)="onGenerateSecretCode($event)">Générer un code secret</a></li>
           </ul>
-          
         </div>
+        
       </div>
     </div>
   </div>
@@ -46,16 +44,18 @@
   <button class="btn btn-transfer" (click)="transferNotification(temporaryNotification._id)">Transférer</button>
 </div>
 
-<!-- Modal: Edit Profile -->
+
+<!-- Modal pour éditer le profil -->
+<!-- Modal pour éditer le profil -->
 <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header" style="background-color: #ff6600; color: white;">
-        <h5 class="modal-title" id="editProfileModalLabel">Edit profil utilisateur</h5>
+      <div class="modal-header">
+        <h5 class="modal-title" id="editProfileModalLabel">Éditer le Profil</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form [formGroup]="editProfileForm">
+        <form [formGroup]="editProfileForm" (ngSubmit)="updateProfile()">
           <div class="row">
             <div class="col-md-6">
               <label for="prenom" class="form-label">Prénom</label>
@@ -66,7 +66,7 @@
               <input type="text" class="form-control" id="nom" formControlName="nom">
             </div>
           </div>
-          <div class="row">
+          <div class="row mt-3">
             <div class="col-md-6">
               <label for="email" class="form-label">Email</label>
               <input type="email" class="form-control" id="email" formControlName="email">
@@ -76,52 +76,83 @@
               <input type="text" class="form-control" id="telephone" formControlName="telephone">
             </div>
           </div>
-          <div class="row">
-            <div class="col-md-6">
+          <div class="row mt-3">
+            <div class="col-md-12">
               <label for="adresse" class="form-label">Adresse</label>
               <input type="text" class="form-control" id="adresse" formControlName="adresse">
             </div>
-            <div class="col-md-6">
-              <label for="role" class="form-label">Rôle</label>
-              <select class="form-select" id="role" formControlName="role">
-                <option value="agent de sécurité">Agent de Sécurité</option>
-                <option value="administrateur">Administrateur</option>
-              </select>
-            </div>
+        
+          </div>
+          <div class="modal-footer mt-4">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
           </div>
         </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
-        <button type="button" class="btn btn-primary" (click)="onSubmit()">Mettre à jour</button>
       </div>
     </div>
   </div>
 </div>
 
 
-<!-- Modal: View Profile -->
+<!-- Modal pour voir le profil -->
 <div class="modal fade" id="viewProfileModal" tabindex="-1" aria-labelledby="viewProfileModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="viewProfileModalLabel">View Profile</h5>
+        <h5 class="modal-title" id="viewProfileModalLabel">Voir le Profil</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <img [src]="userAvatar || 'avatarUser.png'" alt="Avatar" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px;">
+        <h4>{{ userPrenom }} {{ userNom }}</h4>
+        <p class="text-muted">{{ userRole }}</p>
+        <div class="row mt-4">
+          <div class="col-md-6">
+            <p><strong>Email :</strong></p>
+          </div>
+          <div class="col-md-6">
+            <p><strong>Téléphone :</strong></p>
+          </div>
+          <div class="col-md-6">
+            <p>{{ userEmail }}</p>
+          </div>
+          <div class="col-md-6">
+            <p>{{ userTelephone }}</p>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-12">
+            <p><strong>Adresse :</strong> {{ userAdresse }}</p>
+          </div>
+        </div>
+      </div>
+    
+    </div>
+  </div>
+</div>
+
+<!-- Modal pour générer un code secret -->
+<div class="modal fade" id="generateCodeModal" tabindex="-1" aria-labelledby="generateCodeModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="generateCodeModalLabel">Générer un Code Secret</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <div style="text-align: center;">
-          <img src="avatarUser.png" alt="Avatar" style="border-radius: 50%; width: 100px; height: 100px;">
-          <p>{{ userPrenom }} {{ userNom }}</p>
-        </div>
-        <div style="margin-top: 20px;">
-          <p><strong>Prenom :</strong> {{ userPrenom }}</p>
-          <p><strong>Nom :</strong> {{ userNom }}</p>
-          <p><strong>Email:</strong> {{ userEmail }}</p>
-          <p><strong>Adresse:</strong> {{ userAdresse }}</p>
-          <p><strong>Téléphone:</strong> {{ userTelephone }}</p>
-          <p><strong>Role:</strong> {{ userRole }}</p>
-        </div>
+        <form [formGroup]="generateCodeForm" (ngSubmit)="generateSecretCode()">
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" formControlName="email" placeholder="Entrez l'email" required>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+            <button type="submit" class="btn btn-primary">Générer</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
 </div>
+
+

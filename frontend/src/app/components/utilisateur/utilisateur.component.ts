@@ -30,12 +30,20 @@ export class UtilisateurComponent implements OnInit {
   noResults: boolean = false; // Aucun résultat trouvé
   selectedRole: string = ''; // Rôle sélectionné pour le filtrage
   filteredUtilisateurs: any[] = [];
+  currentUser: any; // Stocker l'utilisateur connecté
+
 
 
   constructor(private utilisateurService: UtilisateurService, private router: Router) {}
 
   ngOnInit(): void {
     this.getUtilisateurs();
+    this.currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    this.utilisateurService.getUtilisateurs().subscribe((data) => {
+      this.allUtilisateurs = data;
+      this.applyFilters(); // Appliquer les filtres après le chargement
+    });
+
   }
 
   // Récupérer tous les utilisateurs
@@ -62,8 +70,13 @@ export class UtilisateurComponent implements OnInit {
 
   // Filtrer les utilisateurs par matricule et rôle
   // Remplacer la méthode filterUsers() par :
-applyFilters(): void {
+ applyFilters(): void {
   let filteredUsers = this.allUtilisateurs;
+
+  // Exclure l'utilisateur connecté
+  if (this.currentUser && this.currentUser.id) {
+    filteredUsers = filteredUsers.filter(user => user.id !== this.currentUser.id);
+  }
 
   // Filtrage par terme de recherche
   if (this.searchTerm) {
@@ -84,11 +97,12 @@ applyFilters(): void {
 
   this.filteredUtilisateurs = filteredUsers;
   this.totalPages = Math.ceil(this.filteredUtilisateurs.length / this.itemsPerPage);
-  this.currentPage = 1; // Réinitialiser à la première page
+  this.currentPage = 1;
   this.updatePaginatedList();
   this.noResults = this.filteredUtilisateurs.length === 0;
 }
 
+  
 // Modifier updatePaginatedList()
 updatePaginatedList(): void {
   const startIndex = (this.currentPage - 1) * this.itemsPerPage;
