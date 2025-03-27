@@ -24,11 +24,19 @@ class UtilisateurController extends Controller
      */
     public function index()
     {
-        $utilisateurs = Utilisateur::all();
-       
-        return Response::json($utilisateurs);
+        $utilisateurConnecte = auth()->user(); // Récupère l'utilisateur connecté
+    
+        // Vérifie si un utilisateur est bien authentifié
+        if (!$utilisateurConnecte) {
+            return response()->json(['message' => 'Utilisateur non authentifié'], 401);
+        }
+    
+        // Récupère tous les utilisateurs sauf l'utilisateur connecté
+        $utilisateurs = Utilisateur::where('id', '!=', $utilisateurConnecte->id)->get();
+    
+        return response()->json($utilisateurs);
     }
-
+    
     /**
      * Crée un nouvel utilisateur.
      *

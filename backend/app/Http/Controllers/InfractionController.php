@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Infraction;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Response;
 use App\Models\HistoriquePaiement;
 use App\Models\Police;
 

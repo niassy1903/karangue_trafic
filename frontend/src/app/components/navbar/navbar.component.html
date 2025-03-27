@@ -2,7 +2,7 @@
   <div class="container-fluid">
     <form class="d-flex search-bar">
       <input class="form-control me-2" type="search" placeholder="Recherche..." aria-label="Search">
-      <button class="btn btn-light" type="submit">
+      <button class="btn btn-light" type="submit" title="Rechercher">
         <i class="fas fa-search"></i>
       </button>
     </form>
@@ -23,7 +23,7 @@
         <!-- Menu déroulant Bootstrap -->
         <div class="dropdown" [ngClass]="{ 'show': isDropdownOpen }">
           <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton"
-            data-bs-toggle="dropdown" aria-expanded="false" (click)="toggleDropdown()">
+            data-bs-toggle="dropdown" aria-expanded="false" (click)="toggleDropdown()" title="Ouvrir le menu déroulant">
             <i class="fas fa-chevron-down"></i>
           </button>
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
@@ -103,7 +103,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body text-center">
-        <img [src]="userAvatar || 'avatarUser.png'" alt="Avatar" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px;">
+        <img [src]="userAvatar || 'avatarUser.png'" alt="Avatar" class="img-fluid rounded-circle mb-3 profile-avatar">
         <h4>{{ userPrenom }} {{ userNom }}</h4>
         <p class="text-muted">{{ userRole }}</p>
         <div class="row mt-4">

@@ -7,6 +7,7 @@ use App\Http\Controllers\HistoriqueController;
 use App\Http\Controllers\InfractionController;
 use App\Http\Controllers\HistoriquePaiementController;
 use App\Http\Controllers\PoliceController;
+use Illuminate\Support\Facades\Response;
 
 /*
 |--------------------------------------------------------------------------
