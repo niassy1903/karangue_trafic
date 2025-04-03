@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AuthService } from './auth.service';  // Assure-toi d'importer AuthService
@@ -238,5 +238,17 @@ transfererNotification(data: any): Observable<any> {
     })
   );
 }
+
+// Méthode pour effectuer une recherche globale
+globalSearch(query: string): Observable<any> {
+  const headers = this.getAuthHeaders();
+  const params = new HttpParams().set('query', query);
+  return this.http.get(`${this.apiUrl2}/global-search`, { headers, params }).pipe(
+    catchError((error) => {
+      return throwError(error);
+    })
+  );
+}
+
 
 }

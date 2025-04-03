@@ -10,7 +10,7 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { AmendesComponent } from './components/amendes/amendes.component';
 import { HistoriqueAmendesComponent } from './components/historique-amendes/historique-amendes.component';
 import { MapComponent } from './components/map/map.component';
-import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
+import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component'; // Ensure this path matches the actual file location
 import { AuthGuard } from './guard/auth.guard';
 import { AgentGuard } from './guard/agent.guard';
 

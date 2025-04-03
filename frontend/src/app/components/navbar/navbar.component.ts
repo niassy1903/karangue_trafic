@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { NotificationService } from '../../services/notification.service';
 import { AuthService } from '../../services/auth.service';
@@ -29,7 +29,7 @@ interface Police {
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
   standalone: true,
-  imports: [CommonModule, HttpClientModule, ReactiveFormsModule],
+  imports: [CommonModule, HttpClientModule, ReactiveFormsModule, FormsModule],
   providers: [NotificationService, AuthService, UtilisateurService, HttpClientModule, HttpClient],
 })
 export class NavbarComponent implements OnInit, OnDestroy {
@@ -46,6 +46,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
   generateCodeForm: FormGroup;
   roles: string[] = ['Rôle 1', 'Rôle 2', 'Rôle 3']; // Exemple de rôles
   private notificationSubscription!: Subscription;
+  private notificationSound = new Audio('public/alert.mp3'); // Chemin mis à jour
+  searchQuery: string = '';
+  searchResults: any[] = []; // Remplacez par le type approprié pour vos résultats de recherche
 
   constructor(
     private notificationService: NotificationService,
@@ -80,6 +83,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
         this.updateUnreadCount();
       } else if (notification.police_id === policeId) {
         this.temporaryNotification = notification;
+        this.playNotificationSound(); // Jouer le son de notification
         setTimeout(() => {
           this.temporaryNotification = null;
         }, 5000);
@@ -108,6 +112,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
     }
   }
 
+  playNotificationSound() {
+    this.notificationSound.play().catch(error => {
+      console.error('Erreur lors de la lecture du son de notification:', error);
+    });
+  }
+
   updateUnreadCount() {
     this.unreadCount = this.notificationService.getUnreadCount();
   }
@@ -115,6 +125,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   showUnreadNotifications() {
     const unreadNotifications: Notification[] = this.notificationService.getUnreadNotifications();
     if (unreadNotifications.length > 0) {
+      this.playNotificationSound(); // Jouer le son de notification
       Swal.fire({
         title: '<strong>Notifications</strong>',
         icon: 'info',
@@ -133,9 +144,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
             <div class="swal2-progress-bar-inner" style="width: 100%;"></div>
           </div>
         `,
-        showConfirmButton: false,
-        timerProgressBar: true,
-        timer: 1000, // 1 seconde
+       
         didOpen: () => {
           document.querySelectorAll('.btn-transfer').forEach((button: any) => {
             button.onclick = (event: any) => {
@@ -162,6 +171,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   async transferNotification(notificationId: string) {
+    this.playNotificationSound(); // Jouer le son de notification
     const polices: Police[] = await this.utilisateurService.getPolices().toPromise();
 
     const { value: selectedPoliceId } = await Swal.fire({
@@ -348,5 +358,18 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   closeDropdown() {
     this.isDropdownOpen = false;
+  }
+
+  performGlobalSearch() {
+    this.utilisateurService.globalSearch(this.searchQuery).subscribe(
+      (results) => {
+        console.log('Résultats de la recherche globale:', results);
+        this.searchResults = results; // Mettez à jour les résultats de la recherche
+        // Vous pouvez traiter les résultats ici
+      },
+      (error) => {
+        console.error('Erreur lors de la recherche globale', error);
+      }
+    );
   }
 }

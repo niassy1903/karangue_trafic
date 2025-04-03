@@ -31,17 +31,16 @@ Route::middleware('auth:utilisateur')->get('/user', function (Request $request) 
 |--------------------------------------------------------------------------
 */
 
+ // Affiche les détails d'un utilisateur spécifique
+ Route::get('/utilisateurs/{id}', [UtilisateurController::class, 'show']);
 
 
 Route::middleware(['isAdmin'])->group(function (){
-    // Liste tous les utilisateurs
-    Route::get('/utilisateurs', [UtilisateurController::class, 'index']);
-
+    
     // Crée un nouvel utilisateur
  Route::post('/utilisateurs', [UtilisateurController::class, 'store']);
 
-    // Affiche les détails d'un utilisateur spécifique
-    Route::get('/utilisateurs/{id}', [UtilisateurController::class, 'show']);
+   
 
     // Met à jour les informations d'un utilisateur spécifique
     Route::put('/utilisateurs/{id}', [UtilisateurController::class, 'update']);
@@ -153,5 +152,8 @@ Route::get('/historique-paiements', [HistoriquePaiementController::class, 'index
 Route::get('/historique-paiements/{id}', [HistoriquePaiementController::class, 'show']);
 
 
-
+// Route pour l'authentification par RFID
 Route::post('/authenticate-rfid', [UtilisateurController::class, 'authenticateByRFID']);
+
+// Route pour la recherche globale
+Route::get('/global-search', [UtilisateurController::class, 'globalSearch']);

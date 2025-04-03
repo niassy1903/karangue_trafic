@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Models\Police;
 use Illuminate\Support\Facades\Response;
+use App\Models\Infraction;
+use App\Models\HistoriquePaiement;
 
 class UtilisateurController extends Controller
 {
@@ -606,6 +608,48 @@ public function checkPlate(Request $request)
         ], 404);
     }
 }
+
+public function globalSearch(Request $request)
+{
+    $query = $request->input('query');
+
+    if (empty($query)) {
+        return response()->json(['message' => 'Aucun terme de recherche fourni.'], 400);
+    }
+
+    // Recherche dans les utilisateurs
+    $utilisateurs = Utilisateur::where('nom', 'LIKE', "%$query%")
+        ->orWhere('prenom', 'LIKE', "%$query%")
+        ->orWhere('email', 'LIKE', "%$query%")
+        ->orWhere('telephone', 'LIKE', "%$query%")
+        ->get();
+
+    // Recherche dans les infractions
+    $infractions = Infraction::where('nom_conducteur', 'LIKE', "%$query%")
+        ->orWhere('prenom_conducteur', 'LIKE', "%$query%")
+        ->orWhere('plaque_matriculation', 'LIKE', "%$query%")
+        ->get();
+
+    // Recherche dans l'historique
+    $historiques = Historique::whereHas('utilisateur', function ($q) use ($query) {
+        $q->where('nom', 'LIKE', "%$query%")
+          ->orWhere('prenom', 'LIKE', "%$query%");
+    })->get();
+
+    // Recherche dans l'historique des paiements
+    $historiquePaiements = HistoriquePaiement::whereHas('utilisateur', function ($q) use ($query) {
+        $q->where('nom', 'LIKE', "%$query%")
+          ->orWhere('prenom', 'LIKE', "%$query%");
+    })->get();
+
+    return response()->json([
+        'utilisateurs' => $utilisateurs,
+        'infractions' => $infractions,
+        'historiques' => $historiques,
+        'historiquePaiements' => $historiquePaiements,
+    ]);
+}
+
 
     
 }
