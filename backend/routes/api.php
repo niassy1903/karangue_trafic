@@ -36,6 +36,10 @@ Route::middleware('auth:utilisateur')->get('/user', function (Request $request) 
 
 
 Route::middleware(['isAdmin'])->group(function (){
+
+     // Liste tous les utilisateurs
+     Route::get('/utilisateurs', [UtilisateurController::class, 'index']);
+
     
     // Crée un nouvel utilisateur
  Route::post('/utilisateurs', [UtilisateurController::class, 'store']);
