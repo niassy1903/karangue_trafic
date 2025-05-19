@@ -15,7 +15,7 @@ import { NavbarComponent } from '../navbar/navbar.component';
   styleUrls: ['./inscription.component.css'],
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule, HttpClientModule, SidebarComponent, NavbarComponent],
-  providers: [UtilisateurService, HttpClientModule,HttpClient],
+  providers: [UtilisateurService, HttpClientModule, HttpClient],
 })
 export class InscriptionComponent implements OnInit {
   inscriptionForm: FormGroup;
@@ -70,6 +70,39 @@ export class InscriptionComponent implements OnInit {
 
       this.inscriptionForm.get('plaque_matriculation')?.updateValueAndValidity();
       this.inscriptionForm.get('police_id')?.updateValueAndValidity();
+    });
+
+    // Ajoutez des observateurs pour chaque champ du formulaire
+    this.inscriptionForm.get('prenom')?.valueChanges.subscribe(() => {
+      this.inscriptionForm.get('prenom')?.markAsTouched();
+    });
+
+    this.inscriptionForm.get('nom')?.valueChanges.subscribe(() => {
+      this.inscriptionForm.get('nom')?.markAsTouched();
+    });
+
+    this.inscriptionForm.get('adresse')?.valueChanges.subscribe(() => {
+      this.inscriptionForm.get('adresse')?.markAsTouched();
+    });
+
+    this.inscriptionForm.get('telephone')?.valueChanges.subscribe(() => {
+      this.inscriptionForm.get('telephone')?.markAsTouched();
+    });
+
+    this.inscriptionForm.get('email')?.valueChanges.subscribe(() => {
+      this.inscriptionForm.get('email')?.markAsTouched();
+    });
+
+    this.inscriptionForm.get('role')?.valueChanges.subscribe(() => {
+      this.inscriptionForm.get('role')?.markAsTouched();
+    });
+
+    this.inscriptionForm.get('plaque_matriculation')?.valueChanges.subscribe(() => {
+      this.inscriptionForm.get('plaque_matriculation')?.markAsTouched();
+    });
+
+    this.inscriptionForm.get('police_id')?.valueChanges.subscribe(() => {
+      this.inscriptionForm.get('police_id')?.markAsTouched();
     });
   }
 

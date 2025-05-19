@@ -19,12 +19,12 @@
               <div class="col-md-6">
                 <label class="form-label">Prénom <span class="required-field">*</span></label>
                 <input formControlName="prenom" type="text" class="form-control" placeholder="Saisissez votre prénom">
-                <div *ngIf="submitted && f['prenom'].errors" class="text-danger">Prénom requis (min 2 lettres)</div>
+                <div *ngIf="f['prenom'].touched && f['prenom'].errors" class="text-danger">Prénom requis</div>
               </div>
               <div class="col-md-6">
                 <label class="form-label">Nom <span class="required-field">*</span></label>
                 <input formControlName="nom" type="text" class="form-control" placeholder="Saisissez votre nom">
-                <div *ngIf="submitted && f['nom'].errors" class="text-danger">Nom requis (min 2 lettres)</div>
+                <div *ngIf="f['nom'].touched && f['nom'].errors" class="text-danger">Nom requis</div>
               </div>
             </div>
 
@@ -32,12 +32,12 @@
               <div class="col-md-6">
                 <label class="form-label">Adresse <span class="required-field">*</span></label>
                 <input formControlName="adresse" type="text" class="form-control" placeholder="Saisissez votre adresse">
-                <div *ngIf="submitted && f['adresse'].errors" class="text-danger">Adresse requise</div>
+                <div *ngIf="f['adresse'].touched && f['adresse'].errors" class="text-danger">Adresse requise</div>
               </div>
               <div class="col-md-6">
                 <label class="form-label">Téléphone <span class="required-field">*</span></label>
                 <input formControlName="telephone" type="text" class="form-control" placeholder="Saisissez votre téléphone">
-                <div *ngIf="submitted && f['telephone'].errors" class="text-danger">Téléphone invalide</div>
+                <div *ngIf="f['telephone'].touched && f['telephone'].errors" class="text-danger">Téléphone invalide</div>
                 <div *ngIf="errorMessages.telephone" class="text-danger">{{ errorMessages.telephone }}</div>
               </div>
             </div>
@@ -46,7 +46,7 @@
               <div class="col-md-6">
                 <label class="form-label">Email <span class="required-field">*</span></label>
                 <input formControlName="email" type="email" class="form-control" placeholder="Saisissez votre email">
-                <div *ngIf="submitted && f['email'].errors" class="text-danger">Email invalide</div>
+                <div *ngIf="f['email'].touched && f['email'].errors" class="text-danger">Email invalide</div>
                 <div *ngIf="errorMessages.email" class="text-danger">{{ errorMessages.email }}</div>
               </div>
               <div class="col-md-6">
@@ -57,7 +57,7 @@
                   <option value="administrateur">Administrateur</option>
                   <option value="conducteur">Conducteur</option>
                 </select>
-                <div *ngIf="submitted && f['role'].errors" class="text-danger">Rôle requis</div>
+                <div *ngIf="f['role'].touched && f['role'].errors" class="text-danger">Rôle requis</div>
               </div>
             </div>
 
@@ -65,7 +65,7 @@
             <div class="mt-2" *ngIf="isConducteur">
               <label class="form-label">Plaque d'immatriculation <span class="required-field">*</span></label>
               <input formControlName="plaque_matriculation" type="text" class="form-control" placeholder="Ex: AA-123-BB">
-              <div *ngIf="submitted && f['plaque_matriculation'].errors" class="text-danger">Plaque requise (max 10 caractères)</div>
+              <div *ngIf="f['plaque_matriculation'].touched && f['plaque_matriculation'].errors" class="text-danger">Plaque requise</div>
             </div>
 
             <div class="mt-2" *ngIf="isAgent">
@@ -74,7 +74,7 @@
                 <option value="">Sélectionnez un poste de police</option>
                 <option *ngFor="let police of polices" [value]="police.id">{{ police.nom }}</option>
               </select>
-              <div *ngIf="submitted && f['police_id'].errors" class="text-danger">Poste de police requis</div>
+              <div *ngIf="f['police_id'].touched && f['police_id'].errors" class="text-danger">Poste de police requis</div>
             </div>
 
             <div class="text-center mt-4">

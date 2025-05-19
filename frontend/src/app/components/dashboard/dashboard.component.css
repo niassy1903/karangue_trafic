@@ -19,8 +19,8 @@
 app-sidebar {
   position: fixed;
   left: 0;
-  height: 100vh;
-  width: 400px; /* Ajustez selon la largeur de votre sidebar */
+  height: 90vh;
+  width: 300px; /* Ajustez selon la largeur de votre sidebar */
   z-index: 1000;
 }
 
