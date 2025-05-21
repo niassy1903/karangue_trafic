@@ -1,4 +1,7 @@
-FROM php:8.2-cli-alpine
+# --------------------
+# ÉTAPE 1 : Image PHP avec extensions Laravel
+# --------------------
+FROM php:8.2-fpm-alpine AS base
 
 # Installer les dépendances système
 RUN apk add --no-cache \
@@ -25,13 +28,14 @@ RUN apk add --no-cache \
     pkgconfig \
     libressl-dev \
     imagemagick-dev \
-    imagemagick
+    imagemagick \
+    shadow
 
 # Imagick (facultatif)
 RUN pecl install imagick \
     && docker-php-ext-enable imagick
 
-# Installer les extensions PHP
+# Extensions PHP
 RUN docker-php-ext-install \
     pdo \
     pdo_mysql \
@@ -49,17 +53,33 @@ RUN pecl install mongodb-1.20.0 \
 # Installer Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Créer un utilisateur non-root
+RUN usermod -u 1000 www-data
+
 WORKDIR /var/www
 
 COPY . .
 
-RUN composer install --no-dev --optimize-autoloader
+# Installer les dépendances Laravel
+RUN composer install --optimize-autoloader --no-dev
 
+# Donne les droits d'écriture à Laravel
 RUN chown -R www-data:www-data /var/www \
-    && chmod -R 755 /var/www/storage /var/www/bootstrap/cache
+    && chmod -R 755 storage bootstrap/cache
 
-# Exposer le port attendu par Render
-EXPOSE 80
+# --------------------
+# ÉTAPE 2 : Ajouter Caddy (serveur web rapide)
+# --------------------
+FROM caddy:2-alpine
 
-# Lancer le serveur artisan
-CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=${PORT:-80}"]
+# Copier le code et PHP depuis l'étape précédente
+COPY --from=base /var/www /var/www
+COPY --from=base /usr/local /usr/local
+
+# Caddyfile de config
+COPY ./Caddyfile /etc/caddy/Caddyfile
+
+WORKDIR /var/www
+
+# Lancer Caddy
+CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]
