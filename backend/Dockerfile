@@ -26,8 +26,11 @@ RUN apk add --no-cache \
     pkgconfig \
     libressl-dev \
     imagemagick-dev \
-    imagemagick \
-    php82-pecl-imagick
+    imagemagick
+
+# Imagick (facultatif si pas utilisé dans le projet)
+RUN pecl install imagick \
+    && docker-php-ext-enable imagick
 
 # Installer extensions PHP
 RUN docker-php-ext-install \
@@ -60,5 +63,8 @@ RUN composer install --no-dev --optimize-autoloader
 RUN chown -R www-data:www-data /var/www \
     && chmod -R 755 /var/www/storage /var/www/bootstrap/cache
 
-# Lancer php-fpm
-CMD ["php-fpm"]
+# Exposer le port 80 (nécessaire pour que la plateforme détecte l'app)
+EXPOSE 80
+
+# Lancer Laravel avec le serveur intégré
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=80"]
