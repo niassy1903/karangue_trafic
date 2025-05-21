@@ -1,7 +1,7 @@
 # --------------------
 # ÉTAPE 1 : Image PHP avec extensions Laravel
 # --------------------
-FROM php:8.2-fpm-alpine AS base
+FROM php:8.2-cli-alpine
 
 # Installer les dépendances système
 RUN apk add --no-cache \
@@ -35,7 +35,7 @@ RUN apk add --no-cache \
 RUN pecl install imagick \
     && docker-php-ext-enable imagick
 
-# Extensions PHP
+# Extensions PHP nécessaires
 RUN docker-php-ext-install \
     pdo \
     pdo_mysql \
@@ -56,30 +56,21 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Créer un utilisateur non-root
 RUN usermod -u 1000 www-data
 
+# Définir le dossier de travail
 WORKDIR /var/www
 
+# Copier les fichiers du projet
 COPY . .
 
 # Installer les dépendances Laravel
 RUN composer install --optimize-autoloader --no-dev
 
-# Donne les droits d'écriture à Laravel
+# Donner les permissions à Laravel
 RUN chown -R www-data:www-data /var/www \
     && chmod -R 755 storage bootstrap/cache
 
-# --------------------
-# ÉTAPE 2 : Ajouter Caddy (serveur web rapide)
-# --------------------
-FROM caddy:2-alpine
+# Exposer le port 10000
+EXPOSE 10000
 
-# Copier le code et PHP depuis l'étape précédente
-COPY --from=base /var/www /var/www
-COPY --from=base /usr/local /usr/local
-
-# Caddyfile de config
-COPY ./Caddyfile /etc/caddy/Caddyfile
-
-WORKDIR /var/www
-
-# Lancer Caddy
-CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]
+# Lancer le serveur intégré Laravel
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=10000"]
