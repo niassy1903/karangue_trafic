@@ -1,5 +1,4 @@
-# Étape 1 : base image PHP avec extensions nécessaires
-FROM php:8.2-fpm-alpine
+FROM php:8.2-cli-alpine
 
 # Installer les dépendances système
 RUN apk add --no-cache \
@@ -28,11 +27,11 @@ RUN apk add --no-cache \
     imagemagick-dev \
     imagemagick
 
-# Imagick (facultatif si pas utilisé dans le projet)
+# Imagick (facultatif)
 RUN pecl install imagick \
     && docker-php-ext-enable imagick
 
-# Installer extensions PHP
+# Installer les extensions PHP
 RUN docker-php-ext-install \
     pdo \
     pdo_mysql \
@@ -43,37 +42,24 @@ RUN docker-php-ext-install \
     pcntl \
     opcache
 
-# Installer ext-mongodb version 1.20.0
+# MongoDB extension
 RUN pecl install mongodb-1.20.0 \
     && docker-php-ext-enable mongodb
 
 # Installer Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Définir le répertoire de travail
 WORKDIR /var/www
 
-# Copier les fichiers de l'application
 COPY . .
 
-# Copier le .env.production comme .env
-COPY .env.production .env
-
-# Installer les dépendances PHP de production
 RUN composer install --no-dev --optimize-autoloader
 
-# Compiler les fichiers de config Laravel
-RUN php artisan config:clear \
- && php artisan config:cache \
- && php artisan route:cache \
- && php artisan view:cache
-
-# Donner les bons droits
 RUN chown -R www-data:www-data /var/www \
     && chmod -R 755 /var/www/storage /var/www/bootstrap/cache
 
-# Exposer le port 80 (nécessaire pour que la plateforme détecte l'app)
+# Exposer le port attendu par Render
 EXPOSE 80
 
-# Lancer Laravel avec le serveur intégré
+# Lancer le serveur artisan
 CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=${PORT:-80}"]
