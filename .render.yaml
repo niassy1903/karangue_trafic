@@ -1,0 +1,43 @@
+services:
+  - type: web
+    name: karangue-backend
+    env: docker
+    region: oregon
+    plan: free
+    rootDir: backend
+    dockerfilePath: backend/Dockerfile
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_URL
+        value: https://karangue-backend.onrender.com
+      - key: DB_CONNECTION
+        value: mongodb
+      - key: DB_DSN
+        value: mongodb+srv://niassy:niassy1903@karangue-trafic.hroxuxi.mongodb.net/?retryWrites=true&w=majority&appName=karangue-trafic
+      - key: DB_DATABASE
+        value: karangue_trafic
+      - key: SESSION_CONNECTION
+        value: mongodb
+      - key: MAIL_MAILER
+        value: smtp
+      - key: MAIL_HOST
+        value: smtp.gmail.com
+      - key: MAIL_PORT
+        value: 587
+      - key: MAIL_USERNAME
+        value: niassy.lamine10@gmail.com
+      - key: MAIL_PASSWORD
+        value: vjyviqtktpjsngjf
+      - key: MAIL_ENCRYPTION
+        value: tls
+      - key: MAIL_FROM_ADDRESS
+        value: niassy.lamine10@gmail.com
+      - key: MAIL_FROM_NAME
+        value: Karangue Trafic
+      - key: JWT_SECRET
+        value: KgvOE4vRYX4L3S74v92A3mqITS29I0HHLm7sKkFi1BnvtblCq7cNTofNzQ2j0COD
+      - key: APP_KEY
+        value: base64:QpwVARrvr2GCf4GSl4tY11UKqrmC/A3eMPTqfxQ44xo=
