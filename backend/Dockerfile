@@ -1,39 +1,64 @@
-FROM php:8.2-fpm
+# Étape 1 : base image PHP avec extensions nécessaires
+FROM php:8.2-fpm-alpine
 
-# Install dependencies
-RUN apt-get update && apt-get install -y \
+# Installer les dépendances système
+RUN apk add --no-cache \
+    bash \
     git \
-    unzip \
-    libzip-dev \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
     curl \
-    pkg-config \
-    libssl-dev \
-    libcurl4-openssl-dev \
-    libicu-dev \
-    libpq-dev \
-    libgmp-dev \
-    && docker-php-ext-install zip pdo mbstring exif pcntl bcmath
+    libpng \
+    libpng-dev \
+    libjpeg-turbo-dev \
+    libwebp-dev \
+    libxpm-dev \
+    oniguruma-dev \
+    libzip-dev \
+    icu-dev \
+    autoconf \
+    g++ \
+    make \
+    openssl \
+    zlib-dev \
+    jpegoptim optipng pngquant gifsicle \
+    nano \
+    unzip \
+    libxml2-dev \
+    pkgconfig \
+    libressl-dev \
+    imagemagick-dev \
+    imagemagick \
+    php82-pecl-imagick
 
-# ✅ Install MongoDB extension
-RUN pecl install mongodb \
+# Installer extensions PHP
+RUN docker-php-ext-install \
+    pdo \
+    pdo_mysql \
+    zip \
+    intl \
+    bcmath \
+    exif \
+    pcntl \
+    opcache
+
+# Installer ext-mongodb version 1.20.0
+RUN pecl install mongodb-1.20.0 \
     && docker-php-ext-enable mongodb
 
-# Install Composer
+# Installer Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set working directory
+# Définir le répertoire de travail
 WORKDIR /var/www
 
-# Copy the application
+# Copier les fichiers de l'application
 COPY . .
 
-# Install PHP dependencies
+# Installer les dépendances PHP de production
 RUN composer install --no-dev --optimize-autoloader
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www && chmod -R 755 /var/www
+# Donner les bons droits
+RUN chown -R www-data:www-data /var/www \
+    && chmod -R 755 /var/www/storage /var/www/bootstrap/cache
 
+# Lancer php-fpm
 CMD ["php-fpm"]
