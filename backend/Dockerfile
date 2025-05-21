@@ -67,4 +67,5 @@ RUN chown -R www-data:www-data /var/www \
 EXPOSE 80
 
 # Lancer Laravel avec le serveur intégré
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=80"]
+# Lancer Laravel en écoutant dynamiquement le port
+CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=${PORT:-80}"]
