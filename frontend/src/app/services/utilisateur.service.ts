@@ -8,8 +8,8 @@ import { AuthService } from './auth.service';  // Assure-toi d'importer AuthServ
   providedIn: 'root'
 })
 export class UtilisateurService {
-  private apiUrl = 'http://localhost:8000/api/utilisateurs';
-  private apiUrl2 = 'http://localhost:8000/api'; // Modifier selon l'URL de ton API
+  private apiUrl = 'https://dashboard.render.com/web/srv-d0mqv16uk2gs73fthnfg/api/utilisateurs';
+  private apiUrl2 = 'https://dashboard.render.com/web/srv-d0mqv16uk2gs73fthnfg/api'; // Modifier selon l'URL de ton API
 
   constructor(
     private http: HttpClient,

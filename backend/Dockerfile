@@ -56,8 +56,17 @@ WORKDIR /var/www
 # Copier les fichiers de l'application
 COPY . .
 
+# Copier le .env.production comme .env
+COPY .env.production .env
+
 # Installer les dépendances PHP de production
 RUN composer install --no-dev --optimize-autoloader
+
+# Compiler les fichiers de config Laravel
+RUN php artisan config:clear \
+ && php artisan config:cache \
+ && php artisan route:cache \
+ && php artisan view:cache
 
 # Donner les bons droits
 RUN chown -R www-data:www-data /var/www \
@@ -67,5 +76,4 @@ RUN chown -R www-data:www-data /var/www \
 EXPOSE 80
 
 # Lancer Laravel avec le serveur intégré
-# Lancer Laravel en écoutant dynamiquement le port
 CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=${PORT:-80}"]

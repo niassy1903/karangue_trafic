@@ -11,7 +11,7 @@ import { NgZone } from '@angular/core';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://127.0.0.1:8000/api/utilisateurs/authenticate';
+  private apiUrl = 'https://dashboard.render.com/web/srv-d0mqv16uk2gs73fthnfg/api/utilisateurs/authenticate';
   private inactivityTimeout: any;
   private readonly TIMEOUT_DURATION = 10 * 60 * 1000; // 10 minutes
 
