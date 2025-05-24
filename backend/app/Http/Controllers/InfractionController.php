@@ -52,7 +52,7 @@ class InfractionController extends Controller
         $infraction = Infraction::create($validatedData);
     
         // Envoyer une notification au serveur Node.js
-        Http::post('http://localhost:3000/send-notification-to-police', [
+        Http::post('https://karangue-notification-api.onrender.com/send-notification-to-police', [
             'police_id' => $policeDakar->id, // Identifiant unique de la police
             'infraction_id' => $infraction->id, // Ajoutez l'ID de l'infraction ici
             'message' => 'Nouvelle infraction détectée',
@@ -110,7 +110,7 @@ public function transfererNotification(Request $request)
     ];
 
     // Envoyer la notification au serveur Node.js
-    Http::post('http://localhost:3000/send-notification-to-police', $requestData);
+    Http::post('https://karangue-notification-api.onrender.com/send-notification-to-police', $requestData);
 
     return response()->json(['message' => 'Infraction transférée avec succès', 'data' => $infraction], 200);
 }
@@ -121,7 +121,7 @@ public function transfererNotification(Request $request)
     {
         $validatedData = $request->validate([
             'montant' => 'required|numeric',
-            'utilisateur_id' => 'required|exists:utilisateurs,id', // Ajoutez cette validation
+            'utilisateur_id' => 'required|exists:utilisateurs,id',
         ]);
     
         $infraction = Infraction::findOrFail($id);
@@ -129,8 +129,8 @@ public function transfererNotification(Request $request)
         $infraction->status = 'payé';
         $infraction->save();
     
-        // Utiliser la fonction logPaiementAction pour enregistrer l'action de paiement
-        $this->logPaiementAction($infraction->id, $validatedData['utilisateur_id'], 'paiement effectué avec succès');
+        // Passer le montant réel à l'historique
+        $this->logPaiementAction($infraction->id, $validatedData['utilisateur_id'], 'paiement effectué avec succès', $validatedData['montant']);
     
         return response()->json(['message' => 'Paiement enregistré']);
     }
@@ -171,16 +171,17 @@ public function transfererNotification(Request $request)
         return response()->json(['data' => $infractions]);
     }
 
-    private function logPaiementAction($infractionId, $utilisateurId, $action)
+    private function logPaiementAction($infractionId, $utilisateurId, $action, $montant = 0)
     {
         $date = Carbon::now()->format('d/m/Y');
         $heure = Carbon::now()->format('H:i');
 
         HistoriquePaiement::create([
             'infraction_id' => $infractionId,
-            'utilisateur_id' => $utilisateurId, // Enregistrer l'ID de l'utilisateur
+            'utilisateur_id' => $utilisateurId,
             'action' => $action,
             'date' => $date,
+            'montant' => $montant, // Enregistrer le vrai montant ici
             'heure' => $heure,
         ]);
     }

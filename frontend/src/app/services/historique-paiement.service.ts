@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class HistoriquePaiementService {
-  private apiUrl = 'http://localhost:8000/api';
+  private apiUrl = 'https://karangue-backend.onrender.com/api';
 
   constructor(private http: HttpClient) {}
 

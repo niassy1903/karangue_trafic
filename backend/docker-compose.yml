@@ -1,43 +1,28 @@
-version: '3.8'
-
 services:
-  app:
+  karangue-backend:   # ← ici on renomme 'app' en 'karangue-backend'
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: laravel_app
+    image: niassy1903/karangue-backend:latest  # ← ajouter cette ligne
+    container_name: karangue-backend_app
     restart: "no"
     ports:
       - "8000:80"
     volumes:
       - .:/var/www/html
     networks:
-      - laravel_network
+      - karangue-backend_network
 
-  db:
-    image: mongo:latest
-    container_name: laravel_db
-    restart: unless-stopped
-    ports:
-      - "27018:27017"  # Expose le port 27017 du conteneur sur le port 27018 de l'hôte
-    volumes:
-      - mongodb_data:/data/db
-    networks:
-      - laravel_network
 
   redis:
     image: redis:latest
-    container_name: laravel_redis
+    container_name: karangue-backend_redis
     restart: unless-stopped
     ports:
       - "6379:6379"
     networks:
-      - laravel_network
-
-volumes:
-  mongodb_data:
-    driver: local
+      - karangue-backend_network
 
 networks:
-  laravel_network:
+  karangue-backend_network:
     driver: bridge

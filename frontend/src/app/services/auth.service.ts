@@ -11,7 +11,7 @@ import { NgZone } from '@angular/core';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://127.0.0.1:8000/api/utilisateurs/authenticate';
+  private apiUrl = 'https://karangue-backend.onrender.com/api/utilisateurs/authenticate';
   private inactivityTimeout: any;
   private readonly TIMEOUT_DURATION = 10 * 60 * 1000; // 10 minutes
 
@@ -126,7 +126,7 @@ export class AuthService {
   }
 
   authenticateByRFID(uid: string): Observable<any> {
-    const url = 'http://127.0.0.1:8000/api/authenticate-rfid'; // Remplace par l'URL de ton backend Laravel
+    const url = 'https://karangue-backend.onrender.com/api/authenticate-rfid'; // Remplace par l'URL de ton backend Laravel
   
     return this.http.post<any>(url, { carte_id: uid }).pipe(
       tap((response) => {
@@ -152,7 +152,7 @@ export class AuthService {
   }
 
   resetCodeSecret(email: string): Observable<any> {
-    const url = 'http://127.0.0.1:8000/api/utilisateurs/reset-code';
+    const url = 'https://karangue-backend.onrender.com/api/utilisateurs/reset-code';
 
     return this.http.post<any>(url, { email }).pipe(
       tap(response => {

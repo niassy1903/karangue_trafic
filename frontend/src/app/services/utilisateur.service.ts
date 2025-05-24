@@ -8,8 +8,8 @@ import { AuthService } from './auth.service';  // Assure-toi d'importer AuthServ
   providedIn: 'root'
 })
 export class UtilisateurService {
-  private apiUrl = 'http://localhost:8000/api/utilisateurs';
-  private apiUrl2 = 'http://localhost:8000/api'; // Modifier selon l'URL de ton API
+  private apiUrl = 'https://karangue-backend.onrender.com/api/utilisateurs';
+  private apiUrl2 = 'https://karangue-backend.onrender.com/api'; // Modifier selon l'URL de ton API
 
   constructor(
     private http: HttpClient,
@@ -212,7 +212,7 @@ assignCard(id: number, cardId: string): Observable<any> {
 
 getRFIDUID(): Observable<{ uid: string }> {
   const headers = this.getAuthHeaders();
-  return this.http.get<{ uid: string }>('http://localhost:3000/rfid', { headers }).pipe(
+  return this.http.get<{ uid: string }>('https://karangue-connexion-rfid.onrender.com', { headers }).pipe(
     catchError((error) => {
       return throwError(error);
     })

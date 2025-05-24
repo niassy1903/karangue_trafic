@@ -7,7 +7,7 @@ import { Observable, throwError } from 'rxjs';
   providedIn: 'root'
 })
 export class InfractionService {
-  private apiUrl = 'http://127.0.0.1:8000/api'; // Modifier selon l'URL de ton API
+  private apiUrl = 'https://karangue-backend.onrender.com/api'; // Modifier selon l'URL de ton API
   constructor(private http: HttpClient, private authService: AuthService) {}
 
 
