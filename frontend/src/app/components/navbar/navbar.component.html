@@ -54,8 +54,11 @@
 <!-- Notification temporaire -->
 <div *ngIf="temporaryNotification" class="temporary-notification">
   🚨 {{ temporaryNotification.message }} ({{ temporaryNotification.plaque }}) à {{ temporaryNotification.heure }}
-  <button class="btn btn-transfer" (click)="transferNotification(temporaryNotification._id)">Transférer</button>
+  <button class="btn btn-transfer" (click)="transferNotification(temporaryNotification._id)">
+    Transférer
+  </button>
 </div>
+
 
 
 <!-- Modal pour éditer le profil -->

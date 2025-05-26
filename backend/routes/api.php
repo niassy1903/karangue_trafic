@@ -34,7 +34,9 @@ Route::middleware('auth:utilisateur')->get('/user', function (Request $request) 
  // Affiche les détails d'un utilisateur spécifique
  Route::get('/utilisateurs/{id}', [UtilisateurController::class, 'show']);
 
-
+ // Met à jour les informations d'un utilisateur spécifique
+    Route::put('/utilisateurs/{id}', [UtilisateurController::class, 'update']);
+    
 Route::middleware(['isAdmin'])->group(function (){
 
      // Liste tous les utilisateurs
@@ -46,8 +48,7 @@ Route::middleware(['isAdmin'])->group(function (){
 
    
 
-    // Met à jour les informations d'un utilisateur spécifique
-    Route::put('/utilisateurs/{id}', [UtilisateurController::class, 'update']);
+   
 
     // Supprime un utilisateur spécifique
     Route::delete('/utilisateurs/{id}', [UtilisateurController::class, 'destroy']);
