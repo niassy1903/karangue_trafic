@@ -19,6 +19,9 @@ pytesseract.pytesseract.tesseract_cmd = "/usr/bin/tesseract"
 # URL du serveur Node.js
 node_server_url = "http://192.168.1.42:3001/receive-plate"
 
+#node_server_url = "https://karangue-anpr-api.onrender.com/receive-plate"
+
+
 # Connexion au port série de l'Arduino (ajuste le port selon ton installation)
 arduino = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
 time.sleep(2)  # Attendre la stabilisation de la connexion série
