@@ -220,3 +220,97 @@ h2 {
     padding: 5px;
   }
 }
+
+
+.swal2-input.is-invalid {
+  border: 2px solid #dc3545 !important;
+  box-shadow: 0 0 6px rgba(220, 53, 69, 0.6);
+}
+
+
+
+
+
+
+
+
+
+
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.action-buttons .btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: bold;
+  transition: transform 0.2s ease;
+}
+
+.action-buttons .btn:hover {
+  transform: scale(1.05);
+}
+
+.badge.bg-primary {
+  font-size: 14px;
+  padding: 6px 12px;
+}
+
+
+.filter-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+
+.actions-cell button {
+  margin-right: 5px;
+  transition: transform 0.2s;
+}
+.actions-cell button:hover {
+  transform: scale(1.1);
+}
+
+
+
+.pagination-modern {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.pagination-btn {
+  padding: 8px 12px;
+  border: 1px solid #fd7401;
+  color: #fd7401;
+  background-color: #fff;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.pagination-btn:hover {
+  background-color: #fd7401;
+  color: #fff;
+}
+
+.pagination-btn.active {
+  background-color: #fd7401;
+  color: #fff;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.pagination-btn:disabled {
+  background-color: lightgray;
+  color: white;
+  cursor: not-allowed;
+}

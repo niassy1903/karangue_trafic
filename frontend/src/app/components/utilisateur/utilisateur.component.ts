@@ -465,26 +465,22 @@ isValidEmail(email: string): boolean {
       showLoaderOnConfirm: true,
       allowOutsideClick: false, // Empêcher la fermeture du modal en cliquant à l'extérieur
       didOpen: () => {
-        // Établir une connexion SSE avec le serveur
-        const eventSource = new EventSource('http://localhost:3000/sse');
-  
-        // Écouter les événements du serveur
-        eventSource.onmessage = (event) => {
+        const socket = new WebSocket('ws://localhost:3002');
+      
+        socket.onmessage = (event) => {
           const data = JSON.parse(event.data);
-  
           if (data.uid) {
             const cardIdInput = document.getElementById('cardId') as HTMLInputElement;
             if (cardIdInput) {
-              cardIdInput.value = data.uid; // Pré-remplir l'input avec l'UID
-              cardIdInput.disabled = false; // Activer l'input
-              cardIdInput.placeholder = 'UID scanné'; // Changer le placeholder
+              cardIdInput.value = data.uid;
+              cardIdInput.disabled = false;
+              cardIdInput.placeholder = 'UID scanné';
             }
           }
         };
-  
-        // Fermer la connexion SSE lorsque le modal est fermé
+      
         Swal.getPopup()?.addEventListener('close', () => {
-          eventSource.close();
+          socket.close();
         });
       },
       preConfirm: () => {

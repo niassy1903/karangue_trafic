@@ -125,8 +125,8 @@ export class AuthService {
     });
   }
 
-  authenticateByRFID(uid: string): Observable<any> {
-    const url = 'http://127.0.0.1:8000/api/authenticate-rfid'; // Remplace par l'URL de ton backend Laravel
+  authenticateByRFID(uid: string, navigate: boolean = true): Observable<any> {
+    const url = 'http://127.0.0.1:8000/api/authenticate-rfid';
   
     return this.http.post<any>(url, { carte_id: uid }).pipe(
       tap((response) => {
@@ -137,10 +137,19 @@ export class AuthService {
           localStorage.setItem('prenom', response.user.prenom);
           localStorage.setItem('utilisateur_id', response.user.id);
           localStorage.setItem('policeId', response.user.police_id);
+  
+          // ✅ NE NAVIGUE QUE SI DEMANDÉ
+          if (navigate) {
+            if (response.user.role === 'administrateur') {
+              this.router.navigate(['/admin-dashboard']);
+            } else {
+              this.router.navigate(['/dashboard']);
+            }
+          }
         }
       }),
       catchError((error) => {
-        console.error('Erreur lors de la connexion via RFID :', error);
+        console.error('Erreur RFID :', error);
         return throwError(() => ({
           success: false,
           message: error.error?.message || 'Erreur inconnue',
@@ -150,6 +159,7 @@ export class AuthService {
       })
     );
   }
+  
 
   resetCodeSecret(email: string): Observable<any> {
     const url = 'http://127.0.0.1:8000/api/utilisateurs/reset-code';

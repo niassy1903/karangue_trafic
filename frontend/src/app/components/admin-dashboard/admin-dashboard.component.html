@@ -49,22 +49,26 @@
           </table>
           <br>
           
-          <div class="pagination">
-            <button class="pagination-btn" (click)="prevPage()" [disabled]="currentPage === 1">
-              &lt;&lt;
+          <div class="pagination-modern">
+            <button class="page-btn-modern" (click)="prevPage()" [disabled]="currentPage === 1">
+              <i class="fas fa-angle-left"></i>
             </button>
-            <button
-              *ngFor="let page of pages"
-              [class.active]="page === currentPage"
-              (click)="goToPage(page)"
-              class="pagination-btn page-btn"
-            >
-              {{ page }}
-            </button>
-            <button class="pagination-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">
-              &gt;&gt;
+          
+            <ng-container *ngFor="let page of pages">
+              <button
+                (click)="goToPage(page)"
+                [class.active]="page === currentPage"
+                class="page-btn-modern"
+              >
+                {{ page }}
+              </button>
+            </ng-container>
+          
+            <button class="page-btn-modern" (click)="nextPage()" [disabled]="currentPage === totalPages">
+              <i class="fas fa-angle-right"></i>
             </button>
           </div>
+          
         </div>
       
         <div class="chart-section">

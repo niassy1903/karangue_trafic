@@ -18,6 +18,7 @@ export class WebSocketService {
 
     this.socket.onopen = () => {
       console.log('Connexion WebSocket établie.');
+      this.socket.send(JSON.stringify({ type: 'subscribe', context: 'login' })); // ou 'assignation'
     };
 
     this.socket.onmessage = (event) => {

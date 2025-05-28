@@ -27,6 +27,7 @@ const server = http.createServer(app);
 // Créer le serveur WebSocket
 const wss = new WebSocket.Server({ server });
 
+
 // Gérer les connexions WebSocket
 wss.on('connection', (ws) => {
   console.log('Nouvelle connexion WebSocket');

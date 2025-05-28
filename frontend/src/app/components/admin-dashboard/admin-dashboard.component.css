@@ -249,3 +249,81 @@
       flex: 1 1 100%;
     }
   }
+
+  /* 🛠️ Show sidebar toggle button only on small screens */
+@media (max-width: 768px) {
+  .toggle-sidebar-btn {
+    display: block;
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding-top: 60px;
+  }
+
+  .dashboard-layout {
+    flex-direction: column;
+  }
+
+  app-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 20;
+    background-color: #fff;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  app-sidebar.sidebar-collapsed {
+    transform: translateX(0);
+  }
+}
+
+/* Ajout d’un petit effet de glissement pour les stats */
+.stat-card {
+  transition: transform 0.3s ease;
+}
+.stat-card:hover {
+  transform: translateY(-5px);
+}
+
+
+.pagination-modern {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.page-btn-modern {
+  border: none;
+  background-color: #ffffff;
+  border: 1px solid #fd7401;
+  color: #fd7401;
+  font-weight: bold;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.page-btn-modern:hover {
+  background-color: #fd7401;
+  color: white;
+}
+
+.page-btn-modern.active {
+  background-color: #fd7401;
+  color: white;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.page-btn-modern:disabled {
+  background-color: lightgray;
+  color: white;
+  cursor: not-allowed;
+}

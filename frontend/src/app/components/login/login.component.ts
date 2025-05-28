@@ -24,7 +24,7 @@ export class LoginComponent implements OnDestroy, AfterViewInit {
   // Propriétés existantes
   failedAttempts = 0;
   isLocked = false;
-  lockTime = 30;
+  lockTime = 10;
   errorMessage = '';
   countdownInterval: any;
   progress = 100;
@@ -38,12 +38,15 @@ export class LoginComponent implements OnDestroy, AfterViewInit {
   resetMessage: string = '';
   isSending: boolean = false;
   isSuccess: boolean = false;
+  
 
   constructor(
     private authService: AuthService,
     private router: Router,
     private http: HttpClient,
     private webSocketService: WebSocketService // Injecte le service WebSocket
+    
+
 
   ) {
     this.checkLockStatus();
@@ -239,9 +242,9 @@ export class LoginComponent implements OnDestroy, AfterViewInit {
   }
 
   private lockInputs() {
-    const expirationTime = Date.now() + 30 * 1000;
+    const expirationTime = Date.now() + 10 * 1000;
     localStorage.setItem('lockExpiration', expirationTime.toString());
-    this.activateLock(30 * 1000);
+    this.activateLock(10 * 1000);
   }
 
 
