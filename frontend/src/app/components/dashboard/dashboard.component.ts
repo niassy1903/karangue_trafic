@@ -1,5 +1,5 @@
 import { InfractionService } from '../../services/infraction.service';
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, HostListener } from '@angular/core';
 import { Chart } from 'chart.js/auto';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { CommonModule } from '@angular/common';
@@ -27,6 +27,7 @@ export class DashboardComponent implements OnInit {
   totalPages = 1;
   perPage = 5;
   pages: number[] = [];
+  showScrollTop = false;
 
   constructor(private InfractionService: InfractionService) {}
 
@@ -34,6 +35,24 @@ export class DashboardComponent implements OnInit {
     this.loadTotalInfractions();
     this.loadInfractionsByPeriod();
     this.loadAlerts();
+    window.addEventListener('scroll', this.onWindowScroll, true);
+
+  }
+
+  ngOnDestroy() {
+    window.removeEventListener('scroll', this.onWindowScroll, true);
+  }
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    this.showScrollTop = window.pageYOffset > 200;
+  }
+
+  scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth' // Défilement fluide
+    });
   }
 
   loadTotalInfractions() {

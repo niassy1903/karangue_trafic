@@ -55,14 +55,26 @@
 }
 
 .temporary-notification {
-  position: fixed;
-  top: 60px;
-  right: 20px;
-  background-color: #ffcc99;
+  display: flex;
+  align-items: center;
+  gap: 10px; /* espace entre le texte et le bouton */
+  background-color: #ffe5e5; /* optionnel : fond légèrement rose pour alerte */
   padding: 10px;
   border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
+}
+
+.btn-transfer {
+  background-color: #ff6b6b;  /* rouge clair */
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-transfer:hover {
+  background-color: #ff4c4c; /* plus foncé au survol */
 }
 
 
@@ -211,7 +223,7 @@
 /* Optionnel : personnalisez davantage le bouton */
 .custom-swal-popup .btn-transfer {
   padding: 10px 20px; /* Ajustez la taille du bouton */
-  background-color: #007bff; /* Couleur de fond */
+  background-color:  #ff6600; /* Couleur de fond */
   color: white;
   border: none;
   border-radius: 5px;
@@ -219,7 +231,7 @@
 }
 
 .custom-swal-popup .btn-transfer:hover {
-  background-color: #0056b3; /* Couleur du bouton au survol */
+  background-color: #ff6600;
 }
 
 /* Style pour le bouton de la flèche */
@@ -246,3 +258,261 @@
   transition: width 0.5s ease-in-out;
 }
 /* Ajoutez ceci pour le style de la barre de progression */
+
+.custom-swal-popup {
+  font-family: 'Arial', sans-serif;
+  border-radius: 10px;
+  border: 2px solid #ff6600;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.custom-swal-popup .swal2-title {
+  color: #ff6600;
+  font-size: 24px;
+}
+
+.custom-notification-content {
+  text-align: left;
+  margin: 10px 0;
+  font-size: 16px;
+}
+
+.custom-swal-confirm-button {
+  background-color: #ff6600 !important;
+  border-radius: 5px;
+  padding: 8px 20px;
+}
+
+.custom-swal-cancel-button {
+  background-color: #aaa !important;
+  border-radius: 5px;
+  padding: 8px 20px;
+}
+
+.custom-swal-confirm-button:hover {
+  background-color: #ff6600 !important;
+}
+
+.custom-swal-cancel-button:hover {
+  background-color: #999 !important;
+}
+
+.custom-swal-deny-button {
+  background-color: #28a745 !important;
+  border-radius: 5px;
+  padding: 8px 20px;
+}
+
+.custom-swal-deny-button:hover {
+  background-color: #218838 !important;
+}
+
+.custom-swal-popup {
+  font-family: 'Arial', sans-serif;
+  border-radius: 10px;
+  border: 2px solid #ff6600;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.custom-swal-popup .swal2-title {
+  color: #ff6600;
+  font-size: 24px;
+}
+
+.custom-swal-content {
+  text-align: left;
+  margin: 10px 0;
+  font-size: 16px;
+}
+
+.custom-swal-confirm-button {
+  background-color: #ff6600 !important;
+  border-radius: 5px;
+  padding: 8px 20px;
+}
+
+.custom-swal-cancel-button {
+  background-color: #d33 !important;
+  border-radius: 5px;
+  padding: 8px 20px;
+}
+
+.custom-swal-input {
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+.custom-swal-confirm-button:hover {
+  background-color: #ff6600 !important;
+}
+
+.custom-swal-cancel-button:hover {
+  background-color: #b82e24 !important;
+}
+
+/* Responsive pour tablettes */
+@media (max-width: 991px) {
+  .search-bar {
+    max-width: 250px;
+    font-size: 14px;
+  }
+  .user-profile img {
+    width: 32px;
+    height: 32px;
+  }
+  .user-name {
+    font-size: 14px;
+  }
+  .user-role {
+    font-size: 12px;
+  }
+  .navbar-icons {
+    gap: 10px;
+  }
+}
+
+/* Responsive pour mobiles */
+@media (max-width: 600px) {
+  .navbar-icons {
+    flex-direction: row;
+    gap: 5px;
+    margin-right: 0;
+  }
+  .search-bar {
+    max-width: 120px;
+    font-size: 12px;
+    padding: 4px;
+  }
+  .user-profile {
+    gap: 5px;
+  }
+  .user-profile img {
+    width: 28px;
+    height: 28px;
+  }
+  .user-name, .user-role {
+    font-size: 11px;
+  }
+  .temporary-notification {
+    top: 48px;
+    right: 5px;
+    left: 5px;
+    font-size: 13px;
+    padding: 6px;
+  }
+  .btn-transfer {
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+}
+
+/* Responsive pour très petits écrans */
+@media (max-width: 400px) {
+  .search-bar {
+    display: none;
+  }
+  .user-profile img {
+    width: 22px;
+    height: 22px;
+  }
+  .temporary-notification {
+    font-size: 11px;
+    padding: 4px;
+  }
+}
+
+
+/* ✅ Style moderne du modal */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.modern-modal .modal-content {
+  border-radius: 1.5rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.modern-modal .form-control {
+  border-radius: 0.75rem;
+  border: 1px solid #ddd;
+  box-shadow: none;
+}
+
+.modern-modal .form-control:focus {
+  border-color: #ff6600;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.btn-primary {
+  background-color: #ff6600;
+  border-color: #ff6600;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #f8f9fa;
+  border-color: #ced4da;
+}
+
+/* Style général moderne */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Avatar stylé */
+.profile-avatar {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border: 4px solid #ff6600;
+  transition: transform 0.3s ease;
+}
+
+.profile-avatar:hover {
+  transform: scale(1.05);
+}
+
+/* Bouton de fermeture */
+.btn-close {
+  background-color: #f0f0f0;
+  border-radius: 50%;
+  padding: 0.5rem;
+}
+
+.glass-effect {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.btn-close {
+  background-color: #f0f0f0;
+  border-radius: 50%;
+  padding: 0.5rem;
+}
+
+input.form-control {
+  border-radius: 0.75rem;
+}

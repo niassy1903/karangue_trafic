@@ -243,3 +243,11 @@ body {
     font-size: 12px; /* Réduisez davantage la taille de la police des liens de pagination */
   }
 }
+
+.gap-custom-1cm > * {
+  margin-right: 1cm;
+}
+
+.gap-custom-1cm > *:last-child {
+  margin-right: 0;
+}

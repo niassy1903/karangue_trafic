@@ -36,7 +36,11 @@
                   <td>{{ amende.vitesse }}</td>
                   <td>{{ amende.date }}</td>
                   <td>{{ amende.heure }}</td>
-                  <td><strong>{{ amende.montant | number }}</strong></td>
+                  <td>
+                    <strong>
+                      {{ amende.montant !== null && amende.montant !== undefined ? (amende.montant | number) : '--' }}
+                    </strong>
+                  </td>
                   <td>
                     <span class="badge"
                           [ngClass]="{'bg-success': amende.status === 'payé', 'bg-danger': amende.status === 'non payé'}">

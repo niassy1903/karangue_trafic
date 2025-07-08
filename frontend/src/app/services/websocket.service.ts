@@ -14,7 +14,7 @@ export class WebSocketService {
 
   // Établir la connexion WebSocket
   private connect() {
-    this.socket = new WebSocket('ws://localhost:3002'); // Remplace par l'URL de ton serveur WebSocket
+  this.socket = new WebSocket('wss://karangue-connexion-rfid.onrender.com');
 
     this.socket.onopen = () => {
       console.log('Connexion WebSocket établie.');

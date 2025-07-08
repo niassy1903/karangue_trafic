@@ -17,6 +17,7 @@ class HistoriquePaiement extends Eloquent
         'utilisateur_id',
         'action',
         'date',
+        'montant',
         'heure',
     ];
 

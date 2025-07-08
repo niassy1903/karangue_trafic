@@ -134,15 +134,9 @@ class UtilisateurController extends Controller
      */
     protected function sendCodeSecretEmail($email, $codeSecret)
     {
-        $loginUrl = config('app.app_url'); // Récupérer l'URL de connexion
+        $frontendUrl = config('app.frontend_url'); // Assurez-vous que cette URL est définie dans votre fichier .env
     
-        $messageContent = "Bienvenue sur KARANGUE TRAFIC !\n\n";
-        $messageContent .= "Votre code secret pour vous connecter est : $codeSecret\n\n";
-        $frontendUrl = config('app.frontend_url'); // Define the frontend URL
-        $messageContent .= "Cliquez sur le lien suivant pour accéder à votre compte : $frontendUrl\n\n";
-        $messageContent .= "Cordialement,\nL'équipe KARANGUE TRAFIC.";
-    
-        Mail::raw($messageContent, function ($message) use ($email) {
+        Mail::send('emails.code_secret', ['codeSecret' => $codeSecret, 'frontendUrl' => $frontendUrl], function ($message) use ($email) {
             $message->to($email)
                     ->subject('Votre Code Secret - KARANGUE TRAFIC');
         });

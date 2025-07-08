@@ -33,20 +33,23 @@ return [
     |
     */
 
-    'connections' => [
-        // Autres connexions...
-    
-        'mongodb' => [
-            'driver'   => 'mongodb',
-            'host'     => env('MONGO_DB_HOST', 'db'),
-            'port'     => env('MONGO_DB_PORT', 27017),
-            'database' => env('MONGO_DB_DATABASE'),
-            'username' => env('MONGO_DB_USERNAME'),
-            'password' => env('MONGO_DB_PASSWORD'),
-            'options'  => [
-                'database' => env('MONGO_DB_DATABASE'), // spécifier la base de données
-            ],
+ 'connections' => [
+
+    // ... autres connexions ...
+
+    'mongodb' => [
+        'driver'   => 'mongodb',
+        'host'     => env('DB_HOST', '127.0.0.1'),  // corrigé: 127.0.1 -> 127.0.0.1
+        'port'     => env('DB_PORT', 27017),
+        'database' => env('DB_DATABASE', 'karangue_trafic'),
+        'username' => env('DB_USERNAME', null),
+        'password' => env('DB_PASSWORD', null),
+        'options'  => [
+            'database' => env('DB_AUTHENTICATION_DATABASE', 'admin'), // seulement si auth activée
         ],
+    ],
+
+],
     
 
 
@@ -100,7 +103,7 @@ return [
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
-    ],
+    
 
     /*
     |--------------------------------------------------------------------------

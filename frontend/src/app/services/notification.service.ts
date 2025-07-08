@@ -46,17 +46,47 @@ export class NotificationService {
     return this.getUnreadNotifications().length;
   }
   // Écouter les nouvelles notifications sans doublon
-  private listenForNotifications(): void {
-    this.socket.off('newNotification'); // Évite d'ajouter plusieurs écouteurs
-    this.socket.on('newNotification', (data: any) => {
-      if (data) {
-        console.log('Notification reçue:', data); // Vérifiez les données reçues
-        this.temporaryNotifications.next(data);
-        this.permanentNotifications.unshift({ ...data, read: false }); // Ajouter avec statut "non lu"
-        this.temporaryNotifications.next({ type: 'updateUnreadCount' }); // Trigger unread count update
+ private listenForNotifications(): void {
+  this.socket.off('newNotification');
+  this.socket.on('newNotification', (data: any) => {
+    if (data) {
+      console.log('Notification reçue:', data);
+      this.temporaryNotifications.next(data);
+      this.permanentNotifications.unshift({ ...data, read: false });
+      this.temporaryNotifications.next({ type: 'updateUnreadCount' });
+      this.playNotificationSound(); // Assurez-vous que cette ligne est présente
+
+      this.showBrowserNotification('Nouvelle Notification', {
+          body: data.message,
+          icon: 'trafic.jpeg',
+        });
       }
-    });
+
+  });
+}
+
+/**
+ * Affiche une notification navigateur si les permissions sont accordées.
+ */
+private showBrowserNotification(title: string, options?: NotificationOptions): void {
+  if ('Notification' in window) {
+    if (Notification.permission === 'granted') {
+      new Notification(title, options);
+    } else if (Notification.permission !== 'denied') {
+      Notification.requestPermission().then(permission => {
+        if (permission === 'granted') {
+          new Notification(title, options);
+        }
+      });
+    }
   }
+}
+
+// Joue un son de notification
+private playNotificationSound(): void {
+  const audio = new Audio('/sounds/alert.mp3');
+  audio.play().catch(e => console.error('Erreur lors de la lecture du son de notification:', e));
+}
 
   // Retourner une copie des notifications permanentes
   getPermanentNotifications(): any[] {
@@ -70,14 +100,14 @@ export class NotificationService {
 
   // Transférer une notification à une autre police
   transferNotification(notificationId: string, newPoliceId: string): Observable<any> {
-    return this.http.post('http://localhost:8000/api/transferer-notification', {
+    return this.http.post('http://127.0.0.1:8000/api/transferer-notification', {
       infraction_id: notificationId,
       new_police_id: newPoliceId
     });
   }
 
   getInfractionById(id: string): Observable<any> {
-    return this.http.get(`http://localhost:8000/api/infractions/${id}`);
+    return this.http.get(`http://127.0.0.1:8000/api/infractions/${id}`);
   }
 
   

@@ -45,7 +45,7 @@ class InfractionController extends Controller
         ]);
     
         // Par défaut, associer la police de Dakar
-        $policeDakar = Police::where('nom', 'Commissariat de Police de Dakar')->first();
+        $policeDakar = Police::where('nom', 'Commissariat Central de Dakar')->first();
         $validatedData['police_id'] = $policeDakar->id;
     
         // Création de l'infraction avec la police associée
@@ -121,7 +121,7 @@ public function transfererNotification(Request $request)
     {
         $validatedData = $request->validate([
             'montant' => 'required|numeric',
-            'utilisateur_id' => 'required|exists:utilisateurs,id', // Ajoutez cette validation
+            'utilisateur_id' => 'required|exists:utilisateurs,id',
         ]);
     
         $infraction = Infraction::findOrFail($id);
@@ -129,8 +129,8 @@ public function transfererNotification(Request $request)
         $infraction->status = 'payé';
         $infraction->save();
     
-        // Utiliser la fonction logPaiementAction pour enregistrer l'action de paiement
-        $this->logPaiementAction($infraction->id, $validatedData['utilisateur_id'], 'paiement effectué avec succès');
+        // Passer le montant réel à l'historique
+        $this->logPaiementAction($infraction->id, $validatedData['utilisateur_id'], 'paiement effectué avec succès', $validatedData['montant']);
     
         return response()->json(['message' => 'Paiement enregistré']);
     }
@@ -171,16 +171,17 @@ public function transfererNotification(Request $request)
         return response()->json(['data' => $infractions]);
     }
 
-    private function logPaiementAction($infractionId, $utilisateurId, $action)
+    private function logPaiementAction($infractionId, $utilisateurId, $action, $montant = 0)
     {
         $date = Carbon::now()->format('d/m/Y');
         $heure = Carbon::now()->format('H:i');
 
         HistoriquePaiement::create([
             'infraction_id' => $infractionId,
-            'utilisateur_id' => $utilisateurId, // Enregistrer l'ID de l'utilisateur
+            'utilisateur_id' => $utilisateurId,
             'action' => $action,
             'date' => $date,
+            'montant' => $montant, // Enregistrer le vrai montant ici
             'heure' => $heure,
         ]);
     }

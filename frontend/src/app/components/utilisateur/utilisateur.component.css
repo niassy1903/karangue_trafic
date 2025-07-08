@@ -220,3 +220,36 @@ h2 {
     padding: 5px;
   }
 }
+
+.custom-pagination .page-item {
+  margin: 0 4px;
+  transition: transform 0.2s ease;
+}
+
+.custom-pagination .page-link {
+  color: #fd7401;
+  background: white;
+  border: 1px solid #fd7401;
+  border-radius: 12px;
+  padding: 6px 14px;
+  font-weight: 500;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.custom-pagination .page-item.active .page-link {
+  background: linear-gradient(45deg, #fd7401, #ff9900);
+  color: white;
+  border: none;
+  box-shadow: 0 2px 8px rgba(253, 116, 1, 0.5);
+}
+
+.custom-pagination .page-link:hover:not(.disabled):not(.active) {
+  background-color: #fff3e6;
+  transform: scale(1.05);
+}
+
+.custom-pagination .page-item.disabled .page-link {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

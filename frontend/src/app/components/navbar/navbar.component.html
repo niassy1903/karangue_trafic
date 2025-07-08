@@ -8,11 +8,14 @@
     </form>
     <div class="navbar-icons">
       <!-- Icône de notification avec badge -->
-      <div class="notification-icon-container">
-        <i class="fas fa-bell notification-icon" (click)="showUnreadNotifications()"></i>
-        <!-- Badge de notifications non lues -->
-        <span class="badge bg-danger" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
-      </div>
+     <!-- Icône de notification avec badge -->
+      <!-- Icône de notification avec badge - affichée sauf si rôle = administrateur -->
+        <div class="notification-icon-container" *ngIf="userRole !== 'administrateur'">
+          <i class="fas fa-bell notification-icon" (click)="showUnreadNotifications()"></i>
+          <span class="badge bg-danger" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+        </div>
+
+
 
       <div class="user-profile">
         <img src="avatarUser.png" alt="Admin">
@@ -54,118 +57,130 @@
 <!-- Notification temporaire -->
 <div *ngIf="temporaryNotification" class="temporary-notification">
   🚨 {{ temporaryNotification.message }} ({{ temporaryNotification.plaque }}) à {{ temporaryNotification.heure }}
-  <button class="btn btn-transfer" (click)="transferNotification(temporaryNotification._id)">Transférer</button>
+  <button class="btn btn-transfer" (click)="transferNotification(temporaryNotification._id)">
+    Transférer
+  </button>
 </div>
+
 
 
 <!-- Modal pour éditer le profil -->
-<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="editProfileModalLabel">Éditer le Profil</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<div class="modal fade modern-modal" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content p-4 shadow-lg rounded-4 border-0 glass-effect">
+      <div class="modal-header border-0">
+        <h5 class="modal-title fs-4 fw-bold text-primary" id="editProfileModalLabel">✏️ Modifier le Profil</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
       </div>
       <div class="modal-body">
         <form [formGroup]="editProfileForm" (ngSubmit)="updateProfile()">
-          <div class="row">
+          <div class="row g-3">
             <div class="col-md-6">
               <label for="prenom" class="form-label">Prénom</label>
-              <input type="text" class="form-control" id="prenom" formControlName="prenom">
+              <input type="text" class="form-control" id="prenom" formControlName="prenom" placeholder="Entrez votre prénom">
             </div>
             <div class="col-md-6">
               <label for="nom" class="form-label">Nom</label>
-              <input type="text" class="form-control" id="nom" formControlName="nom">
+              <input type="text" class="form-control" id="nom" formControlName="nom" placeholder="Entrez votre nom">
             </div>
-          </div>
-          <div class="row mt-3">
             <div class="col-md-6">
               <label for="email" class="form-label">Email</label>
-              <input type="email" class="form-control" id="email" formControlName="email">
+              <input type="email" class="form-control" id="email" formControlName="email" placeholder="exemple@mail.com">
             </div>
             <div class="col-md-6">
               <label for="telephone" class="form-label">Téléphone</label>
-              <input type="text" class="form-control" id="telephone" formControlName="telephone">
+              <input type="text" class="form-control" id="telephone" formControlName="telephone" placeholder="770000000">
             </div>
-          </div>
-          <div class="row mt-3">
             <div class="col-md-12">
               <label for="adresse" class="form-label">Adresse</label>
-              <input type="text" class="form-control" id="adresse" formControlName="adresse">
+              <input type="text" class="form-control" id="adresse" formControlName="adresse" placeholder="Votre adresse complète">
             </div>
-        
           </div>
-          <div class="modal-footer mt-4">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
-            <button type="submit" class="btn btn-primary">Enregistrer</button>
+          <div class="modal-footer border-0 mt-4">
+            <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Retour</button>
+            <button type="submit" class="btn btn-primary rounded-pill px-4">💾 Enregistrer</button>
           </div>
         </form>
       </div>
     </div>
   </div>
 </div>
+
 
 
 <!-- Modal pour voir le profil -->
-<div class="modal fade" id="viewProfileModal" tabindex="-1" aria-labelledby="viewProfileModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="viewProfileModalLabel">Voir le Profil</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<div class="modal fade modern-modal" id="viewProfileModal" tabindex="-1" aria-labelledby="viewProfileModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content glass-effect border-0 shadow-lg p-4 rounded-4">
+      <div class="modal-header border-0">
+        <h5 class="modal-title fs-4 fw-bold text-primary" id="viewProfileModalLabel">👤 Voir le Profil</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
       </div>
+
       <div class="modal-body text-center">
-        <img [src]="userAvatar || 'avatarUser.png'" alt="Avatar" class="img-fluid rounded-circle mb-3 profile-avatar">
-        <h4>{{ userPrenom }} {{ userNom }}</h4>
-        <p class="text-muted">{{ userRole }}</p>
-        <div class="row mt-4">
-          <div class="col-md-6">
-            <p><strong>Email :</strong></p>
+        <img [src]="userAvatar || 'assets/avatarUser.png'" alt="Avatar"
+             class="rounded-circle profile-avatar shadow-sm mb-3">
+
+        <h4 class="fw-semibold text-dark mb-1">{{ userPrenom }} {{ userNom }}</h4>
+        <p class="text-muted mb-3">{{ userRole }}</p>
+
+        <div class="row text-start justify-content-center">
+          <div class="col-md-5 mb-3">
+            <p class="mb-1 text-secondary fw-semibold">📧 Email</p>
+            <p class="fs-6">{{ userEmail }}</p>
           </div>
-          <div class="col-md-6">
-            <p><strong>Téléphone :</strong></p>
+          <div class="col-md-5 mb-3">
+            <p class="mb-1 text-secondary fw-semibold">📞 Téléphone</p>
+            <p class="fs-6">{{ userTelephone }}</p>
           </div>
-          <div class="col-md-6">
-            <p>{{ userEmail }}</p>
-          </div>
-          <div class="col-md-6">
-            <p>{{ userTelephone }}</p>
-          </div>
-        </div>
-        <div class="row mt-3">
-          <div class="col-md-12">
-            <p><strong>Adresse :</strong> {{ userAdresse }}</p>
+          <div class="col-md-10">
+            <p class="mb-1 text-secondary fw-semibold">🏠 Adresse</p>
+            <p class="fs-6">{{ userAdresse }}</p>
           </div>
         </div>
       </div>
-    
     </div>
   </div>
 </div>
 
+
 <!-- Modal pour générer un code secret -->
-<div class="modal fade" id="generateCodeModal" tabindex="-1" aria-labelledby="generateCodeModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="generateCodeModalLabel">Générer un Code Secret</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<div class="modal fade modern-modal" id="generateCodeModal" tabindex="-1" aria-labelledby="generateCodeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content glass-effect border-0 shadow-lg rounded-4 p-4">
+      
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold text-primary" id="generateCodeModalLabel">🔐 Générer un Code Secret</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
       </div>
+
       <div class="modal-body">
         <form [formGroup]="generateCodeForm" (ngSubmit)="generateSecretCode()">
-          <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" class="form-control" id="email" formControlName="email" placeholder="Entrez l'email" required>
+          <div class="mb-4">
+            <label for="email" class="form-label fw-semibold text-secondary">📧 Adresse Email</label>
+            <input type="email"
+                   class="form-control form-control-lg shadow-sm"
+                   id="email"
+                   formControlName="email"
+                   placeholder="exemple@email.com"
+                   required>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-            <button type="submit" class="btn btn-primary">Générer</button>
+
+          <div class="modal-footer border-0 pt-0 d-flex justify-content-between">
+            <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">
+              ❌ Annuler
+            </button>
+            <button type="submit" class="btn btn-primary rounded-pill px-4">
+              🚀 Générer
+            </button>
           </div>
         </form>
       </div>
+
     </div>
   </div>
 </div>
+
 
 
 <!-- Tableau pour afficher les résultats de la recherche -->

@@ -77,7 +77,6 @@
                 <th>Prenom et Nom</th>
                 <th>Email</th>
                 <th>Role</th>
-                <th>Carte</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
@@ -91,7 +90,6 @@
                 <td>{{ utilisateur.prenom }} {{ utilisateur.nom }}</td>
                 <td>{{ utilisateur.email }}</td>
                 <td>{{ utilisateur.role }}</td>
-                <td>{{utilisateur.carte_id}}</td>
                 <td>
                   <span [ngClass]="{'text-success': utilisateur.status === 'Actif', 'text-danger': utilisateur.status === 'Inactif'}">
                     {{ utilisateur.status }}
@@ -116,22 +114,33 @@
           </table>
         </div>
         
-          <!-- Pagination -->
-          <div class="pagination-container d-flex justify-content-center">
-            <nav>
-              <ul class="pagination">
-                <li class="page-item" [class.disabled]="currentPage === 1">
-                  <a class="page-link" href="javascript:void(0)" (click)="changePage(currentPage - 1)">Précédent</a>
-                </li>
-                <li class="page-item" [class.active]="currentPage === (idx + 1)" *ngFor="let i of [].constructor(totalPages); let idx = index">
-                  <a class="page-link" href="javascript:void(0)" (click)="changePage(idx + 1)">{{ idx + 1 }}</a>
-                </li>
-                <li class="page-item" [class.disabled]="currentPage === totalPages">
-                  <a class="page-link" href="javascript:void(0)" (click)="changePage(currentPage + 1)">Suivant</a>
-                </li>
-              </ul>
-            </nav>
-          </div>
+        <div class="pagination-container d-flex justify-content-center mt-4">
+          <nav aria-label="Navigation pages">
+            <ul class="pagination custom-pagination">
+              <!-- Précédent -->
+              <li class="page-item" [class.disabled]="currentPage === 1">
+                <button class="page-link" (click)="changePage(currentPage - 1)">← Précédent</button>
+              </li>
+
+              <!-- Pages -->
+              <li
+                class="page-item"
+                *ngFor="let i of [].constructor(totalPages); let idx = index"
+                [class.active]="currentPage === (idx + 1)"
+              >
+                <button class="page-link" (click)="changePage(idx + 1)">
+                  {{ idx + 1 }}
+                </button>
+              </li>
+
+              <!-- Suivant -->
+              <li class="page-item" [class.disabled]="currentPage === totalPages">
+                <button class="page-link" (click)="changePage(currentPage + 1)">Suivant →</button>
+              </li>
+            </ul>
+          </nav>
+        </div>
+
 
         </div>
       </div>

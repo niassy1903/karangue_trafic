@@ -79,7 +79,7 @@ app.post('/receive-plate', async (req, res) => {
             console.log('Données d\'infraction à enregistrer :', infractionData);
 
             // Enregistrer l'infraction via l'API
-            const infractionResponse = await axios.post('http://127.0.0.1:8000/api/enregistrer-infraction', infractionData);
+            const infractionResponse = await axios.post('https://http://127.0.0.1:8000/api/enregistrer-infraction', infractionData);
             console.log('Réponse après enregistrement de l\'infraction:', infractionResponse.data);
 
             // Ajout de la plaque aux plaques récemment détectées
