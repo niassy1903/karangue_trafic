@@ -1,94 +1,171 @@
-<div class="container-fluid">
-  <div class="row flex-nowrap">
-    <!-- Sidebar -->
-    <nav class="col-12 col-md-2 col-lg-2 px-0 bg-light border-end min-vh-100">
-      <app-sidebar></app-sidebar>
-    </nav>
+<div class="flex h-screen bg-gray-100">
 
-    <!-- Main Content -->
-    <main class="col-12 col-md-10 col-lg-10 ms-sm-auto px-0 px-md-4">
-      <app-navbar></app-navbar>
+  <!-- SIDEBAR -->
+  <aside class="w-72 bg-white border-r shadow-sm">
+    <app-sidebar></app-sidebar>
+  </aside>
 
-      <!-- Dashboard Content -->
-      <div class="container mt-4">
-        <!-- Carte Map -->
-        <div class="card mb-4">
-          <app-map></app-map>
-        </div>
 
-        <!-- Row for Infractions and Alerts -->
-        <div class="row">
-          <!-- Colonne Gauche : Infractions et Historique -->
-          <div class="col-12 col-md-8 d-flex flex-column mb-4 mb-md-0">
-            <!-- Total Infractions -->
-            <div class="card card-infraction-chart mb-3">
-              <div class="card-body text-center">
-                <h3 class="card-title">Total Infractions</h3>
-                <i class="fas fa-car-crash fa-4x text-danger"></i>
-                <span class="fs-1">{{ totalInfractions }}</span>
-              </div>
-            </div>
-            <!-- Historique des Infractions -->
-            <div class="card flex-grow-1">
-              <div class="card-body">
-                <h3 class="card-title">Historique des infractions</h3>
-                <canvas #infractionChart></canvas>
-              </div>
-            </div>
-          </div>
+  <!-- MAIN -->
+  <div class="flex-1 flex flex-col overflow-hidden">
 
-          <!-- Colonne Droite : Liste des alertes -->
-        <div class="col-12 col-md-4">
-          <div class="card h-100 shadow-sm border-0 rounded-4 bg-light alert-card">
-            <div class="card-body">
-              <h3 class="card-title text-center mb-4 text-gradient-orange fw-bold">🚨 Liste des alertes</h3>
+    <!-- NAVBAR -->
+    <app-navbar></app-navbar>
 
-              <div class="list-group list-group-flush alert-list">
-                <div
-                  class="list-group-item d-flex justify-content-between align-items-center border-0 rounded-3 mb-2 shadow-sm bg-white"
-                  *ngFor="let alert of alerts"
-                >
-                  <div>
-                    <strong class="text-dark">{{ alert.nom }}</strong>, {{ alert.matricule }}<br />
-                    <span class="text-muted small">Zone {{ alert.zone }}</span>
-                    <p class="mb-0 text-danger fw-semibold">⚠️ Excès de vitesse : {{ alert.vitesse }} km/h</p>
-                  </div>
-                  <i class="fas fa-arrow-right text-secondary"></i>
-                </div>
-              </div>
 
-              <nav aria-label="Navigation pagination alertes" class="mt-4">
-                <ul class="pagination justify-content-center">
-                  <li class="page-item" [class.disabled]="currentPage === 1">
-                    <button class="page-link" (click)="goToPage(currentPage - 1)">Précédent</button>
-                  </li>
+    <!-- CONTENT -->
+    <div class="p-6 overflow-y-auto space-y-6">
 
-                  <li class="page-item" *ngFor="let page of pages" [class.active]="page === currentPage">
-                    <button class="page-link" (click)="goToPage(page)">
-                      {{ page }}
-                    </button>
-                  </li>
 
-                  <li class="page-item" [class.disabled]="currentPage === totalPages">
-                    <button class="page-link" (click)="goToPage(currentPage + 1)">Suivant</button>
-                  </li>
-                </ul>
-              </nav>
-            </div>
-          </div>
-        </div>
-
-        </div>
+      <!-- MAP CARD -->
+      <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 hover:shadow-xl transition">
+        <app-map></app-map>
       </div>
-    </main>
+
+
+
+      <!-- GRID -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+
+        <!-- LEFT SIDE -->
+        <div class="lg:col-span-8 flex flex-col gap-6">
+
+
+          <!-- TOTAL INFRACTIONS CARD -->
+          <div
+            class="bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 text-white rounded-2xl shadow-xl p-6 flex items-center justify-between hover:scale-[1.02] transition">
+
+            <div>
+              <h3 class="text-lg font-semibold opacity-90">
+                Total Infractions
+              </h3>
+
+              <p class="text-5xl font-bold mt-2">
+                {{ totalInfractions }}
+              </p>
+            </div>
+
+            <i class="fas fa-car-crash text-6xl opacity-80"></i>
+
+          </div>
+
+
+
+          <!-- CHART CARD -->
+          <div
+            class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition">
+
+            <h3 class="text-xl font-semibold text-gray-700 mb-4">
+              Historique des infractions
+            </h3>
+
+            <canvas #infractionChart class="w-full h-64"></canvas>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- ALERT PANEL -->
+        <div class="lg:col-span-4">
+
+
+          <div
+            class="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 h-full flex flex-col">
+
+            <h3
+              class="text-center text-xl font-bold mb-6 bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
+
+              🚨 Liste des alertes
+
+            </h3>
+
+
+            <!-- ALERT LIST -->
+            <div class="flex flex-col gap-3 flex-1 overflow-auto">
+
+              <div
+                *ngFor="let alert of alerts"
+                class="flex justify-between items-center p-4 bg-gray-50 rounded-xl hover:bg-orange-50 hover:shadow-md transition cursor-pointer">
+
+                <div>
+
+                  <p class="font-semibold text-gray-800">
+                    {{ alert.nom }} — {{ alert.matricule }}
+                  </p>
+
+                  <p class="text-sm text-gray-500">
+                    Zone {{ alert.zone }}
+                  </p>
+
+                  <p class="text-red-500 font-medium text-sm">
+                    ⚠️ Excès de vitesse : {{ alert.vitesse }} km/h
+                  </p>
+
+                </div>
+
+                <i class="fas fa-arrow-right text-gray-400"></i>
+
+              </div>
+
+            </div>
+
+
+            <!-- PAGINATION -->
+            <div class="flex justify-center mt-6 gap-2">
+
+              <button
+                class="px-3 py-1 rounded-lg bg-gray-200 hover:bg-gray-300 transition"
+                [class.opacity-40]="currentPage === 1"
+                (click)="goToPage(currentPage - 1)">
+                Précédent
+              </button>
+
+
+              <button
+                *ngFor="let page of pages"
+                (click)="goToPage(page)"
+                class="px-3 py-1 rounded-lg transition"
+                [ngClass]="page === currentPage ? 
+                'bg-orange-500 text-white shadow-md' :
+                'bg-gray-200 hover:bg-gray-300'">
+
+                {{ page }}
+
+              </button>
+
+
+              <button
+                class="px-3 py-1 rounded-lg bg-gray-200 hover:bg-gray-300 transition"
+                [class.opacity-40]="currentPage === totalPages"
+                (click)="goToPage(currentPage + 1)">
+                Suivant
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
   </div>
 
-  <!-- Bouton de retour en haut -->
-  <button 
-    class="btn btn-primary btn-scroll-to-top" 
-    (click)="scrollToTop()" 
-    [ngStyle]="{'display': showScrollTop ? 'block' : 'none'}"
-    style="position: fixed; bottom: 30px; right: 30px; z-index: 1050;">
-    <i class="fas fa-arrow-up"></i>
-  </button>
 </div>
+
+
+
+<!-- SCROLL TO TOP -->
+<button
+  (click)="scrollToTop()"
+  *ngIf="showScrollTop"
+  class="fixed bottom-8 right-8 bg-orange-500 hover:bg-orange-600 text-white w-12 h-12 rounded-full shadow-xl flex items-center justify-center transition hover:scale-110">
+
+  <i class="fas fa-arrow-up"></i>
+
+</button>

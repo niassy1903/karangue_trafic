@@ -1,75 +1,82 @@
-<div class="dashboard-layout">
-  <!-- Bouton pour afficher/cacher la sidebar -->
-  <button class="toggle-sidebar-btn" (click)="toggleSidebar()">☰</button>
-  
-  <app-sidebar [class.sidebar-collapsed]="isSidebarCollapsed"></app-sidebar>
-  
-  <div class="main-content">
-    <app-navbar></app-navbar>
-    
-    <div class="dashboard-container">
-      <br>
+<!-- dashboard.component.html -->
+<div class="flex h-screen bg-gray-100 overflow-hidden">
 
-      <!-- ✅ Cartes Statistiques -->
-      <div class="stats-cards">
-        <div class="stat-card" *ngFor="let card of statsCards">
-          <div class="stat-content">
-            <div class="stat-info">
-              <p class="stat-title">{{ card.title }}</p>
-              <p class="stat-count">{{ card.count }}</p>
-            </div>
-            <i class="fas {{ card.icon }} stat-icon"></i>
+  <!-- Sidebar -->
+  <app-sidebar [class.sidebar-collapsed]="isSidebarCollapsed" class="transition-all duration-300"></app-sidebar>
+
+  <!-- Main content -->
+  <div class="flex-1 flex flex-col overflow-auto">
+    
+    <!-- Navbar -->
+    <app-navbar></app-navbar>
+
+    <!-- Dashboard content -->
+    <div class="p-6 space-y-6">
+
+      <!-- Stat Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div *ngFor="let card of statsCards"
+             class="bg-white shadow-lg rounded-2xl p-6 flex items-center justify-between transform hover:scale-105 transition-all duration-300 cursor-pointer">
+          <div>
+            <p class="text-gray-500 font-semibold">{{ card.title }}</p>
+            <p class="text-2xl font-bold text-gray-800 mt-1">{{ card.count }}</p>
+          </div>
+          <div class="text-orange-500 text-4xl">
+            <i class="fas {{ card.icon }}"></i>
           </div>
         </div>
       </div>
 
-      <!-- ✅ Historique et Graphique en colonne sur mobile -->
-      <div class="history-section">
-        <div class="history-table">
-          <h2>Historique</h2>
-          <table>
-            <thead>
+      <!-- History + Chart -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Historique -->
+        <div class="lg:col-span-2 bg-white shadow-lg rounded-2xl p-6 overflow-auto">
+          <h2 class="text-xl font-bold text-gray-800 mb-4">Historique</h2>
+          <table class="min-w-full divide-y divide-gray-200 text-left">
+            <thead class="bg-gray-50">
               <tr>
-                <th>Matricule</th>
-                <th>Prénom et Nom</th>
-                <th>Date</th>
-                <th>Heure</th>
-                <th>Action</th>
+                <th class="px-4 py-2 text-gray-600 font-medium">Matricule</th>
+                <th class="px-4 py-2 text-gray-600 font-medium">Nom</th>
+                <th class="px-4 py-2 text-gray-600 font-medium">Date</th>
+                <th class="px-4 py-2 text-gray-600 font-medium">Heure</th>
+                <th class="px-4 py-2 text-gray-600 font-medium">Action</th>
               </tr>
             </thead>
-            <tbody>
-              <tr *ngFor="let item of paginatedData">
-                <td>{{ item.utilisateur.matricule }}</td>
-                <td>{{ item.utilisateur.prenom }} {{ item.utilisateur.nom }}</td>
-                <td>{{ item.date }}</td>
-                <td>{{ item.heure }}</td>
-                <td>{{ item.action }}</td>
+            <tbody class="divide-y divide-gray-100">
+              <tr *ngFor="let item of paginatedData" class="hover:bg-gray-50 transition">
+                <td class="px-4 py-2">{{ item.utilisateur.matricule }}</td>
+                <td class="px-4 py-2">{{ item.utilisateur.prenom }} {{ item.utilisateur.nom }}</td>
+                <td class="px-4 py-2">{{ item.date }}</td>
+                <td class="px-4 py-2">{{ item.heure }}</td>
+                <td class="px-4 py-2">{{ item.action }}</td>
               </tr>
             </tbody>
           </table>
-          <br>
-          
-          <div class="pagination">
-            <button class="pagination-btn" (click)="prevPage()" [disabled]="currentPage === 1">
-              &lt;&lt;
-            </button>
-            <button
-              *ngFor="let page of pages"
-              [class.active]="page === currentPage"
-              (click)="goToPage(page)"
-              class="pagination-btn page-btn"
-            >
+
+          <!-- Pagination -->
+          <div class="flex justify-center items-center mt-4 space-x-2">
+            <button (click)="prevPage()" [disabled]="currentPage === 1"
+                    class="px-3 py-1 rounded-lg bg-gray-200 hover:bg-gray-300 disabled:opacity-50 transition">&lt;&lt;</button>
+            <button *ngFor="let page of pages" (click)="goToPage(page)"
+                    [class.bg-orange-500]="page === currentPage"
+                    [class.text-white]="page === currentPage"
+                    class="px-3 py-1 rounded-lg bg-gray-200 hover:bg-gray-300 transition">
               {{ page }}
             </button>
-            <button class="pagination-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">
-              &gt;&gt;
-            </button>
+            <button (click)="nextPage()" [disabled]="currentPage === totalPages"
+                    class="px-3 py-1 rounded-lg bg-gray-200 hover:bg-gray-300 disabled:opacity-50 transition">&gt;&gt;</button>
           </div>
         </div>
-      
-        <div class="chart-section">
-          <app-pie-chart></app-pie-chart>
+
+        <!-- Graphique -->
+        <div class="bg-white shadow-lg rounded-2xl p-6 flex flex-col justify-center">
+          <h2 class="text-xl font-bold text-gray-800 mb-4 text-center">Répartition des utilisateurs</h2>
+          <div class="flex-1">
+            <app-pie-chart></app-pie-chart>
+          </div>
         </div>
+
       </div>
     </div>
   </div>

@@ -46,16 +46,17 @@ export class NavbarComponent implements OnInit, OnDestroy {
   generateCodeForm: FormGroup;
   roles: string[] = ['Rôle 1', 'Rôle 2', 'Rôle 3'];
   private notificationSubscription!: Subscription;
-  private notificationSound = new Audio('/sounds/alert.mp3');
+  private readonly notificationSound = new Audio('/sounds/alert.mp3');
   searchQuery: string = '';
   searchResults: any[] = [];
   isDropdownOpen = false;
+  showEditProfileModal: boolean = false;
 
   constructor(
-    private notificationService: NotificationService,
-    private authService: AuthService,
-    private utilisateurService: UtilisateurService,
-    private fb: FormBuilder
+    private readonly notificationService: NotificationService,
+    private readonly authService: AuthService,
+    private readonly utilisateurService: UtilisateurService,
+    private readonly fb: FormBuilder
   ) {
     this.editProfileForm = this.fb.group({
       prenom: [''],
@@ -251,14 +252,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
     }
   }
 
-  onEditProfile(event: Event) {
+  onEditProfile(event: Event): void {
     event.preventDefault();
-    const userId = localStorage.getItem('utilisateur_id');
-    if (userId) {
-      this.loadUserDetails(userId);
-      const modalEl = document.getElementById('editProfileModal');
-      if (modalEl) new bootstrap.Modal(modalEl).show();
-    }
+    this.showEditProfileModal = true;
+    this.closeDropdown();
   }
 
   onViewProfile(event: Event) {

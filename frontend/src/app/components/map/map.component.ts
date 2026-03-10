@@ -1,180 +1,157 @@
-import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Component, AfterViewInit } from '@angular/core';
-
-declare var H: any;
+import * as L from 'leaflet';
+import 'leaflet-routing-machine';
+declare global {
+  namespace L {
+    namespace Routing {
+      function osrmv1(options: any): any;
+      function control(options: any): any;
+    }
+  }
+}
 
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css'],
-  standalone: true,
-  providers: [HttpClientModule, HttpClient]
+  standalone: true
 })
 export class MapComponent implements AfterViewInit {
-  private platform: any;
-  private map: any;
-  private userMarker: any;
-  private routeLine: any;
-  private routingService: any;
-  private closestPoliceMarker: any = null;
-  private minDistance: number = Infinity;
 
-  constructor() {
-    this.platform = new H.service.Platform({
-      apikey: 'nPg3OLPnob_rqOI_j_XuUa82LkHI1RcWdFgL0qSWT80',
-    });
-  }
+  private map!: L.Map;
+  private userMarker!: L.Marker;
+  private routeControl: any;
+
+  // Stations de police
+  policeStations = [
+    { name: "Police Plateau", lat: 14.667, lng: -17.434 },
+    { name: "Police Médina", lat: 14.693, lng: -17.451 },
+    { name: "Police Parcelles", lat: 14.759, lng: -17.444 }
+  ];
 
   ngAfterViewInit(): void {
-    const defaultLayers = this.platform.createDefaultLayers();
-    this.map = new H.Map(
-      document.getElementById('mapContainer'),
-      defaultLayers.vector.normal.map,
-      { zoom: 12, center: { lat: 14.4974, lng: -14.4524 } }
-    );
+    // Initialisation de la carte
+    this.map = L.map('mapContainer').setView([14.7167, -17.4677], 13);
 
-    new H.mapevents.Behavior(new H.mapevents.MapEvents(this.map));
-    H.ui.UI.createDefault(this.map, defaultLayers);
-    this.routingService = this.platform.getRoutingService(null, 8);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap'
+    }).addTo(this.map);
 
+    // Géolocalisation
     this.getUserLocation();
   }
 
-  private addMarker(lat: number, lng: number, name: string): void {
-    const userPos = this.userMarker.getGeometry();
-    const distance = this.calculateDistance(userPos.lat, userPos.lng, lat, lng);
-  
-    let iconUrl = '/station.png'; // Chemin vers l'icône téléchargée
-    if (distance < this.minDistance) {
-      this.minDistance = distance;
-      if (this.closestPoliceMarker) {
-        this.map.removeObject(this.closestPoliceMarker);
-      }
-      this.closestPoliceMarker = new H.map.Marker({ lat, lng }, { icon: new H.map.Icon(iconUrl, { size: { w: 30, h: 30 } }) });
-      this.map.addObject(this.closestPoliceMarker);
-    }
-  
-    const icon = new H.map.Icon(iconUrl, { size: { w: 30, h: 30 } });
-    const marker = new H.map.Marker({ lat, lng }, { icon });
-  
-    marker.addEventListener('tap', () => this.calculateRoute(lat, lng, name));
-    this.map.addObject(marker);
-  }
-  
+  public getUserLocation(): void {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(pos => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
 
-  private calculateDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
-    const R = 6371; // Radius of the Earth in kilometers
-    const dLat = this.degreesToRadians(lat2 - lat1);
-    const dLng = this.degreesToRadians(lng2 - lng1);
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(this.degreesToRadians(lat1)) * Math.cos(this.degreesToRadians(lat2)) *
-      Math.sin(dLng / 2) * Math.sin(dLng / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        // Marker utilisateur
+        this.userMarker = L.marker([lat, lng], {
+          icon: L.icon({
+            iconUrl: 'station.png',
+            iconSize: [30,30],
+            iconAnchor: [15,30],
+            popupAnchor: [0,-30]
+          })
+        }).addTo(this.map).bindPopup("Votre position").openPopup();
+
+        this.map.setView([lat, lng], 13);
+
+        // Ajouter stations
+        this.policeStations.forEach(station => this.addMarker(station.lat, station.lng, station.name));
+
+        // Station la plus proche
+        const closest = this.findClosestStation(lat, lng);
+        if (closest) {
+          this.addMarker(closest.lat, closest.lng, closest.name, true);
+          this.calculateRoute(closest.lat, closest.lng, closest.name);
+        }
+
+      }, () => alert("Impossible de récupérer votre position !"));
+    } else {
+      alert("La géolocalisation n’est pas supportée par votre navigateur.");
+    }
+  }
+
+  private addMarker(lat: number, lng: number, name: string, isClosest: boolean = false): L.Marker {
+    const icon = L.icon({
+      iconUrl: isClosest ? 'station.png' : 'station.png',
+      iconSize: [30, 30],
+      iconAnchor: [15, 30],
+      popupAnchor: [0, -30]
+    });
+
+    const marker = L.marker([lat, lng], { icon }).addTo(this.map).bindPopup(name);
+
+    marker.on('click', () => this.calculateRoute(lat, lng, name));
+    return marker;
+  }
+
+  private findClosestStation(userLat: number, userLng: number) {
+    let minDistance = Infinity;
+    let closestStation: any = null;
+
+    this.policeStations.forEach(station => {
+      const distance = this.getDistance(userLat, userLng, station.lat, station.lng);
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestStation = station;
+      }
+    });
+
+    return closestStation;
+  }
+
+  private getDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
+    const R = 6371; // km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLng = (lng2 - lng1) * Math.PI / 180;
+    const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLng/2)**2;
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     return R * c;
   }
 
-  private degreesToRadians(degrees: number): number {
-    return degrees * (Math.PI / 180);
-  }
-
-  private fetchPoliceStations(lat: number, lng: number): void {
-    const service = this.platform.getSearchService();
-    service.discover(
-      { q: 'police station', at: `${lat},${lng}`, limit: 10, in: 'countryCode:SEN' },
-      (result: any) => {
-        result.items.forEach((item: any) => this.addMarker(item.position.lat, item.position.lng, item.title));
-      },
-      alert
-    );
-  }
-
-  private getUserLocation(): void {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const userLat = position.coords.latitude;
-          const userLng = position.coords.longitude;
-
-          const userSvg = `<svg width="30" height="30" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="15" cy="15" r="10" stroke="orange" stroke-width="3" fill="none"/>
-            </svg>`;
-          const userIcon = new H.map.Icon(userSvg, { size: { w: 30, h: 30 } });
-          this.userMarker = new H.map.Marker({ lat: userLat, lng: userLng }, { icon: userIcon });
-
-          this.map.addObject(this.userMarker);
-          this.map.setCenter({ lat: userLat, lng: userLng });
-
-          this.fetchPoliceStations(userLat, userLng);
-        },
-        () => alert('Impossible de récupérer votre position !')
-      );
-    } else {
-      alert('La géolocalisation n’est pas supportée par votre navigateur.');
-    }
-  }
-
   private calculateRoute(destLat: number, destLng: number, name: string): void {
-    if (!this.userMarker) {
-      alert('Position utilisateur inconnue !');
-      return;
+    if (!this.userMarker) return;
+
+    const userLat = this.userMarker.getLatLng().lat;
+    const userLng = this.userMarker.getLatLng().lng;
+
+    if (this.routeControl) {
+      this.map.removeControl(this.routeControl);
     }
 
-    const userPos = this.userMarker.getGeometry();
-    const userLat = userPos.lat;
-    const userLng = userPos.lng;
+    this.routeControl = L.Routing.control({
+      waypoints: [
+        L.latLng(userLat, userLng),
+        L.latLng(destLat, destLng)
+      ],
+      lineOptions: { styles: [{ color: '#FF7F50', weight: 5 }] },
+      router: L.Routing.osrmv1({ serviceUrl: 'https://router.project-osrm.org/route/v1' }),
+      createMarker: (i: number, wp: any) => {
+        return i === 0
+          ? L.marker(wp.latLng, { icon: L.icon({ iconUrl:'station.png', iconSize:[30,30] }) })
+          : L.marker(wp.latLng, { icon: L.icon({ iconUrl:'station.png', iconSize:[30,30] }) });
+      }
+    }).addTo(this.map);
 
-    if (this.routeLine) {
-      this.map.removeObject(this.routeLine);
-    }
+    this.routeControl.on('routesfound', (e: any) => {
+      const route = e.routes[0];
+      const distanceKm = (route.summary.totalDistance / 1000).toFixed(1);
+      const durationMin = Math.round(route.summary.totalTime / 60);
 
-    this.routingService.calculateRoute(
-      {
-        routingMode: 'fast',
-        transportMode: 'car',
-        origin: `${userLat},${userLng}`,
-        destination: `${destLat},${destLng}`,
-        return: 'polyline,summary'
-      },
-      (result: any) => {
-        if (result.routes.length) {
-          const route = result.routes[0];
-          const summary = route.sections[0].summary;
-
-          this.drawRoute(route.sections[0].polyline);
-          this.showRouteInfo(name, summary.length / 1000, summary.duration / 60);
-        }
-      },
-      () => alert('Impossible de calculer l’itinéraire !')
-    );
-  }
-
-  private drawRoute(polyline: string): void {
-    const lineString = H.geo.LineString.fromFlexiblePolyline(polyline);
-    this.routeLine = new H.map.Polyline(lineString, {
-      style: { strokeColor: '#00BFFF', lineWidth: 8, lineDash: [2, 1] }
+      const routeInfoDiv = document.getElementById('routeInfo');
+      if (routeInfoDiv) {
+        routeInfoDiv.innerHTML = `
+          <strong>Itinéraire vers ${name}</strong><br>
+          🚗 En voiture: ${durationMin} min (${distanceKm} km)
+        `;
+        routeInfoDiv.style.display = 'block';
+        setTimeout(() => routeInfoDiv.style.display = 'none', 10000);
+      }
     });
-
-    this.map.addObject(this.routeLine);
-    this.map.getViewModel().setLookAtData({ bounds: this.routeLine.getBoundingBox() });
   }
 
-  private showRouteInfo(name: string, distance: number, timeByCar: number): void {
-    // Sélectionne la div qui affichera les informations
-    const routeInfoDiv = document.getElementById('routeInfo');
-
-    if (routeInfoDiv) {
-      routeInfoDiv.innerHTML = `
-        <strong>Itinéraire vers ${name}</strong><br>
-        🚗 <strong>En voiture :</strong> ${Math.round(timeByCar)} min (${distance.toFixed(1)} km) <br>
-        🚶‍♂️ <strong>À pied :</strong> ${Math.round(timeByCar * 3)} min (${distance.toFixed(1)} km)
-      `;
-      routeInfoDiv.style.display = 'block';
-
-      // Masque les informations après 10 secondes
-      setTimeout(() => {
-        routeInfoDiv.style.display = 'none';
-      }, 10000); // 10000 ms = 10 secondes
-    }
-  }
 }

@@ -1,111 +1,113 @@
-<div class="dashboard-layout">
+<div class="flex h-screen bg-gray-100 overflow-hidden">
+
   <!-- Sidebar -->
-  <app-sidebar></app-sidebar>
+  <app-sidebar class="transition-all duration-300"></app-sidebar>
 
   <!-- Main Content -->
-  <div class="main-content">
+  <div class="flex-1 flex flex-col overflow-auto">
+
     <!-- Navbar -->
     <app-navbar></app-navbar>
 
-    <!-- Contenu Principal -->
-    <div class="dashboard-container">
-      <div class="content-box">
-        <div class="container mt-4">
-          <h2 class="mb-4">Gestion des Utilisateurs</h2><br>
+    <!-- Contenu principal -->
+    <div class="p-6 space-y-6">
 
-                <!-- Boutons d'actions -->
-       
-      <div class="d-flex gap-2 mb-3">
-        <button class="btn btn-danger" (click)="deleteMultipleUtilisateurs()" title="Supprimer les utilisateurs sélectionnés">
-          <i class="fas fa-trash-alt"></i> Supprimer
-        </button>
-        <button (click)="redirectToInscription()" class="btn btn-success" title="Ajouter un nouvel utilisateur">
-          <i class="fas fa-plus"></i> Ajouter
-        </button>
-        <button class="btn btn-secondary" title="Ajouter des utilisateurs par CSV" (click)="csvInput.click()">
-          <i class="fas fa-file-csv"></i> Ajouter par CSV
-      </button>
-      <input #csvInput type="file" (change)="importCsv($event)" accept=".csv" style="display: none;">
-      
-        
-        <button class="btn btn-warning" (click)="blockMultipleUtilisateurs()" title="Bloquer/Débloquer les utilisateurs sélectionnés">
-          <i class="fas fa-ban"></i> Bloquer/Débloquer
-        </button>
-        <span class="badge bg-primary" title="Nombre d'utilisateurs sélectionnés">
-          {{ selectedUsers.size }} Sélectionné(s)
-        </span>
-      </div><br>
+      <div class="container mx-auto">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Gestion des Utilisateurs</h2>
 
+        <!-- Boutons d'actions -->
+        <div class="flex flex-wrap gap-3 mb-6">
+          <button (click)="deleteMultipleUtilisateurs()"
+                  class="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold rounded-xl shadow-lg transition transform hover:scale-105 flex items-center gap-2">
+            <i class="fas fa-trash-alt"></i> Supprimer
+          </button>
 
+          <button (click)="redirectToInscription()"
+                  class="px-4 py-2 bg-gradient-to-r from-green-400 to-green-500 hover:from-green-500 hover:to-green-600 text-white font-semibold rounded-xl shadow-lg transition transform hover:scale-105 flex items-center gap-2">
+            <i class="fas fa-plus"></i> Ajouter
+          </button>
 
-              <!-- Barre de recherche et filtre -->
+          <button (click)="csvInput.click()"
+                  class="px-4 py-2 bg-gradient-to-r from-gray-300 to-gray-400 hover:from-gray-400 hover:to-gray-500 text-gray-900 font-semibold rounded-xl shadow-lg transition transform hover:scale-105 flex items-center gap-2">
+            <i class="fas fa-file-csv"></i> Ajouter par CSV
+          </button>
+          <input #csvInput type="file" (change)="importCsv($event)" accept=".csv" class="hidden">
+
+          <button (click)="blockMultipleUtilisateurs()"
+                  class="px-4 py-2 bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-white font-semibold rounded-xl shadow-lg transition transform hover:scale-105 flex items-center gap-2">
+            <i class="fas fa-ban"></i> Bloquer/Débloquer
+          </button>
+
+          <span class="px-3 py-2 bg-blue-500 text-white font-semibold rounded-full shadow-lg">
+            {{ selectedUsers.size }} Sélectionné(s)
+          </span>
+        </div>
+
         <!-- Barre de recherche et filtre -->
-<div class="d-flex gap-2 mb-3">
-  <input 
-    type="text" 
-    class="form-control small-search" 
-    placeholder="Rechercher par Matricule, Nom ou Prénom..." 
-    [(ngModel)]="searchTerm" 
-    (input)="applyFilters()"
-  />
-  <select 
-    class="form-control small-search" 
-    [(ngModel)]="selectedRole" 
-    (change)="applyFilters()"
-  >
-    <option value="">Tous</option>
-    <option value="administrateur">Administrateur</option>
-    <option value="agent de sécurité">Agent de Sécurité</option>
-    <option value="conducteur">Conducteur</option>
-  </select>
-</div>
+        <div class="flex flex-wrap gap-3 mb-6">
+          <input type="text" [(ngModel)]="searchTerm" (input)="applyFilters()"
+                 placeholder="Rechercher par Matricule, Nom ou Prénom..."
+                 class="flex-1 px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition">
 
-        <!-- Message d'erreur si aucun résultat n'est trouvé -->
-        <div *ngIf="noResults" class="alert alert-success" role="alert">
+          <select [(ngModel)]="selectedRole" (change)="applyFilters()"
+                  class="px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition">
+            <option value="">Tous</option>
+            <option value="administrateur">Administrateur</option>
+            <option value="agent de sécurité">Agent de Sécurité</option>
+            <option value="conducteur">Conducteur</option>
+          </select>
+        </div>
+
+        <!-- Message si aucun résultat -->
+        <div *ngIf="noResults" class="px-4 py-3 bg-red-100 text-red-700 rounded-xl mb-4">
           Aucun résultat pour "{{ searchTerm }}"
         </div>
 
-        <!-- Tableau des utilisateurs -->
-        <div class="table-responsive">
-          <table class="table table-bordered table-hover">
-            <thead class="table-light">
+        <!-- Tableau utilisateurs -->
+        <div class="overflow-x-auto bg-white rounded-3xl shadow-lg">
+          <table class="min-w-full divide-y divide-gray-200 text-left">
+            <thead class="bg-gray-50">
               <tr>
-                <th>
-                  <input type="checkbox" (change)="toggleSelectAll()">
+                <th class="px-4 py-3">
+                  <input type="checkbox" (change)="toggleSelectAll()" class="rounded border-gray-300">
                 </th>
-                <th>Matricule</th>
-                <th>Prenom et Nom</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th class="px-4 py-3 font-semibold text-gray-700">Matricule</th>
+                <th class="px-4 py-3 font-semibold text-gray-700">Prénom et Nom</th>
+                <th class="px-4 py-3 font-semibold text-gray-700">Email</th>
+                <th class="px-4 py-3 font-semibold text-gray-700">Role</th>
+                <th class="px-4 py-3 font-semibold text-gray-700">Status</th>
+                <th class="px-4 py-3 font-semibold text-gray-700">Actions</th>
               </tr>
             </thead>
-            <tbody>
-              <tr *ngFor="let utilisateur of utilisateurs">
-                <td>
-                  <input type="checkbox" [checked]="isSelected(utilisateur.id)" (change)="toggleSelection(utilisateur.id)">
+            <tbody class="divide-y divide-gray-100">
+              <tr *ngFor="let utilisateur of utilisateurs" class="hover:bg-gray-50 transition">
+                <td class="px-4 py-3">
+                  <input type="checkbox" [checked]="isSelected(utilisateur.id)" (change)="toggleSelection(utilisateur.id)" class="rounded border-gray-300">
                 </td>
-                <td>{{ utilisateur.matricule }}</td>
-                <td>{{ utilisateur.prenom }} {{ utilisateur.nom }}</td>
-                <td>{{ utilisateur.email }}</td>
-                <td>{{ utilisateur.role }}</td>
-                <td>
-                  <span [ngClass]="{'text-success': utilisateur.status === 'Actif', 'text-danger': utilisateur.status === 'Inactif'}">
+                <td class="px-4 py-3">{{ utilisateur.matricule }}</td>
+                <td class="px-4 py-3">{{ utilisateur.prenom }} {{ utilisateur.nom }}</td>
+                <td class="px-4 py-3">{{ utilisateur.email }}</td>
+                <td class="px-4 py-3">{{ utilisateur.role }}</td>
+                <td class="px-4 py-3">
+                  <span [ngClass]="{'text-green-600 font-semibold': utilisateur.status === 'Actif', 'text-red-600 font-semibold': utilisateur.status === 'Inactif'}">
                     {{ utilisateur.status }}
                   </span>
                 </td>
-                <td>
-                  <button (click)="redirectToModifier(utilisateur.id)" class="btn btn-sm text-orange" title="Modifier">
+                <td class="px-4 py-3 flex gap-2">
+                  <button (click)="redirectToModifier(utilisateur.id)"
+                          class="p-2 bg-gradient-to-r from-orange-400 to-orange-500 text-white rounded-xl shadow hover:scale-105 transition">
                     <i class="fas fa-pencil-alt"></i>
                   </button>
-                  <button class="btn btn-sm text-orange" title="Supprimer" (click)="deleteUtilisateur(utilisateur.id)">
+                  <button (click)="deleteUtilisateur(utilisateur.id)"
+                          class="p-2 bg-gradient-to-r from-red-400 to-red-500 text-white rounded-xl shadow hover:scale-105 transition">
                     <i class="fas fa-trash-alt"></i>
                   </button>
-                  <button class="btn btn-sm text-orange" title="Bloquer/Débloquer" (click)="blockUtilisateur(utilisateur.id)">
+                  <button (click)="blockUtilisateur(utilisateur.id)"
+                          class="p-2 bg-gradient-to-r from-yellow-400 to-yellow-500 text-white rounded-xl shadow hover:scale-105 transition">
                     <i class="fas fa-ban"></i>
                   </button>
-                  <button class="btn btn-sm text-orange" title="Assigner une carte" (click)="assignCard(utilisateur.id)">
+                  <button (click)="assignCard(utilisateur.id)"
+                          class="p-2 bg-gradient-to-r from-blue-400 to-blue-500 text-white rounded-xl shadow hover:scale-105 transition">
                     <i class="fas fa-clipboard"></i>
                   </button>
                 </td>
@@ -113,36 +115,33 @@
             </tbody>
           </table>
         </div>
-        
-        <div class="pagination-container d-flex justify-content-center mt-4">
-          <nav aria-label="Navigation pages">
-            <ul class="pagination custom-pagination">
-              <!-- Précédent -->
-              <li class="page-item" [class.disabled]="currentPage === 1">
-                <button class="page-link" (click)="changePage(currentPage - 1)">← Précédent</button>
-              </li>
 
-              <!-- Pages -->
-              <li
-                class="page-item"
-                *ngFor="let i of [].constructor(totalPages); let idx = index"
-                [class.active]="currentPage === (idx + 1)"
-              >
-                <button class="page-link" (click)="changePage(idx + 1)">
-                  {{ idx + 1 }}
-                </button>
-              </li>
-
-              <!-- Suivant -->
-              <li class="page-item" [class.disabled]="currentPage === totalPages">
-                <button class="page-link" (click)="changePage(currentPage + 1)">Suivant →</button>
-              </li>
-            </ul>
-          </nav>
+        <!-- Pagination -->
+        <div class="flex justify-center mt-6">
+          <ul class="inline-flex items-center -space-x-px">
+            <li>
+              <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1"
+                      class="px-3 py-1 rounded-l-xl bg-gray-200 hover:bg-gray-300 disabled:opacity-50 transition">
+                ← Précédent
+              </button>
+            </li>
+            <li *ngFor="let i of [].constructor(totalPages); let idx = index">
+              <button (click)="changePage(idx + 1)"
+                      [class.bg-orange-500]="currentPage === (idx + 1)"
+                      [class.text-white]="currentPage === (idx + 1)"
+                      class="px-3 py-1 bg-gray-200 hover:bg-gray-300 transition">
+                {{ idx + 1 }}
+              </button>
+            </li>
+            <li>
+              <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages"
+                      class="px-3 py-1 rounded-r-xl bg-gray-200 hover:bg-gray-300 disabled:opacity-50 transition">
+                Suivant →
+              </button>
+            </li>
+          </ul>
         </div>
 
-
-        </div>
       </div>
     </div>
   </div>

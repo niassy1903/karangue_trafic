@@ -1,123 +1,199 @@
-<div class="login-container">
-  <div class="left-side">
-    <img src="logo.png" alt="Logo" class="logo">
+<div class="min-h-screen flex flex-col bg-gradient-to-br from-gray-100 to-gray-200">
 
-    <!-- Section de connexion normale -->
-    <div *ngIf="!showPasswordReset">
-      <h1>Connexion</h1>
-      <div class="lock-icon">
-        <i class="fas fa-lock"></i>
-      </div>
-      <p class="auth-text">Veuillez vous authentifier par code en saisissant votre code d'accès</p>
-      <p class="rfid-text">ou par carte RFID : Approchez votre carte du lecteur</p>
+<!-- CONTAINER -->
+<div class="flex flex-1 flex-col lg:flex-row">
 
-      <div class="code-inputs">
-        <input
-          [disabled]="isLocked"
-          type="password"
-          maxlength="1"
-          (input)="goToNext($any($event).target, 1)"
-          #input1
-          inputmode="numeric"
-          pattern="[0-9]*"
-          autocomplete="off"
-        >
-        <input
-          [disabled]="isLocked"
-          type="password"
-          maxlength="1"
-          (input)="goToNext($any($event).target, 2)"
-          #input2
-          inputmode="numeric"
-          pattern="[0-9]*"
-          autocomplete="off"
-        >
-        <input
-          [disabled]="isLocked"
-          type="password"
-          maxlength="1"
-          (input)="goToNext($any($event).target, 3)"
-          #input3
-          inputmode="numeric"
-          pattern="[0-9]*"
-          autocomplete="off"
-        >
-        <input
-          [disabled]="isLocked"
-          type="password"
-          maxlength="1"
-          (input)="goToNext($any($event).target, 4)"
-          #input4
-          inputmode="numeric"
-          pattern="[0-9]*"
-          autocomplete="off"
-        >
-      </div><br>
+<!-- LEFT SIDE -->
+<div class="flex flex-col justify-center items-center w-full lg:w-1/2 px-8 py-12">
 
-      <div *ngIf="errorMessage" class="error-message">{{errorMessage}}</div>
-      <div *ngIf="isLocked" class="lock-message">
-        <div class="progress-container">
-          <div class="progress-bar" [style.width.%]="progress"></div>
-        </div>
-        <p>Compte bloqué pendant {{lockTime}} secondes</p>
-      </div>
-      <p>
-        Si vous avez oublié votre code, veuillez cliquer sur
-        <a href="#" class="forgot-link" (click)="togglePasswordReset($event)">Code secret oublié</a>
-      </p>
-    </div>
+<div class="bg-white/80 backdrop-blur-xl shadow-2xl rounded-3xl p-10 w-full max-w-md">
 
-    <!-- Section de réinitialisation de mot de passe -->
-    <div *ngIf="showPasswordReset" class="password-reset">
-      <h1>Réinitialisation du Code Secret</h1>
-      <p>Veuillez entrer votre adresse email pour recevoir un code de réinitialisation.</p>
-      <input
-        type="email"
-        [(ngModel)]="resetEmail"
-        class="form-control"
-        placeholder="Email"
-        [disabled]="isSending"
-        (keyup)="validateEmail()"
-      >
-      <div *ngIf="resetMessage" class="reset-message" [ngClass]="{'text-success': isSuccess, 'text-danger': !isSuccess}">
-        {{ resetMessage }}
-      </div>
+<img src="logo.png" class="w-48 mx-auto mb-6" />
 
-      <div class="buttons-container">
-        <button
-          class="btn btn-primary"
-          (click)="sendResetCode()"
-          [disabled]="isSending || !resetEmail">
-          Envoyer le Code
-        </button>
-        <button
-        *ngIf="showResend"
-        class="btn btn-secondary"
-        (click)="resendCode()"
-        [disabled]="isResendDisabled"
-      >
-        Renvoyer le Code
-      </button>
+<!-- LOGIN -->
+<div *ngIf="!showPasswordReset">
 
-        <button
-          class="btn btn-back"
-          (click)="togglePasswordReset()">
-          Retour à la Connexion
-        </button>
-      </div>
+<h1 class="text-3xl font-bold text-center text-gray-800 mb-2">
+Connexion
+</h1>
 
-      <span class="button-spacer"></span> <!-- Ajout d'un espace entre les boutons -->
-     
-    </div>
-  </div>
+<p class="text-center text-gray-500 mb-6">
+Veuillez saisir votre code d'accès
+</p>
 
-  <!-- Partie droite avec l'avatar agrandi -->
-  <div class="right-side">
-    <img src="avatar.png" alt="Avatar" class="avatar">
-  </div>
+<div class="flex justify-center mb-6 text-orange-500 text-4xl">
+<i class="fas fa-lock"></i>
 </div>
 
-<!-- Footer -->
-<footer class="footer">
-  Copyright © 2025 KAARANGE TRAFIC. Tous Droits Réservés
+<!-- PIN INPUT -->
+<div class="flex justify-center gap-4">
+
+<input
+#input1
+type="password"
+maxlength="1"
+[disabled]="isLocked"
+(input)="goToNext($any($event).target,1)"
+class="w-14 h-14 text-center text-xl border-2 border-orange-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 transition"
+/>
+
+<input
+#input2
+type="password"
+maxlength="1"
+[disabled]="isLocked"
+(input)="goToNext($any($event).target,2)"
+class="w-14 h-14 text-center text-xl border-2 border-orange-400 rounded-xl focus:ring-2 focus:ring-orange-400"
+/>
+
+<input
+#input3
+type="password"
+maxlength="1"
+[disabled]="isLocked"
+(input)="goToNext($any($event).target,3)"
+class="w-14 h-14 text-center text-xl border-2 border-orange-400 rounded-xl focus:ring-2 focus:ring-orange-400"
+/>
+
+<input
+#input4
+type="password"
+maxlength="1"
+[disabled]="isLocked"
+(input)="goToNext($any($event).target,4)"
+class="w-14 h-14 text-center text-xl border-2 border-orange-400 rounded-xl focus:ring-2 focus:ring-orange-400"
+/>
+
+</div>
+
+<!-- ERROR -->
+<div *ngIf="errorMessage"
+class="mt-4 text-center text-red-500 font-medium">
+{{errorMessage}}
+</div>
+
+<!-- LOCK -->
+<div *ngIf="isLocked" class="mt-4 text-center">
+
+<div class="w-full bg-orange-100 rounded-full h-2">
+<div
+class="bg-orange-500 h-2 rounded-full transition-all"
+[style.width.%]="progress">
+</div>
+</div>
+
+<p class="text-sm text-orange-600 mt-2">
+Compte bloqué {{lockTime}} secondes
+</p>
+
+</div>
+
+<p class="text-center mt-6 text-sm">
+
+<a
+href="#"
+(click)="togglePasswordReset($event)"
+class="text-orange-500 hover:underline">
+Code secret oublié ?
+</a>
+
+</p>
+
+</div>
+
+
+<!-- PASSWORD RESET -->
+
+<div *ngIf="showPasswordReset">
+
+<h1 class="text-2xl font-bold text-center mb-4">
+Réinitialisation
+</h1>
+
+<p class="text-gray-500 text-center mb-6">
+Entrez votre email pour recevoir un code
+</p>
+
+<input
+type="email"
+[(ngModel)]="resetEmail"
+(keyup)="validateEmail()"
+class="w-full border rounded-lg px-4 py-3 mb-4 focus:ring-2 focus:ring-orange-400 focus:outline-none"
+placeholder="Votre email"
+/>
+
+<div *ngIf="resetMessage"
+class="text-center text-sm mb-4"
+[ngClass]="{'text-green-600': isSuccess, 'text-red-500': !isSuccess}">
+{{ resetMessage }}
+</div>
+
+<div class="flex flex-col gap-3">
+
+<button
+(click)="sendResetCode()"
+[disabled]="isSending || !resetEmail"
+class="bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg font-semibold transition">
+
+Envoyer le Code
+
+</button>
+
+<button
+*ngIf="showResend"
+(click)="resendCode()"
+[disabled]="isResendDisabled"
+class="border border-orange-500 text-orange-500 hover:bg-orange-50 py-3 rounded-lg">
+
+Renvoyer le Code
+
+</button>
+
+<button
+(click)="togglePasswordReset()"
+class="text-gray-500 hover:underline text-sm">
+
+Retour à la connexion
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- RIGHT SIDE -->
+<div class="hidden lg:flex w-1/2 items-center justify-center bg-gradient-to-br from-orange-400 to-orange-600">
+
+<div class="text-center text-white">
+
+<img src="avatar.png"
+class="w-96 rounded-full shadow-2xl border-8 border-white/30"/>
+
+<h2 class="text-3xl font-bold mt-8">
+KAARANGE TRAFIC
+</h2>
+
+<p class="opacity-80 mt-2">
+Système sécurisé d'authentification
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- FOOTER -->
+<footer class="text-center text-sm py-3 bg-orange-500 text-white">
+
+Copyright © 2025 KAARANGE TRAFIC
+
 </footer>
+
+</div>
