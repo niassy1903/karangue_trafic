@@ -35,21 +35,14 @@ return [
 
  'connections' => [
 
-    // ... autres connexions ...
-
     'mongodb' => [
-        'driver'   => 'mongodb',
-        'host'     => env('DB_HOST', '127.0.0.1'),  // corrigé: 127.0.1 -> 127.0.0.1
-        'port'     => env('DB_PORT', 27017),
-        'database' => env('DB_DATABASE', 'karangue_trafic'),
-        'username' => env('DB_USERNAME', null),
-        'password' => env('DB_PASSWORD', null),
-        'options'  => [
-            'database' => env('DB_AUTHENTICATION_DATABASE', 'admin'), // seulement si auth activée
-        ],
+        'driver' => 'mongodb',
+        'dsn' => env('MONGODB_URI'),
+        'database' => env('MONGODB_DATABASE'),
     ],
 
 ],
+
     
 
 
