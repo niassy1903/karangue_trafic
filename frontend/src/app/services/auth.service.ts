@@ -11,7 +11,7 @@ import { NgZone } from '@angular/core';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'https://karangue-trafic-w6ds.onrender.com/api/utilisateurs/authenticate';
+  private apiUrl = 'https://trafic-backend.onrender.com/api/utilisateurs/authenticate';
   private inactivityTimeout: any;
   private readonly TIMEOUT_DURATION = 10 * 60 * 1000; // 10 minutes
 

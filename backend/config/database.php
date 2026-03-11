@@ -35,11 +35,11 @@ return [
 
  'connections' => [
 
-    'mongodb' => [
-        'driver' => 'mongodb',
-        'dsn' => env('MONGODB_URI'),
-        'database' => env('MONGODB_DATABASE'),
-    ],
+   'mongodb' => [
+    'driver' => 'mongodb',
+    'dsn' => env('DB_DSN'),  // <- utiliser le DSN complet
+    'database' => env('DB_DATABASE'),
+],
 
 ],
 

@@ -8,8 +8,8 @@ import { AuthService } from './auth.service';  // Assure-toi d'importer AuthServ
   providedIn: 'root'
 })
 export class UtilisateurService {
-  private apiUrl = 'http://127.0.0.1:8000/api/utilisateurs';
-  private apiUrl2 = 'http://127.0.0.1:8000/api'; // Modifier selon l'URL de ton API
+  private apiUrl = 'https://trafic-backend.onrender.com/api/utilisateurs';
+  private apiUrl2 = 'https://trafic-backend.onrender.com/api'; // Modifier selon l'URL de ton API
 
   constructor(
     private http: HttpClient,
