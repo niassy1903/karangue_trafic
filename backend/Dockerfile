@@ -11,8 +11,8 @@ RUN apt-get update && apt-get install -y \
 # extensions PHP
 RUN docker-php-ext-install pdo pdo_mysql zip
 
-# installer extension MongoDB
-RUN pecl install mongodb \
+# installer MongoDB extension compatible
+RUN pecl install mongodb-1.20.0 \
     && docker-php-ext-enable mongodb
 
 # installer composer
