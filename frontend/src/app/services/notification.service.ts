@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class NotificationService {
-  private socket = io('http://localhost:3000');
+  private socket = io('https://notification-y4ln.onrender.com');
 
   private temporaryNotifications = new Subject<any>();
   private permanentNotifications: any[] = [];
@@ -100,14 +100,14 @@ private playNotificationSound(): void {
 
   // Transférer une notification à une autre police
   transferNotification(notificationId: string, newPoliceId: string): Observable<any> {
-    return this.http.post('http://127.0.0.1:8000/api/transferer-notification', {
+    return this.http.post('https://trafic-backend.onrender.com/api/transferer-notification', {
       infraction_id: notificationId,
       new_police_id: newPoliceId
     });
   }
 
   getInfractionById(id: string): Observable<any> {
-    return this.http.get(`http://127.0.0.1:8000/api/infractions/${id}`);
+    return this.http.get(`https://trafic-backend.onrender.com/api/infractions/${id}`);
   }
 
   

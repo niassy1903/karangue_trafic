@@ -52,7 +52,7 @@ class InfractionController extends Controller
         $infraction = Infraction::create($validatedData);
     
         // Envoyer une notification au serveur Node.js
-        Http::post('http://localhost:3000/send-notification-to-police', [
+        Http::post('https://notification-y4ln.onrender.com/send-notification-to-police', [
             'police_id' => $policeDakar->id, // Identifiant unique de la police
             'infraction_id' => $infraction->id, // Ajoutez l'ID de l'infraction ici
             'message' => 'Nouvelle infraction détectée',

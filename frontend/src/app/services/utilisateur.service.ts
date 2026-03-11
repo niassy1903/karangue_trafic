@@ -212,7 +212,7 @@ assignCard(id: number, cardId: string): Observable<any> {
 
 getRFIDUID(): Observable<{ uid: string }> {
   const headers = this.getAuthHeaders();
-  return this.http.get<{ uid: string }>('https://karangue-connexion-rfid.onrender.com', { headers }).pipe(
+  return this.http.get<{ uid: string }>('https://rfid-api-4p9q.onrender.com', { headers }).pipe(
     catchError((error) => {
       return throwError(error);
     })
