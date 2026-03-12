@@ -1,14 +1,30 @@
-# Utiliser NGINX léger
+# Étape 1 : Build Angular
+FROM node:20 AS build
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+# S'assurer que tous les fichiers ont les bonnes permissions
+RUN chmod -R 755 /app
+
+# Build prod Angular
+RUN npm run build -- --output-path=dist/KARANGUE_TRAFIC/browser --configuration=production
+
+# Étape 2 : NGINX
 FROM nginx:alpine
 
-# Copier le build Angular (double browser)
+# Copier build Angular
+# si ton Dockerfile est à la racine frontend
 COPY dist/KARANGUE_TRAFIC/browser/browser /usr/share/nginx/html
 
-# S'assurer que les fichiers sont lisibles
-RUN chmod -R 755 /usr/share/nginx/html
+# Donner les bonnes permissions pour NGINX
+RUN chmod -R 755 /usr/share/nginx/html \
+    && chown -R nginx:nginx /usr/share/nginx/html
 
-# Exposer le port 80
 EXPOSE 80
 
-# Lancer NGINX
 CMD ["nginx", "-g", "daemon off;"]
