@@ -20,7 +20,7 @@ RUN npm run build -- --output-path=dist/KARANGUE_TRAFIC/browser --configuration=
 FROM nginx:alpine
 
 # Copier les fichiers build Angular dans NGINX
-COPY dist/KARANGUE_TRAFIC/browser/browser/ /usr/share/nginx/html
+COPY dist/KARANGUE_TRAFIC/browser /usr/share/nginx/html
 
 # Copier la config NGINX pour Angular (SPA)
 COPY default.conf /etc/nginx/conf.d/default.conf
