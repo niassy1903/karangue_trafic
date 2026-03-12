@@ -5,9 +5,9 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:4200', 'https://karangue-frontend.onrender.com', 
-    'https://karangue-notification-api.onrender.com', 'https://karangue-anpr-api.onrender.com', 
-        'https://karangue-connexion-rfid.onrender.com'],
+    'allowed_origins' => ['http://localhost:4200', 'https://karangue-trafic.netlify.app', 
+    'https://notification-y4ln.onrender.com', 'https://anpr-1bix.onrender.com', 
+        'https://rfid-api-4p9q.onrender.com'],
 
     'allowed_origins_patterns' => [],
 
