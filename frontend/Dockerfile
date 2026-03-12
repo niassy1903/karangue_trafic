@@ -14,7 +14,10 @@ COPY . .
 RUN chmod -R 755 /app
 
 # Build Angular en production
-RUN npm run build -- --output-path=dist/KARANGUE_TRAFIC/browser --configuration=production
+RUN npm run build -- --configuration=production
+
+# Vérifier que les fichiers existent
+RUN ls -la /app/dist/
 
 # Étape 2 : NGINX pour servir Angular
 FROM nginx:alpine
